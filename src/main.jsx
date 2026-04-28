@@ -228,6 +228,27 @@ function detailFacts(item) {
   ];
 }
 
+function artworkImage(item, mode = "thumb") {
+  if (!item) return "";
+  if (mode === "full") {
+    return item.image_full ?? item.image_url ?? item.local_thumb ?? item.image_thumb ?? "";
+  }
+  return item.local_thumb ?? item.image_thumb ?? item.image_url ?? item.image_full ?? "";
+}
+
+function objectLabelFacts(item) {
+  if (!item) return [];
+  return [
+    ["作者", cleanText(item.artist, "未详")],
+    ["年代", formatDate(item.date || item.period || item.dynasty)],
+    ["朝代", cleanText(item.dynasty || item.period, "宋代")],
+    ["材质", cleanText(item.medium, "馆藏未注明")],
+    ["馆藏", cleanText(item.source, "馆藏数据")],
+    ["部门", cleanText(item.department, item.domainMeta?.label ?? "宋代审美")],
+    ["来源", cleanText(item.credit_line, item.public_domain ? "Public domain" : cleanText(item.license, "馆藏授权"))],
+  ].filter(([, value]) => value);
+}
+
 function aestheticAxes(item) {
   if (!item) return [];
   const ratio = item.width && item.height ? item.width / item.height : 1;
@@ -448,7 +469,7 @@ function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
   );
 }
 
-function DetailPanel({ selected, hovered, setSelected, nodes }) {
+function DetailPanel({ selected, hovered, setSelected, nodes, openViewingRoom }) {
   const item = hovered ?? selected;
   const displayDate = item ? formatDate(item.date || item.period || item.dynasty) : "";
   const displayTitle = item ? cleanText(item.title, "未命名作品") : "";
@@ -462,7 +483,7 @@ function DetailPanel({ selected, hovered, setSelected, nodes }) {
     <section className={item ? "detail visible" : "detail"}>
       {item && (
         <>
-          <img src={item.local_thumb ?? item.image_thumb ?? item.image_url} alt={item.title} />
+          <img src={artworkImage(item)} alt={item.title} />
           <div>
             <p className="meta">{item.domainMeta?.label ?? item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物"} · {displayDate}</p>
             <h2>{displayTitle}</h2>
@@ -497,13 +518,17 @@ function DetailPanel({ selected, hovered, setSelected, nodes }) {
                       title={cleanText(work.title, "相关作品")}
                       aria-label={`查看${cleanText(work.title, "相关作品")}`}
                     >
-                      <img src={work.local_thumb ?? work.image_thumb ?? work.image_url} alt="" />
+                      <img src={artworkImage(work)} alt="" />
                     </button>
                   ))}
                 </div>
               </div>
             )}
             <div className="detail-actions">
+              <button onClick={() => openViewingRoom(item)}>
+                <Search size={13} />
+                鉴赏
+              </button>
               {item.source_url && (
                 <a href={item.source_url} target="_blank" rel="noreferrer">
                   <ExternalLink size={13} />
@@ -520,6 +545,94 @@ function DetailPanel({ selected, hovered, setSelected, nodes }) {
           </div>
         </>
       )}
+    </section>
+  );
+}
+
+function ViewingRoom({ item, nodes, setItem, setSelected, onClose }) {
+  React.useEffect(() => {
+    if (!item) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [item, onClose]);
+
+  if (!item) return null;
+
+  const title = cleanText(item.title, "未命名作品");
+  const date = formatDate(item.date || item.period || item.dynasty);
+  const author = cleanText(item.artist, cleanText(item.source, "馆藏记录"));
+  const relation = relationLabels[item.huizong_relation] ?? "宋代审美参照";
+  const facts = objectLabelFacts(item);
+  const axes = aestheticAxes(item);
+  const relatedWorks = getRelatedWorks(item, nodes);
+
+  const chooseRelated = (work) => {
+    setItem(work);
+    setSelected(work);
+  };
+
+  return (
+    <section className="viewing-room" role="dialog" aria-modal="true" aria-label={`${title} 鉴赏室`}>
+      <button className="viewing-close" onClick={onClose} aria-label="关闭鉴赏室">
+        <X size={17} />
+      </button>
+      <div className="viewing-image-stage">
+        <img src={artworkImage(item, "full")} alt={title} />
+      </div>
+      <aside className="viewing-info">
+        <p className="meta">{item.domainMeta?.label ?? "宋代审美"} · {relation}</p>
+        <h2>{title}</h2>
+        <p className="viewing-author">{author}</p>
+        <p className="viewing-date">{date}</p>
+
+        <div className="viewing-tombstone">
+          {facts.map(([label, value]) => (
+            <div key={label}>
+              <span>{label}</span>
+              <b>{value}</b>
+            </div>
+          ))}
+        </div>
+
+        <div className="viewing-axis" aria-label="审美坐标">
+          {axes.map(([label, value]) => (
+            <div key={label}>
+              <span>{label}</span>
+              <i style={{ "--value": `${value}%` }} />
+            </div>
+          ))}
+        </div>
+
+        <p className="viewing-note">{buildDescription(item)}</p>
+
+        {item.source_url && (
+          <a className="viewing-source" href={item.source_url} target="_blank" rel="noreferrer">
+            <ExternalLink size={14} />
+            馆藏来源
+          </a>
+        )}
+
+        {relatedWorks.length > 0 && (
+          <div className="viewing-related">
+            <small>Related works</small>
+            <div>
+              {relatedWorks.map((work) => (
+                <button
+                  key={work.id}
+                  onClick={() => chooseRelated(work)}
+                  title={cleanText(work.title, "相关作品")}
+                  aria-label={`查看${cleanText(work.title, "相关作品")}`}
+                >
+                  <img src={artworkImage(work)} alt="" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </aside>
     </section>
   );
 }
@@ -985,6 +1098,7 @@ function TimelineControl({ timeMode, setTimeMode, setSelected }) {
 function App() {
   const artifacts = useArtifacts();
   const [selected, setSelected] = useState(null);
+  const [viewingItem, setViewingItem] = useState(null);
   const [hovered, setHovered] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
   const [timeMode, setTimeMode] = useState("all");
@@ -1044,7 +1158,23 @@ function App() {
         allDomainCounts={allDomainCounts}
       />
       <LegendStrip nodes={visibleNodes} allDomainCounts={allDomainCounts} />
-      <DetailPanel selected={selected} hovered={hovered} setSelected={setSelected} nodes={visibleNodes} />
+      <DetailPanel
+        selected={selected}
+        hovered={hovered}
+        setSelected={setSelected}
+        nodes={visibleNodes}
+        openViewingRoom={(item) => {
+          setViewingItem(item);
+          setSelected(item);
+        }}
+      />
+      <ViewingRoom
+        item={viewingItem}
+        nodes={visibleNodes}
+        setItem={setViewingItem}
+        setSelected={setSelected}
+        onClose={() => setViewingItem(null)}
+      />
       <TimelineControl timeMode={timeMode} setTimeMode={setTimeMode} setSelected={setSelected} />
     </main>
   );
