@@ -157,6 +157,70 @@ main::after {
   border-color: rgba(139, 14, 12, 0.12);
 }
 
+.cluster-label {
+  position: absolute;
+  width: 126px;
+  min-height: 34px;
+  padding: 5px 8px 5px 36px;
+  border: 1px solid color-mix(in srgb, var(--accent), transparent 68%);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent), transparent 88%), rgba(5, 5, 4, 0.1)),
+    rgba(5, 5, 4, 0.28);
+  color: color-mix(in srgb, var(--accent), #efd9a6 36%);
+  font-family: "Songti SC", "Noto Serif CJK SC", "STSong", Georgia, serif;
+  pointer-events: none;
+  transform:
+    translate3d(var(--x), var(--y), var(--z))
+    rotateY(var(--iry))
+    rotateX(var(--irx))
+    translate(-50%, -50%)
+    scale(0.92);
+  opacity: 0.54;
+  text-shadow: 0 0 12px rgba(217, 174, 97, 0.18);
+  transition: opacity 180ms ease, transform 260ms ease;
+}
+
+.cluster-label b {
+  position: absolute;
+  left: 8px;
+  top: 6px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.cluster-label span,
+.cluster-label small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cluster-label span {
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.cluster-label small {
+  margin-top: 2px;
+  color: rgba(219, 197, 151, 0.48);
+  font: 9px Inter, Arial, sans-serif;
+}
+
+.focus-mode .cluster-label {
+  opacity: 0.72;
+}
+
+.cluster-label.muted {
+  opacity: 0.18;
+}
+
 .fallback-constellation line {
   stroke: rgba(214, 170, 88, 0.13);
   stroke-width: 0.055;
@@ -165,6 +229,15 @@ main::after {
 
 .fallback-constellation.focus-mode line {
   stroke: rgba(226, 182, 95, 0.2);
+}
+
+.fallback-constellation.dense-mode line {
+  stroke: rgba(214, 170, 88, 0.09);
+  stroke-width: 0.045;
+}
+
+.fallback-constellation.dense-mode.focus-mode line {
+  stroke: rgba(226, 182, 95, 0.17);
 }
 
 .fallback-red-ring {
@@ -256,6 +329,15 @@ main::after {
   opacity: 1;
   border-color: rgba(242, 207, 133, 0.9);
   filter: blur(0);
+}
+
+.dense-mode .fallback-node-button {
+  border-color: rgba(194, 156, 89, 0.26);
+  background: rgba(18, 15, 10, 0.68);
+}
+
+.dense-mode .fallback-node-button:hover {
+  z-index: 6;
 }
 
 .fallback-node-button.dimmed {
@@ -598,6 +680,43 @@ main::after {
   font-size: 9px;
 }
 
+.aesthetic-axis {
+  display: grid;
+  gap: 5px;
+  margin-top: 9px;
+  padding: 8px 0 1px;
+  border-top: 1px solid rgba(190, 149, 80, 0.14);
+}
+
+.aesthetic-axis div {
+  display: grid;
+  grid-template-columns: 32px 1fr 26px;
+  align-items: center;
+  gap: 7px;
+  color: rgba(220, 194, 139, 0.68);
+  font: 10px Inter, Arial, sans-serif;
+}
+
+.aesthetic-axis span {
+  font-family: "Songti SC", "Noto Serif CJK SC", "STSong", Georgia, serif;
+  font-size: 11px;
+  color: rgba(221, 188, 117, 0.78);
+}
+
+.aesthetic-axis i {
+  height: 2px;
+  background:
+    linear-gradient(90deg, rgba(213, 175, 96, 0.76) var(--value), rgba(190, 149, 80, 0.14) var(--value)),
+    rgba(190, 149, 80, 0.12);
+  box-shadow: 0 0 10px rgba(217, 174, 97, 0.12);
+}
+
+.aesthetic-axis b {
+  color: rgba(173, 42, 34, 0.78);
+  font-weight: 500;
+  text-align: right;
+}
+
 .detail .curator-note {
   margin-top: 8px;
   padding-top: 8px;
@@ -606,6 +725,48 @@ main::after {
   font-family: "Songti SC", "Noto Serif CJK SC", "STSong", Georgia, serif;
   font-size: 12px;
   line-height: 1.5;
+}
+
+.related-works {
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(190, 149, 80, 0.14);
+}
+
+.related-works small {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(173, 42, 34, 0.82);
+  font: 10px Inter, Arial, sans-serif;
+}
+
+.related-works div {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.related-works button {
+  height: 44px;
+  padding: 2px;
+  border: 1px solid rgba(190, 149, 80, 0.22);
+  background: rgba(12, 10, 7, 0.72);
+  cursor: pointer;
+}
+
+.related-works button:hover {
+  border-color: rgba(232, 190, 105, 0.62);
+  box-shadow: 0 0 12px rgba(217, 174, 97, 0.14);
+}
+
+.related-works img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
+  background: #100d08;
+  filter: sepia(0.18) saturate(0.82) brightness(0.84);
 }
 
 .detail-actions {
@@ -712,7 +873,8 @@ main::after {
 }
 
 .clear-query,
-.core-toggle {
+.core-toggle,
+.density-toggle {
   border: 1px solid rgba(190, 149, 80, 0.28);
   background: rgba(12, 10, 7, 0.72);
   color: rgba(221, 188, 117, 0.72);
@@ -725,14 +887,20 @@ main::after {
   padding: 2px;
 }
 
-.core-toggle {
+.core-toggle,
+.density-toggle {
   justify-self: end;
   padding: 5px 9px;
   font-family: inherit;
   font-size: 12px;
 }
 
-.core-toggle.active {
+.density-toggle {
+  margin-top: -4px;
+}
+
+.core-toggle.active,
+.density-toggle.active {
   border-color: rgba(178, 39, 30, 0.72);
   color: rgba(224, 84, 70, 0.92);
   box-shadow: 0 0 18px rgba(137, 14, 12, 0.18);

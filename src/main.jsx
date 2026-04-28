@@ -15,6 +15,15 @@ const categoryMeta = {
 
 const defaultMeta = { label: "文物", color: "#bda16b", icon: Sparkles, center: [0, 0, -1] };
 
+const clusterLabels = [
+  { key: "flower_bird", seal: "物", title: "格物花鸟", subtitle: "细密观看" },
+  { key: "porcelain", seal: "釉", title: "宋瓷清供", subtitle: "色与形" },
+  { key: "calligraphy", seal: "书", title: "瘦金题跋", subtitle: "笔画秩序" },
+  { key: "landscape", seal: "境", title: "山水远意", subtitle: "空间气韵" },
+  { key: "figure", seal: "雅", title: "宫廷雅集", subtitle: "人物仪式" },
+  { key: "object", seal: "器", title: "器物星尘", subtitle: "材料工艺" },
+];
+
 const timeModes = {
   all: { label: "全景", years: "960-1279", range: [960, 1279], description: "宋代图像与器物的全景星图" },
   early: { label: "北宋", years: "960-1099", range: [960, 1099], description: "北宋早期的宫廷、山水与器物基础" },
@@ -137,6 +146,44 @@ function detailFacts(item) {
   ];
 }
 
+function aestheticAxes(item) {
+  if (!item) return [];
+  const ratio = item.width && item.height ? item.width / item.height : 1;
+  const medium = cleanText(item.medium).toLowerCase();
+  const base = {
+    flower_bird: [94, 72, 46, 62],
+    porcelain: [64, 34, 96, 58],
+    calligraphy: [42, 96, 38, 56],
+    landscape: [56, 78, 42, 94],
+    figure: [72, 62, 52, 74],
+    object: [58, 42, 82, 54],
+    painting: [82, 74, 48, 76],
+  }[item.category] ?? [62, 58, 58, 58];
+  const relationBoost = item.related_to_huizong ? 7 : 0;
+  const longScrollBoost = ratio > 2.2 ? 10 : 0;
+  const colorBoost = /ceramic|porcelain|glaze|silk|color|ink and color/i.test(medium) ? 7 : 0;
+  const inkBoost = /ink|paper|calligraphy|album|handscroll/i.test(medium) ? 6 : 0;
+  return [
+    ["格物", clamp(base[0] + relationBoost, 18, 100)],
+    ["笔墨", clamp(base[1] + inkBoost + relationBoost, 18, 100)],
+    ["色釉", clamp(base[2] + colorBoost, 18, 100)],
+    ["空间", clamp(base[3] + longScrollBoost, 18, 100)],
+  ];
+}
+
+function getRelatedWorks(item, nodes) {
+  if (!item) return [];
+  return nodes
+    .filter((node) => node.id !== item.id)
+    .filter((node) => {
+      if (node.category === item.category) return true;
+      if (node.related_to_huizong && item.related_to_huizong) return true;
+      return node.source && node.source === item.source;
+    })
+    .sort((a, b) => tourScore(b) - tourScore(a))
+    .slice(0, 5);
+}
+
 function tourScore(item) {
   const relationScore = item.huizong_relation === "huizong_work" ? 4 : item.related_to_huizong ? 3 : 1;
   const categoryScore = {
@@ -149,7 +196,7 @@ function tourScore(item) {
   return relationScore * 10 + categoryScore + (item.relevance_score ?? 0) / 100;
 }
 
-function buildNodes(records, activeCategory, timeMode, query, coreOnly) {
+function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMode) {
   const central =
     records.find((item) => /芙蓉锦鸡|芙蓉錦雞|Songhuizong4/i.test(item.title)) ??
     records.find((item) => /枇杷山鸟|梅花绣眼|山鳥|繡眼/i.test(item.title)) ??
@@ -166,12 +213,14 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly) {
   });
 
   const hasIntent = Boolean(activeCategory || timeMode !== "all" || query.trim() || coreOnly);
+  const huizongLimit = denseMode ? (hasIntent ? 58 : 46) : (hasIntent ? 36 : 22);
+  const peripheralLimit = denseMode ? (hasIntent ? 90 : 104) : (hasIntent ? 36 : 18);
   const huizong = filteredRecords
     .filter((item) => item.related_to_huizong)
-    .slice(0, hasIntent ? 36 : 22);
+    .slice(0, huizongLimit);
   const peripheral = filteredRecords
     .filter((item) => item.id !== central?.id && !huizong.some((core) => core.id === item.id))
-    .slice(0, hasIntent ? 36 : 18);
+    .slice(0, peripheralLimit);
 
   const all = [central, ...huizong.filter((item) => item.id !== central?.id), ...peripheral].filter(Boolean);
 
@@ -194,7 +243,11 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly) {
 
     const relationBoost = item.huizong_relation === "huizong_work" ? 0.16 : item.related_to_huizong ? 0.08 : 0;
     const imageRatio = item.width && item.height ? item.width / item.height : 1;
-    const base = index === 0 ? 1.28 : core ? 0.32 + relationBoost : 0.17 + rand() * 0.14;
+    const base = index === 0
+      ? denseMode ? 1.12 : 1.28
+      : core
+        ? (denseMode ? 0.25 : 0.32) + relationBoost
+        : (denseMode ? 0.11 : 0.17) + rand() * (denseMode ? 0.1 : 0.14);
     const width = base * Math.min(Math.max(imageRatio, 0.55), 2.2);
     const height = base * Math.min(Math.max(1 / imageRatio, 0.58), 1.9);
 
@@ -256,7 +309,7 @@ function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
   );
 }
 
-function DetailPanel({ selected, hovered, setSelected }) {
+function DetailPanel({ selected, hovered, setSelected, nodes }) {
   const item = hovered ?? selected;
   const displayDate = item ? formatDate(item.date || item.period || item.dynasty) : "";
   const displayTitle = item ? cleanText(item.title, "未命名作品") : "";
@@ -264,6 +317,8 @@ function DetailPanel({ selected, hovered, setSelected }) {
   const displayRelation = item ? relationLabels[item.huizong_relation] ?? cleanText(item.huizong_relation || item.source, "宋代审美参照") : "";
   const description = item ? buildDescription(item) : "";
   const facts = item ? detailFacts(item) : [];
+  const axes = item ? aestheticAxes(item) : [];
+  const relatedWorks = selected ? getRelatedWorks(selected, nodes) : [];
   return (
     <section className={item ? "detail visible" : "detail"}>
       {item && (
@@ -282,7 +337,33 @@ function DetailPanel({ selected, hovered, setSelected }) {
                 </span>
               ))}
             </div>
+            <div className="aesthetic-axis" aria-label="审美坐标">
+              {axes.map(([label, value]) => (
+                <div key={label}>
+                  <span>{label}</span>
+                  <i style={{ "--value": `${value}%` }} />
+                  <b>{Math.round(value)}</b>
+                </div>
+              ))}
+            </div>
             <p className="curator-note">{description}</p>
+            {relatedWorks.length > 0 && (
+              <div className="related-works">
+                <small>相关星群</small>
+                <div>
+                  {relatedWorks.map((work) => (
+                    <button
+                      key={work.id}
+                      onClick={() => setSelected(work)}
+                      title={cleanText(work.title, "相关作品")}
+                      aria-label={`查看${cleanText(work.title, "相关作品")}`}
+                    >
+                      <img src={work.local_thumb ?? work.image_thumb ?? work.image_url} alt="" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="detail-actions">
               {item.source_url && (
                 <a href={item.source_url} target="_blank" rel="noreferrer">
@@ -334,7 +415,7 @@ function TourPanel({ items, selected, setSelected }) {
   );
 }
 
-function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
+function FallbackConstellation({ nodes, selected, setSelected, setHovered, denseMode }) {
   const central = nodes.find((node) => node.central);
   const featured = selected || null;
   const [view, setView] = useState({ rotateX: -5, rotateY: 0, zoom: 1, panX: 0, panY: 0 });
@@ -438,6 +519,7 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
       className={[
         "fallback-constellation",
         "constellation-3d",
+        denseMode ? "dense-mode" : "",
         featured ? "focus-mode" : "",
         isDragging ? "dragging" : "",
       ].filter(Boolean).join(" ")}
@@ -485,7 +567,30 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
           <div className="depth-ring depth-ring-one" />
           <div className="depth-ring depth-ring-two" />
           <div className="depth-ring depth-ring-three" />
-      {nodes.slice(0, 72).map((node) => {
+          {clusterLabels.map((cluster) => {
+            const meta = categoryMeta[cluster.key];
+            const x = meta.center[0] * 82;
+            const y = -meta.center[1] * 70;
+            const z = (meta.center[2] * 120) - 90;
+            const isMuted = featured && featured.category !== cluster.key;
+            return (
+              <div
+                key={cluster.key}
+                className={isMuted ? "cluster-label muted" : "cluster-label"}
+                style={{
+                  "--x": `${x}px`,
+                  "--y": `${y}px`,
+                  "--z": `${z}px`,
+                  "--accent": meta.color,
+                }}
+              >
+                <b>{cluster.seal}</b>
+                <span>{cluster.title}</span>
+                <small>{cluster.subtitle}</small>
+              </div>
+            );
+          })}
+      {nodes.slice(0, denseMode ? 152 : 72).map((node) => {
         const point = project(node.position);
         const point3d = project3d(node);
         const isFeatured = featured?.id === node.id;
@@ -506,10 +611,10 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
           width: isFeatured
             ? featuredWidth
             : node.central
-              ? "clamp(42px, 5vw, 74px)"
+              ? denseMode ? "clamp(38px, 4.6vw, 68px)" : "clamp(42px, 5vw, 74px)"
               : node.core
-                ? "clamp(26px, 3.7vw, 58px)"
-                : "clamp(13px, 1.8vw, 34px)",
+                ? denseMode ? "clamp(20px, 3.1vw, 50px)" : "clamp(26px, 3.7vw, 58px)"
+                : denseMode ? "clamp(8px, 1.25vw, 24px)" : "clamp(13px, 1.8vw, 34px)",
           aspectRatio: isFeatured ? `${featureRatio}` : undefined,
           borderColor: isFeatured || node.central ? "#e1bf79" : node.meta.color,
           boxShadow: isFeatured
@@ -522,7 +627,7 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
           "--z": `${isFeatured ? 210 : isDimmed ? point3d.z - 220 : point3d.z}px`,
           "--d": `${isFeatured ? 1 : isDimmed ? 0.62 : clamp(0.82 + (point3d.z + 260) / 2200, 0.68, 1.08)}`,
           "--blur": `${isFeatured ? 0 : isDimmed ? 1.15 : point3d.z < -260 ? 0.45 : point3d.z < -80 ? 0.18 : 0}px`,
-          "--alpha": `${isFeatured ? 1 : isDimmed ? 0.16 : clamp(0.58 + (point3d.z + 340) / 1500, 0.5, 0.9)}`,
+          "--alpha": `${isFeatured ? 1 : isDimmed ? 0.13 : clamp((denseMode ? 0.42 : 0.58) + (point3d.z + 340) / 1500, denseMode ? 0.34 : 0.5, denseMode ? 0.82 : 0.9)}`,
         };
         return (
           <button
@@ -577,7 +682,7 @@ function ViewStatus({ activeCategory, timeMode }) {
   );
 }
 
-function ControlPanel({ query, setQuery, coreOnly, setCoreOnly, setSelected, activeCategory, timeMode }) {
+function ControlPanel({ query, setQuery, coreOnly, setCoreOnly, denseMode, setDenseMode, setSelected, activeCategory, timeMode }) {
   return (
     <section className="control-panel">
       <label className="search-box">
@@ -612,7 +717,16 @@ function ControlPanel({ query, setQuery, coreOnly, setCoreOnly, setSelected, act
       >
         徽宗核心
       </button>
-      <p>{timeModes[timeMode].label} · {activeCategory ? categoryMeta[activeCategory]?.label : "全类"}</p>
+      <button
+        className={denseMode ? "density-toggle active" : "density-toggle"}
+        onClick={() => {
+          setDenseMode(!denseMode);
+          setSelected(null);
+        }}
+      >
+        {denseMode ? "繁星层" : "策展层"}
+      </button>
+      <p>{timeModes[timeMode].label} · {activeCategory ? categoryMeta[activeCategory]?.label : "全类"} · {denseMode ? "多层" : "精简"}</p>
     </section>
   );
 }
@@ -689,9 +803,10 @@ function App() {
   const [timeMode, setTimeMode] = useState("all");
   const [query, setQuery] = useState("");
   const [coreOnly, setCoreOnly] = useState(false);
+  const [denseMode, setDenseMode] = useState(true);
   const visibleNodes = useMemo(
-    () => buildNodes(artifacts, activeCategory, timeMode, query, coreOnly),
-    [artifacts, activeCategory, timeMode, query, coreOnly],
+    () => buildNodes(artifacts, activeCategory, timeMode, query, coreOnly, denseMode),
+    [artifacts, activeCategory, timeMode, query, coreOnly, denseMode],
   );
   const tourItems = useMemo(
     () => visibleNodes
@@ -720,14 +835,16 @@ function App() {
         setQuery={setQuery}
         coreOnly={coreOnly}
         setCoreOnly={setCoreOnly}
+        denseMode={denseMode}
+        setDenseMode={setDenseMode}
         setSelected={setSelected}
         activeCategory={activeCategory}
         timeMode={timeMode}
       />
       <TourPanel items={tourItems} selected={selected} setSelected={setSelected} />
-      <FallbackConstellation nodes={visibleNodes} selected={selected} setSelected={setSelected} setHovered={setHovered} />
+      <FallbackConstellation nodes={visibleNodes} selected={selected} setSelected={setSelected} setHovered={setHovered} denseMode={denseMode} />
       <LegendStrip nodes={visibleNodes} />
-      <DetailPanel selected={selected} hovered={hovered} setSelected={setSelected} />
+      <DetailPanel selected={selected} hovered={hovered} setSelected={setSelected} nodes={visibleNodes} />
       <TimelineControl timeMode={timeMode} setTimeMode={setTimeMode} setSelected={setSelected} />
     </main>
   );
