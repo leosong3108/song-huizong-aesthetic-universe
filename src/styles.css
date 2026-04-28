@@ -162,12 +162,26 @@ main::after {
   width: var(--orbit-w);
   height: var(--orbit-h);
   translate: -50% -50%;
-  transform: translate3d(0, var(--y), -40px) rotateX(78deg);
+  transform:
+    translate3d(var(--x), var(--y), var(--z))
+    rotateY(var(--tilt))
+    rotateZ(var(--tilt))
+    rotateX(74deg);
   border-color: color-mix(in srgb, var(--accent), transparent 86%);
   box-shadow:
     0 0 22px color-mix(in srgb, var(--accent), transparent 94%),
     inset 0 0 24px color-mix(in srgb, var(--accent), transparent 96%);
-  opacity: 0.62;
+  opacity: 0.38;
+}
+
+.orbit-lane::before {
+  content: "";
+  position: absolute;
+  inset: 18% 8%;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--accent), transparent 88%);
+  filter: blur(0.2px);
+  opacity: 0.58;
 }
 
 .focus-mode .orbit-lane {

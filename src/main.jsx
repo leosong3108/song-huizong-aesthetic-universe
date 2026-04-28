@@ -25,13 +25,13 @@ const clusterLabels = [
 ];
 
 const orbitMeta = {
-  flower_bird: { lane: 1.45, radius: 5.2, start: -0.35, labelAngle: -0.78 },
-  calligraphy: { lane: 0.82, radius: 5.9, start: 0.5, labelAngle: 0.45 },
-  landscape: { lane: -0.04, radius: 6.5, start: 1.42, labelAngle: 1.05 },
-  figure: { lane: 1.05, radius: 4.8, start: 2.2, labelAngle: 2.18 },
-  porcelain: { lane: -1.58, radius: 5.7, start: 3.15, labelAngle: 3.55 },
-  object: { lane: -2.18, radius: 6.25, start: 4.35, labelAngle: 4.45 },
-  painting: { lane: 0.1, radius: 4.3, start: 5.18, labelAngle: 5.2 },
+  flower_bird: { yBase: 0.88, inner: 1.3, outer: 5.6, turns: 1.75, start: -0.95, labelT: 0.7, depth: 560, tilt: -18 },
+  calligraphy: { yBase: 0.55, inner: 1.45, outer: 6.1, turns: 1.42, start: 0.18, labelT: 0.62, depth: 540, tilt: 14 },
+  landscape: { yBase: -0.18, inner: 1.85, outer: 6.8, turns: 1.15, start: 1.25, labelT: 0.64, depth: 620, tilt: -9 },
+  figure: { yBase: 1.22, inner: 1.6, outer: 5.35, turns: 1.25, start: 2.38, labelT: 0.58, depth: 500, tilt: 22 },
+  porcelain: { yBase: -1.42, inner: 1.65, outer: 6.05, turns: 1.52, start: 3.1, labelT: 0.68, depth: 570, tilt: -24 },
+  object: { yBase: -1.92, inner: 2.1, outer: 6.7, turns: 1.1, start: 4.14, labelT: 0.66, depth: 590, tilt: 19 },
+  painting: { yBase: 0.02, inner: 1.1, outer: 4.95, turns: 1.88, start: 5.02, labelT: 0.6, depth: 520, tilt: 6 },
 };
 
 const timeModes = {
@@ -250,17 +250,30 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
     const radius = index === 0 ? 0 : core ? 1.0 + rand() * 2.35 : 0.75 + rand() * 1.7;
     const angle = rand() * Math.PI * 2;
     const drift = (rand() - 0.5) * 0.85;
-    const orbit = orbitMeta[item.category] ?? { lane: 0, radius: 5.4, start: 0 };
-    const orbitStep = (Math.PI * 2) / Math.max(categoryCount, 16);
-    const orbitLayer = categoryIndex % 3;
-    const orbitAngle = orbit.start + categoryIndex * orbitStep + orbitLayer * 0.035 + (rand() - 0.5) * 0.08;
-    const orbitRadius = (core ? orbit.radius * 0.78 : orbit.radius) + orbitLayer * 0.34 + (rand() - 0.5) * 0.24;
-    const orbitY = orbit.lane + Math.sin(orbitAngle * 1.7) * 0.2 + (rand() - 0.5) * 0.24;
-    const denseDepth = Math.round((Math.sin(orbitAngle) * 520 + (core ? 80 : -60) - orbitLayer * 38) / 10) * 10;
+    const orbit = orbitMeta[item.category] ?? { yBase: 0, inner: 1.4, outer: 5.8, turns: 1.35, start: 0, depth: 540 };
+    const progress = categoryCount <= 1 ? 0 : categoryIndex / (categoryCount - 1);
+    const spiralNoise = (rand() - 0.5) * 0.58;
+    const orbitLayer = categoryIndex % 4;
+    const orbitAngle = orbit.start + progress * orbit.turns * Math.PI * 2 + spiralNoise + orbitLayer * 0.17;
+    const radiusProgress = Math.sqrt(progress);
+    const orbitRadius =
+      (core ? orbit.inner + (orbit.outer - orbit.inner) * radiusProgress * 0.76 : orbit.inner + (orbit.outer - orbit.inner) * radiusProgress) +
+      (rand() - 0.5) * 0.48 +
+      orbitLayer * 0.12;
+    const orbitY =
+      orbit.yBase +
+      Math.sin(orbitAngle * 0.72 + progress * Math.PI) * 0.92 +
+      Math.cos(orbitAngle * 1.6) * 0.18 +
+      (rand() - 0.5) * 0.72;
+    const denseDepth = Math.round((Math.sin(orbitAngle) * orbit.depth + Math.cos(progress * Math.PI * 2) * 90 + (core ? 90 : -80)) / 10) * 10;
     const position = denseMode
       ? index === 0
         ? [0, -0.05, 0.2]
-        : [Math.cos(orbitAngle) * orbitRadius, orbitY, 0]
+        : [
+            Math.cos(orbitAngle) * orbitRadius * (0.86 + progress * 0.2),
+            orbitY,
+            0,
+          ]
       : index === 0
         ? [0, -0.05, 0.2]
         : [
@@ -274,8 +287,8 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
     const base = index === 0
       ? denseMode ? 1.12 : 1.28
       : core
-        ? (denseMode ? 0.25 : 0.32) + relationBoost
-        : (denseMode ? 0.11 : 0.17) + rand() * (denseMode ? 0.1 : 0.14);
+        ? (denseMode ? 0.22 : 0.32) + relationBoost
+        : (denseMode ? 0.085 : 0.17) + rand() * (denseMode ? 0.085 : 0.14);
     const width = base * Math.min(Math.max(imageRatio, 0.55), 2.2);
     const height = base * Math.min(Math.max(1 / imageRatio, 0.58), 1.9);
 
@@ -460,7 +473,12 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
     })
     .slice(0, featured ? 12 : 16)
     .map((node) => ({ from: lineOrigin, to: node }))
-    .filter((line) => line.from && line.to);
+    .filter((line) =>
+      line.from &&
+      line.to &&
+      line.from.position?.every(Number.isFinite) &&
+      line.to.position?.every(Number.isFinite)
+    );
 
   const dust = useMemo(() => {
     const rand = seededRandom(1602);
@@ -585,6 +603,7 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
         {connectors.map((line) => {
           const from = project(line.from.position);
           const to = project(line.to.position);
+          if (![from.x, from.y, to.x, to.y].every(Number.isFinite)) return null;
           return <line key={`${line.from.id}-${line.to.id}`} x1={from.x} y1={from.y} x2={to.x} y2={to.y} />;
         })}
         {dust.map((dot) => (
@@ -599,14 +618,20 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           <div className="depth-ring depth-ring-three" />
           {Object.entries(orbitMeta).map(([key, orbit]) => {
             const meta = categoryMeta[key] ?? defaultMeta;
+            const armT = 0.58;
+            const armAngle = orbit.start + armT * orbit.turns * Math.PI * 2;
+            const armRadius = orbit.inner + (orbit.outer - orbit.inner) * Math.sqrt(armT);
             return (
               <div
                 key={`orbit-${key}`}
                 className="orbit-lane"
                 style={{
-                  "--orbit-w": `${orbit.radius * 164}px`,
-                  "--orbit-h": `${orbit.radius * 84}px`,
-                  "--y": `${-orbit.lane * 70}px`,
+                  "--orbit-w": `${(orbit.outer - orbit.inner) * 142 + 250}px`,
+                  "--orbit-h": `${(orbit.outer - orbit.inner) * 42 + 86}px`,
+                  "--x": `${Math.cos(armAngle) * armRadius * 58}px`,
+                  "--y": `${(-orbit.yBase * 58) + Math.sin(armAngle * 0.7) * 34}px`,
+                  "--z": `${Math.sin(armAngle) * orbit.depth * 0.56}px`,
+                  "--tilt": `${orbit.tilt}deg`,
                   "--accent": meta.color,
                 }}
               />
@@ -614,11 +639,12 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           })}
           {clusterLabels.map((cluster) => {
             const meta = categoryMeta[cluster.key];
-            const orbit = orbitMeta[cluster.key] ?? { lane: 0, radius: 5.4, labelAngle: 0 };
-            const labelAngle = orbit.labelAngle ?? orbit.start ?? 0;
-            const x = Math.cos(labelAngle) * orbit.radius * 82;
-            const y = -orbit.lane * 70;
-            const z = Math.sin(labelAngle) * 320;
+            const orbit = orbitMeta[cluster.key] ?? { yBase: 0, inner: 1.4, outer: 5.8, turns: 1.35, start: 0, labelT: 0.6, depth: 540 };
+            const labelAngle = orbit.start + orbit.labelT * orbit.turns * Math.PI * 2;
+            const labelRadius = orbit.inner + (orbit.outer - orbit.inner) * Math.sqrt(orbit.labelT);
+            const x = Math.cos(labelAngle) * labelRadius * 82;
+            const y = -(orbit.yBase + Math.sin(labelAngle * 0.72 + orbit.labelT * Math.PI) * 0.78) * 70;
+            const z = Math.sin(labelAngle) * orbit.depth * 0.56;
             const isMuted = featured && featured.category !== cluster.key;
             return (
               <div
@@ -672,9 +698,9 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           "--x": `${isFeatured ? 0 : point3d.x}px`,
           "--y": `${isFeatured ? 0 : point3d.y}px`,
           "--z": `${isFeatured ? 210 : isDimmed ? point3d.z - 220 : point3d.z}px`,
-          "--d": `${isFeatured ? 1 : isDimmed ? 0.62 : clamp(0.82 + (point3d.z + 260) / 2200, 0.68, 1.08)}`,
-          "--blur": `${isFeatured ? 0 : isDimmed ? 1.15 : point3d.z < -260 ? 0.45 : point3d.z < -80 ? 0.18 : 0}px`,
-          "--alpha": `${isFeatured ? 1 : isDimmed ? 0.13 : clamp((denseMode ? 0.42 : 0.58) + (point3d.z + 340) / 1500, denseMode ? 0.34 : 0.5, denseMode ? 0.82 : 0.9)}`,
+          "--d": `${isFeatured ? 1 : isDimmed ? 0.62 : clamp((denseMode ? 0.75 : 0.82) + (point3d.z + 260) / 2400, denseMode ? 0.58 : 0.68, denseMode ? 1.04 : 1.08)}`,
+          "--blur": `${isFeatured ? 0 : isDimmed ? 1.15 : point3d.z < -360 ? 0.7 : point3d.z < -140 ? 0.28 : 0}px`,
+          "--alpha": `${isFeatured ? 1 : isDimmed ? 0.13 : clamp((denseMode ? 0.36 : 0.58) + (point3d.z + 340) / 1500, denseMode ? 0.26 : 0.5, denseMode ? 0.82 : 0.9)}`,
         };
         return (
           <button
