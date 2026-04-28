@@ -1340,7 +1340,7 @@ function App() {
   const [timeMode, setTimeMode] = useState("all");
   const [query, setQuery] = useState("");
   const [coreOnly, setCoreOnly] = useState(false);
-  const [denseMode, setDenseMode] = useState(true);
+  const [denseMode, setDenseMode] = useState(false);
   const visibleNodes = useMemo(
     () => buildNodes(artifacts, activeCategory, timeMode, query, coreOnly, denseMode),
     [artifacts, activeCategory, timeMode, query, coreOnly, denseMode],
@@ -1355,19 +1355,19 @@ function App() {
     const chapter = storyChapters[index] ?? storyChapters[0];
     const chapterTime = chapter.timeMode ?? "all";
     const chapterDomain = chapter.domain ?? null;
-    const chapterNodes = buildNodes(artifacts, chapterDomain, chapterTime, "", false, true);
+    const chapterNodes = buildNodes(artifacts, chapterDomain, chapterTime, "", false, false);
     setStoryIndex(index);
     setActiveCategory(chapterDomain);
     setTimeMode(chapterTime);
     setQuery("");
     setCoreOnly(false);
-    setDenseMode(true);
+    setDenseMode(false);
     setViewingItem(null);
     setSelected(findStoryTarget(chapter, chapterNodes));
   };
 
   return (
-    <main>
+    <main className="story-layout">
       <Sidebar activeCategory={activeCategory} setActiveCategory={setActiveCategory} setSelected={setSelected} />
       <header className="title-block">
         <h1>大宋审美操作系统</h1>

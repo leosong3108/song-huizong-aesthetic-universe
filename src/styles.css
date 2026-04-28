@@ -51,6 +51,68 @@ main::after {
   background: radial-gradient(ellipse at center, transparent 44%, rgba(0, 0, 0, 0.44) 100%);
 }
 
+.story-layout .stats,
+.story-layout .view-status,
+.story-layout .control-panel {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.story-layout .title-block {
+  top: 32px;
+  gap: 13px;
+}
+
+.story-layout .title-block h1 {
+  font-size: clamp(25px, 2.35vw, 38px);
+}
+
+.story-layout .title-block span,
+.story-layout .title-block::after {
+  opacity: 0.62;
+}
+
+.story-layout .fallback-constellation {
+  inset: 84px 0 82px 70px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(217, 173, 96, 0.075), transparent 23%),
+    radial-gradient(circle at 23% 66%, rgba(112, 147, 125, 0.052), transparent 18%),
+    linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.36));
+}
+
+.story-layout .fallback-constellation:not(.focus-mode) line {
+  opacity: 0.26;
+}
+
+.story-layout .fallback-constellation:not(.focus-mode) .dust-dot {
+  opacity: 0.18;
+}
+
+.story-layout .fallback-constellation:not(.focus-mode) .orbit-lane {
+  opacity: 0.12;
+}
+
+.story-layout .fallback-constellation:not(.focus-mode) .domain-label {
+  opacity: 0.32;
+}
+
+.story-layout .fallback-constellation:not(.focus-mode) .domain-label.muted {
+  opacity: 0.08;
+}
+
+.story-layout .fallback-constellation:not(.focus-mode) .central-caption {
+  opacity: 0.42;
+}
+
+.story-layout .fallback-constellation svg {
+  opacity: 0.42;
+}
+
+.story-layout .depth-world {
+  left: 59%;
+  top: 51%;
+}
+
 .fallback-constellation {
   position: absolute;
   z-index: 3;
@@ -1476,21 +1538,89 @@ main::after {
 
 .story-panel {
   position: absolute;
-  z-index: 26;
-  left: 116px;
-  top: 106px;
-  width: min(370px, calc(100vw - 520px));
-  min-width: 320px;
-  padding: 14px;
-  border: 1px solid rgba(190, 149, 80, 0.2);
+  z-index: 44;
+  left: 50%;
+  top: auto;
+  bottom: 18px;
+  width: min(790px, calc(100vw - 210px));
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(210px, 0.9fr) minmax(320px, 1.35fr);
+  grid-template-areas:
+    "kicker works"
+    "title works"
+    "copy steps"
+    "actions actions"
+    "focus focus";
+  column-gap: 14px;
+  row-gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid rgba(190, 149, 80, 0.18);
   background:
-    linear-gradient(180deg, rgba(12, 10, 7, 0.72), rgba(5, 5, 4, 0.48)),
-    rgba(5, 5, 4, 0.52);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 24px 68px rgba(0, 0, 0, 0.24);
+    linear-gradient(180deg, rgba(12, 10, 7, 0.74), rgba(5, 5, 4, 0.58)),
+    rgba(5, 5, 4, 0.62);
+  backdrop-filter: blur(18px) saturate(0.82);
+  box-shadow: 0 -18px 64px rgba(0, 0, 0, 0.32);
+  transform: translateX(-50%);
+}
+
+.story-layout .focus-artwork-frame {
+  z-index: 52;
+  left: 46%;
+  max-width: min(34vw, 460px);
+}
+
+.story-layout .focus-artwork-frame img {
+  max-height: min(58vh, 540px);
+}
+
+.story-layout .legend-strip {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.story-layout .timeline {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.story-layout .detail.visible {
+  right: 32px;
+  top: 116px;
+  bottom: auto;
+  width: min(280px, calc(100vw - 160px));
+  grid-template-columns: 62px 1fr;
+  gap: 10px;
+  padding: 10px;
+  opacity: 0.86;
+}
+
+.story-layout .detail.visible > img {
+  width: 62px;
+  height: 78px;
+}
+
+.story-layout .detail.visible .detail-facts {
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.story-layout .detail.visible .related-works {
+  display: none;
+}
+
+.story-layout .detail.visible .aesthetic-axis {
+  gap: 3px;
+  padding-top: 6px;
+}
+
+.story-layout .detail.visible .curator-note {
+  max-height: 4.7em;
+  overflow: hidden;
 }
 
 .story-kicker {
+  grid-area: kicker;
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -1505,9 +1635,10 @@ main::after {
 }
 
 .story-panel h2 {
-  margin: 8px 0 7px;
+  grid-area: title;
+  margin: 7px 0 6px;
   color: #d9bd7c;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 1.18;
 }
@@ -1517,32 +1648,37 @@ main::after {
   display: block;
   margin: 0;
   color: rgba(229, 205, 157, 0.75);
-  font-size: 13px;
-  line-height: 1.52;
+  font-size: 12px;
+  line-height: 1.44;
   font-weight: 400;
 }
 
 .story-panel strong {
+  display: none;
   margin-top: 8px;
   color: rgba(197, 162, 101, 0.76);
 }
 
+.story-panel > p:not(.story-focus) {
+  grid-area: copy;
+}
+
 .story-link-chain {
-  display: grid;
-  gap: 7px;
-  margin-top: 12px;
-  padding-top: 11px;
+  display: none;
+  gap: 5px;
+  margin-top: 10px;
+  padding-top: 9px;
   border-top: 1px solid rgba(190, 149, 80, 0.16);
 }
 
 .story-link-chain div {
   display: grid;
-  grid-template-columns: 82px 24px 1fr;
+  grid-template-columns: 74px 20px 1fr;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   min-width: 0;
   color: rgba(221, 194, 138, 0.72);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .story-link-chain span,
@@ -1564,12 +1700,14 @@ main::after {
 }
 
 .story-work-chain {
+  grid-area: works;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 7px;
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(190, 149, 80, 0.14);
+  gap: 6px;
+  align-self: stretch;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .story-work-chain button {
@@ -1590,7 +1728,7 @@ main::after {
 .story-work-chain img {
   display: block;
   width: 100%;
-  height: 54px;
+  height: 46px;
   object-fit: cover;
   background: rgba(10, 8, 5, 0.74);
   filter: sepia(0.16) saturate(0.84) brightness(0.86);
@@ -1607,15 +1745,17 @@ main::after {
 }
 
 .story-steps {
+  grid-area: steps;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 5px;
-  margin-top: 13px;
+  gap: 4px;
+  align-self: end;
+  margin-top: 0;
 }
 
 .story-steps button {
   min-width: 0;
-  padding: 5px 2px;
+  padding: 4px 2px;
   border: 1px solid rgba(190, 149, 80, 0.18);
   background: rgba(12, 10, 7, 0.7);
   color: rgba(211, 181, 119, 0.58);
@@ -1647,10 +1787,11 @@ main::after {
 }
 
 .story-actions {
+  grid-area: actions;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 7px;
-  margin-top: 11px;
+  grid-template-columns: 0.8fr 1fr 0.8fr;
+  gap: 6px;
+  margin-top: 0;
 }
 
 .story-actions button {
@@ -1659,13 +1800,13 @@ main::after {
   justify-content: center;
   gap: 4px;
   min-width: 0;
-  height: 30px;
+  height: 28px;
   border: 1px solid rgba(190, 149, 80, 0.26);
   background: rgba(12, 10, 7, 0.72);
   color: rgba(221, 188, 117, 0.76);
   cursor: pointer;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .story-actions button.primary {
@@ -1680,7 +1821,8 @@ main::after {
 }
 
 .story-panel .story-focus {
-  margin-top: 10px;
+  grid-area: focus;
+  margin-top: 0;
   color: rgba(178, 42, 34, 0.86);
   font: 11px Inter, Arial, sans-serif;
   overflow: hidden;
