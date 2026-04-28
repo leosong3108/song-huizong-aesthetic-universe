@@ -185,7 +185,26 @@ main::after {
 }
 
 .focus-mode .orbit-lane {
-  opacity: 0.28;
+  opacity: 0.12;
+}
+
+.focus-mode .central-caption {
+  opacity: 0.12;
+  transform:
+    translate3d(0, -220px, -40px)
+    rotateY(var(--iry))
+    rotateX(var(--irx))
+    translate(-50%, -50%)
+    scale(0.82);
+}
+
+.focus-mode .domain-label {
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.focus-mode .domain-label.active {
+  opacity: 0.24;
 }
 
 .central-caption {
@@ -520,9 +539,11 @@ main::after {
 }
 
 .fallback-node-button.featured {
+  display: grid;
+  place-items: center;
   height: auto;
-  max-width: 500px;
-  max-height: min(40vh, 360px);
+  max-width: 410px;
+  max-height: min(34vh, 310px);
   opacity: 0.98;
   border-width: 1px;
   background: rgba(17, 13, 7, 0.92);
@@ -530,8 +551,8 @@ main::after {
   padding: 4px;
   border-color: rgba(230, 191, 113, 0.68) !important;
   box-shadow:
-    0 0 36px rgba(229, 189, 112, 0.4),
-    0 0 92px rgba(169, 110, 38, 0.13),
+    0 0 28px rgba(229, 189, 112, 0.34),
+    0 0 70px rgba(169, 110, 38, 0.11),
     inset 0 0 0 1px rgba(95, 49, 20, 0.52) !important;
   transform:
     translate3d(var(--x), var(--y), var(--z))
@@ -542,9 +563,10 @@ main::after {
 }
 
 .fallback-node-button.featured img {
-  width: 100%;
+  width: auto;
   height: auto;
-  max-height: none;
+  max-width: 100%;
+  max-height: min(33vh, 300px);
   object-fit: contain;
   object-position: center;
   filter: sepia(0.2) saturate(0.86) brightness(0.9) contrast(1.04);
@@ -562,6 +584,16 @@ main::after {
 .fallback-node-button.featured::after {
   inset: -16px;
   border-color: rgba(226, 177, 93, 0.07);
+}
+
+.focus-mode .fallback-node-button:not(.featured) {
+  opacity: 0.2;
+  filter: blur(0.45px) saturate(0.62) brightness(0.72);
+}
+
+.focus-mode .fallback-node-button.core:not(.featured),
+.focus-mode .fallback-node-button.central-core:not(.featured) {
+  opacity: 0.28;
 }
 
 .view-hud {

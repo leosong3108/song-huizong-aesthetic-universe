@@ -279,14 +279,31 @@ function tourScore(item) {
   return relationScore * 10 + categoryScore + (item.relevance_score ?? 0) / 100;
 }
 
-function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMode) {
-  const central =
+function findCentralRecord(records) {
+  return (
     records.find((item) => /Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图/i.test(item.title)) ??
     records.find((item) => /瑞|crane/i.test(item.title)) ??
     records.find((item) => /芙蓉锦鸡|芙蓉錦雞|Songhuizong4/i.test(item.title)) ??
     records.find((item) => /枇杷山鸟|梅花绣眼|山鳥|繡眼/i.test(item.title)) ??
     records.find((item) => /Finches and bamboo|竹禽/i.test(item.title)) ??
-    records[0];
+    records[0]
+  );
+}
+
+function getDomainCounts(records, timeMode) {
+  const central = findCentralRecord(records);
+  const centralId = central?.id;
+  const counts = Object.fromEntries(domainOrder.map((key) => [key, 0]));
+  for (const item of records) {
+    if (item.id !== centralId && !withinTimeMode(item, timeMode)) continue;
+    const domain = inferDomain(item, centralId);
+    counts[domain] = (counts[domain] ?? 0) + 1;
+  }
+  return counts;
+}
+
+function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMode) {
+  const central = findCentralRecord(records);
   const centralId = central?.id;
 
   const filteredRecords = records.filter((item) => {
@@ -537,7 +554,7 @@ function TourPanel({ items, selected, setSelected }) {
   );
 }
 
-function FallbackConstellation({ nodes, selected, setSelected, setHovered, denseMode, activeCategory, setActiveCategory }) {
+function FallbackConstellation({ nodes, selected, setSelected, setHovered, denseMode, activeCategory, setActiveCategory, allDomainCounts }) {
   const central = nodes.find((node) => node.central);
   const featured = selected || null;
   const [view, setView] = useState({ rotateX: -5, rotateY: 0, zoom: 1, panX: 0, panY: 0 });
@@ -755,7 +772,7 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
               >
                 <b>{meta.seal}</b>
                 <span>{meta.label}</span>
-                <small>{domainCounts[key] ?? 0} 件 · {meta.tag}</small>
+                <small>{allDomainCounts?.[key] ?? domainCounts[key] ?? 0} 件 · {meta.tag}</small>
               </button>
             );
           })}
@@ -768,12 +785,14 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
         const featureRatio = clamp(rawRatio, 0.48, 6);
         const featuredWidth =
           rawRatio > 2.4
-            ? "min(38vw, 500px)"
+            ? "min(31vw, 410px)"
             : rawRatio > 1.15
-              ? "min(28vw, 380px)"
+              ? "min(23vw, 310px)"
               : rawRatio < 0.72
-                ? "min(15vw, 220px)"
-                : "min(22vw, 300px)";
+                ? "min(12vw, 170px)"
+                : "min(18vw, 240px)";
+        const focusX = rawRatio < 0.72 ? -210 : -185;
+        const focusY = rawRatio < 0.72 ? 36 : 22;
         const style = {
           left: "50%",
           top: "51%",
@@ -791,9 +810,9 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
             : node.central
               ? "0 0 24px rgba(229, 189, 112, .32)"
               : `0 0 14px ${node.meta.color}42`,
-          "--x": `${isFeatured ? 0 : point3d.x}px`,
-          "--y": `${isFeatured ? 0 : point3d.y}px`,
-          "--z": `${isFeatured ? 210 : isDimmed ? point3d.z - 220 : point3d.z}px`,
+          "--x": `${isFeatured ? focusX : point3d.x}px`,
+          "--y": `${isFeatured ? focusY : point3d.y}px`,
+          "--z": `${isFeatured ? 80 : isDimmed ? point3d.z - 220 : point3d.z}px`,
           "--d": `${isFeatured ? 1 : isDimmed ? 0.62 : clamp((denseMode ? 0.75 : 0.82) + (point3d.z + 260) / 2400, denseMode ? 0.58 : 0.68, denseMode ? 1.04 : 1.08)}`,
           "--blur": `${isFeatured ? 0 : isDimmed ? 1.15 : point3d.z < -360 ? 0.7 : point3d.z < -140 ? 0.28 : 0}px`,
           "--alpha": `${isFeatured ? 1 : isDimmed ? 0.13 : clamp((denseMode ? 0.36 : 0.58) + (point3d.z + 340) / 1500, denseMode ? 0.26 : 0.5, denseMode ? 0.82 : 0.9)}`,
@@ -900,7 +919,7 @@ function ControlPanel({ query, setQuery, coreOnly, setCoreOnly, denseMode, setDe
   );
 }
 
-function LegendStrip({ nodes }) {
+function LegendStrip({ nodes, allDomainCounts }) {
   const counts = useMemo(() => {
     const result = {};
     for (const node of nodes) result[node.domain] = (result[node.domain] ?? 0) + 1;
@@ -914,7 +933,7 @@ function LegendStrip({ nodes }) {
           <div key={key}>
             <i style={{ background: meta.color }} />
             <span>{meta.label}</span>
-            <b>{counts[key] ?? 0}</b>
+            <b>{allDomainCounts?.[key] ?? counts[key] ?? 0}</b>
           </div>
         );
       })}
@@ -976,6 +995,10 @@ function App() {
     () => buildNodes(artifacts, activeCategory, timeMode, query, coreOnly, denseMode),
     [artifacts, activeCategory, timeMode, query, coreOnly, denseMode],
   );
+  const allDomainCounts = useMemo(
+    () => getDomainCounts(artifacts, timeMode),
+    [artifacts, timeMode],
+  );
   const tourItems = useMemo(
     () => visibleNodes
       .filter((node) => node.related_to_huizong || node.central)
@@ -1018,8 +1041,9 @@ function App() {
         denseMode={denseMode}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
+        allDomainCounts={allDomainCounts}
       />
-      <LegendStrip nodes={visibleNodes} />
+      <LegendStrip nodes={visibleNodes} allDomainCounts={allDomainCounts} />
       <DetailPanel selected={selected} hovered={hovered} setSelected={setSelected} nodes={visibleNodes} />
       <TimelineControl timeMode={timeMode} setTimeMode={setTimeMode} setSelected={setSelected} />
     </main>
