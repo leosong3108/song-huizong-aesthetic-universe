@@ -494,12 +494,12 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
         const featureRatio = clamp(rawRatio, 0.48, 6);
         const featuredWidth =
           rawRatio > 2.4
-            ? "min(58vw, 760px)"
+            ? "min(38vw, 500px)"
             : rawRatio > 1.15
-              ? "min(42vw, 560px)"
+              ? "min(28vw, 380px)"
               : rawRatio < 0.72
-                ? "min(24vw, 340px)"
-                : "min(34vw, 440px)";
+                ? "min(15vw, 220px)"
+                : "min(22vw, 300px)";
         const style = {
           left: "50%",
           top: "51%",
@@ -519,7 +519,7 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
               : `0 0 14px ${node.meta.color}42`,
           "--x": `${isFeatured ? 0 : point3d.x}px`,
           "--y": `${isFeatured ? 0 : point3d.y}px`,
-          "--z": `${isFeatured ? 330 : isDimmed ? point3d.z - 220 : point3d.z}px`,
+          "--z": `${isFeatured ? 210 : isDimmed ? point3d.z - 220 : point3d.z}px`,
           "--d": `${isFeatured ? 1 : isDimmed ? 0.62 : clamp(0.82 + (point3d.z + 260) / 2200, 0.68, 1.08)}`,
           "--blur": `${isFeatured ? 0 : isDimmed ? 1.15 : point3d.z < -260 ? 0.45 : point3d.z < -80 ? 0.18 : 0}px`,
           "--alpha": `${isFeatured ? 1 : isDimmed ? 0.16 : clamp(0.58 + (point3d.z + 340) / 1500, 0.5, 0.9)}`,

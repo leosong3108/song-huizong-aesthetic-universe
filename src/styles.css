@@ -290,8 +290,8 @@ main::after {
 
 .fallback-node-button.featured {
   height: auto;
-  max-width: 760px;
-  max-height: min(58vh, 540px);
+  max-width: 500px;
+  max-height: min(40vh, 360px);
   opacity: 0.98;
   border-width: 1px;
   background: rgba(17, 13, 7, 0.92);
@@ -299,8 +299,8 @@ main::after {
   padding: 4px;
   border-color: rgba(230, 191, 113, 0.68) !important;
   box-shadow:
-    0 0 48px rgba(229, 189, 112, 0.48),
-    0 0 120px rgba(169, 110, 38, 0.16),
+    0 0 36px rgba(229, 189, 112, 0.4),
+    0 0 92px rgba(169, 110, 38, 0.13),
     inset 0 0 0 1px rgba(95, 49, 20, 0.52) !important;
   transform:
     translate3d(var(--x), var(--y), var(--z))
