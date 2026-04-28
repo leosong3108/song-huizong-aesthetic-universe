@@ -893,42 +893,26 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
         const point = project(node.position);
         const point3d = project3d(node);
         const isFeatured = featured?.id === node.id;
+        if (isFeatured) return null;
         const isDimmed = featured && !isRelatedToFeatured(node);
-        const rawRatio = node.width && node.height ? node.width / node.height : 1;
-        const featureRatio = clamp(rawRatio, 0.48, 6);
-        const featuredWidth =
-          rawRatio > 2.4
-            ? "min(31vw, 410px)"
-            : rawRatio > 1.15
-              ? "min(23vw, 310px)"
-              : rawRatio < 0.72
-                ? "min(12vw, 170px)"
-                : "min(18vw, 240px)";
-        const focusX = rawRatio < 0.72 ? -210 : -185;
-        const focusY = rawRatio < 0.72 ? 36 : 22;
         const style = {
           left: "50%",
           top: "51%",
-          width: isFeatured
-            ? featuredWidth
-            : node.central
+          width: node.central
               ? denseMode ? "clamp(160px, 18vw, 260px)" : "clamp(140px, 16vw, 230px)"
               : node.core
                 ? denseMode ? "clamp(24px, 3vw, 54px)" : "clamp(26px, 3.7vw, 58px)"
                 : denseMode ? "clamp(10px, 1.35vw, 26px)" : "clamp(13px, 1.8vw, 34px)",
-          aspectRatio: isFeatured ? `${featureRatio}` : undefined,
-          borderColor: isFeatured || node.central ? "#e1bf79" : node.meta.color,
-          boxShadow: isFeatured
-            ? "0 0 44px rgba(229, 189, 112, .48)"
-            : node.central
+          borderColor: node.central ? "#e1bf79" : node.meta.color,
+          boxShadow: node.central
               ? "0 0 24px rgba(229, 189, 112, .32)"
               : `0 0 14px ${node.meta.color}42`,
-          "--x": `${isFeatured ? focusX : point3d.x}px`,
-          "--y": `${isFeatured ? focusY : point3d.y}px`,
-          "--z": `${isFeatured ? 80 : isDimmed ? point3d.z - 220 : point3d.z}px`,
-          "--d": `${isFeatured ? 1 : isDimmed ? 0.62 : clamp((denseMode ? 0.75 : 0.82) + (point3d.z + 260) / 2400, denseMode ? 0.58 : 0.68, denseMode ? 1.04 : 1.08)}`,
-          "--blur": `${isFeatured ? 0 : isDimmed ? 1.15 : point3d.z < -360 ? 0.7 : point3d.z < -140 ? 0.28 : 0}px`,
-          "--alpha": `${isFeatured ? 1 : isDimmed ? 0.13 : clamp((denseMode ? 0.36 : 0.58) + (point3d.z + 340) / 1500, denseMode ? 0.26 : 0.5, denseMode ? 0.82 : 0.9)}`,
+          "--x": `${point3d.x}px`,
+          "--y": `${point3d.y}px`,
+          "--z": `${isDimmed ? point3d.z - 220 : point3d.z}px`,
+          "--d": `${isDimmed ? 0.62 : clamp((denseMode ? 0.75 : 0.82) + (point3d.z + 260) / 2400, denseMode ? 0.58 : 0.68, denseMode ? 1.04 : 1.08)}`,
+          "--blur": `${isDimmed ? 1.15 : point3d.z < -360 ? 0.7 : point3d.z < -140 ? 0.28 : 0}px`,
+          "--alpha": `${isDimmed ? 0.13 : clamp((denseMode ? 0.36 : 0.58) + (point3d.z + 340) / 1500, denseMode ? 0.26 : 0.5, denseMode ? 0.82 : 0.9)}`,
         };
         return (
           <button
@@ -965,6 +949,35 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
       })}
         </div>
       </div>
+      {featured && (() => {
+        const rawRatio = featured.width && featured.height ? featured.width / featured.height : 1;
+        const focusWidth =
+          rawRatio > 2.4
+            ? "min(44vw, 560px)"
+            : rawRatio > 1.15
+              ? "min(35vw, 470px)"
+              : rawRatio < 0.72
+                ? "min(26vw, 320px)"
+                : "min(30vw, 390px)";
+        return (
+          <>
+            <div className="focus-scrim" />
+            <button
+              className="focus-artwork-frame"
+              data-testid="featured-artwork"
+              aria-label={`已选中 ${cleanText(featured.title, "作品")}`}
+              style={{ "--focus-width": focusWidth }}
+              onPointerDown={(event) => event.stopPropagation()}
+              onMouseEnter={() => setHovered(featured)}
+              onMouseLeave={() => setHovered(null)}
+              onClick={() => setSelected(featured)}
+              title={cleanText(featured.title, "作品")}
+            >
+              <img src={artworkImage(featured)} alt="" />
+            </button>
+          </>
+        );
+      })()}
       <div className="view-hud">
         <button onClick={resetView}>归位</button>
       </div>

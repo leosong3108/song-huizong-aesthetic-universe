@@ -72,6 +72,10 @@ main::after {
   cursor: grabbing;
 }
 
+.fallback-constellation.focus-mode {
+  z-index: 23;
+}
+
 .fallback-constellation svg {
   position: absolute;
   inset: 0;
@@ -434,6 +438,72 @@ main::after {
 
 .focus-mode .dust-dot {
   opacity: 0.18;
+}
+
+.focus-scrim {
+  position: absolute;
+  z-index: 32;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 38% 52%, rgba(0, 0, 0, 0.04) 0 18%, rgba(0, 0, 0, 0.42) 35%, rgba(0, 0, 0, 0.7) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.18), transparent 38%, rgba(0, 0, 0, 0.36));
+  backdrop-filter: blur(1.4px) saturate(0.72);
+}
+
+.focus-artwork-frame {
+  position: absolute;
+  z-index: 40;
+  left: 38%;
+  top: 53%;
+  display: grid;
+  place-items: center;
+  width: var(--focus-width);
+  max-width: min(46vw, 560px);
+  max-height: min(72vh, 660px);
+  padding: 6px;
+  border: 1px solid rgba(232, 194, 116, 0.82);
+  background:
+    linear-gradient(180deg, rgba(28, 20, 11, 0.96), rgba(5, 4, 3, 0.98)),
+    #080604;
+  box-shadow:
+    0 0 0 10px rgba(6, 4, 2, 0.72),
+    0 0 0 11px rgba(225, 191, 121, 0.14),
+    0 0 46px rgba(229, 189, 112, 0.5),
+    0 32px 96px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  outline: none;
+}
+
+.focus-artwork-frame::before,
+.focus-artwork-frame::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.focus-artwork-frame::before {
+  inset: -18px;
+  border: 1px solid rgba(226, 177, 93, 0.09);
+}
+
+.focus-artwork-frame::after {
+  inset: -34px;
+  background: radial-gradient(ellipse at center, rgba(224, 176, 86, 0.14), transparent 68%);
+  filter: blur(16px);
+  z-index: -1;
+}
+
+.focus-artwork-frame img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(70vh, 640px);
+  object-fit: contain;
+  object-position: center;
+  filter: sepia(0.12) saturate(0.9) brightness(0.93) contrast(1.04);
 }
 
 .fallback-node-button {
