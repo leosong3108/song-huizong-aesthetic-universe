@@ -24,6 +24,16 @@ const clusterLabels = [
   { key: "object", seal: "器", title: "器物星尘", subtitle: "材料工艺" },
 ];
 
+const orbitMeta = {
+  flower_bird: { lane: 1.45, radius: 5.2, start: -0.35, labelAngle: -0.78 },
+  calligraphy: { lane: 0.82, radius: 5.9, start: 0.5, labelAngle: 0.45 },
+  landscape: { lane: -0.04, radius: 6.5, start: 1.42, labelAngle: 1.05 },
+  figure: { lane: 1.05, radius: 4.8, start: 2.2, labelAngle: 2.18 },
+  porcelain: { lane: -1.58, radius: 5.7, start: 3.15, labelAngle: 3.55 },
+  object: { lane: -2.18, radius: 6.25, start: 4.35, labelAngle: 4.45 },
+  painting: { lane: 0.1, radius: 4.3, start: 5.18, labelAngle: 5.2 },
+};
+
 const timeModes = {
   all: { label: "全景", years: "960-1279", range: [960, 1279], description: "宋代图像与器物的全景星图" },
   early: { label: "北宋", years: "960-1099", range: [960, 1099], description: "北宋早期的宫廷、山水与器物基础" },
@@ -223,17 +233,35 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
     .slice(0, peripheralLimit);
 
   const all = [central, ...huizong.filter((item) => item.id !== central?.id), ...peripheral].filter(Boolean);
+  const countsByCategory = all.reduce((result, item) => {
+    result[item.category] = (result[item.category] ?? 0) + 1;
+    return result;
+  }, {});
+  const seenByCategory = {};
 
   return all.map((item, index) => {
     const meta = categoryMeta[item.category] ?? defaultMeta;
     const rand = seededRandom(hash(item.id ?? item.title));
     const core = item.related_to_huizong || index === 0;
+    const categoryIndex = seenByCategory[item.category] ?? 0;
+    seenByCategory[item.category] = categoryIndex + 1;
+    const categoryCount = countsByCategory[item.category] ?? 1;
     const center = index === 0 ? [0, 0, 0.15] : meta.center;
     const radius = index === 0 ? 0 : core ? 1.0 + rand() * 2.35 : 0.75 + rand() * 1.7;
     const angle = rand() * Math.PI * 2;
     const drift = (rand() - 0.5) * 0.85;
-    const position =
-      index === 0
+    const orbit = orbitMeta[item.category] ?? { lane: 0, radius: 5.4, start: 0 };
+    const orbitStep = (Math.PI * 2) / Math.max(categoryCount, 16);
+    const orbitLayer = categoryIndex % 3;
+    const orbitAngle = orbit.start + categoryIndex * orbitStep + orbitLayer * 0.035 + (rand() - 0.5) * 0.08;
+    const orbitRadius = (core ? orbit.radius * 0.78 : orbit.radius) + orbitLayer * 0.34 + (rand() - 0.5) * 0.24;
+    const orbitY = orbit.lane + Math.sin(orbitAngle * 1.7) * 0.2 + (rand() - 0.5) * 0.24;
+    const denseDepth = Math.round((Math.sin(orbitAngle) * 520 + (core ? 80 : -60) - orbitLayer * 38) / 10) * 10;
+    const position = denseMode
+      ? index === 0
+        ? [0, -0.05, 0.2]
+        : [Math.cos(orbitAngle) * orbitRadius, orbitY, 0]
+      : index === 0
         ? [0, -0.05, 0.2]
         : [
             center[0] + Math.cos(angle) * radius,
@@ -254,7 +282,9 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
     return {
       ...item,
       position,
-      depth: index === 0 ? 80 : Math.round(clamp((rand() - 0.5) * 620 + (core ? 80 : -60), -360, 220) / 10) * 10,
+      depth: denseMode
+        ? index === 0 ? 120 : denseDepth
+        : index === 0 ? 80 : Math.round(clamp((rand() - 0.5) * 620 + (core ? 80 : -60), -360, 220) / 10) * 10,
       size: [width, height],
       meta,
       core,
@@ -475,8 +505,8 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
     const dy = event.clientY - start.y;
     setView((current) => ({
       ...current,
-      rotateY: clamp(start.rotateY + dx * 0.07, -28, 28),
-      rotateX: clamp(start.rotateX - dy * 0.05, -22, 16),
+      rotateY: start.rotateY + dx * 0.18,
+      rotateX: clamp(start.rotateX - dy * 0.055, -34, 24),
     }));
   };
 
@@ -496,8 +526,8 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
     } else {
       setView((current) => ({
         ...current,
-        rotateY: clamp(current.rotateY - event.deltaX * 0.052, -32, 32),
-        rotateX: clamp(current.rotateX - event.deltaY * 0.04, -24, 18),
+        rotateY: current.rotateY - event.deltaX * 0.12,
+        rotateX: clamp(current.rotateX - event.deltaY * 0.045, -34, 24),
       }));
     }
   };
@@ -567,11 +597,28 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           <div className="depth-ring depth-ring-one" />
           <div className="depth-ring depth-ring-two" />
           <div className="depth-ring depth-ring-three" />
+          {Object.entries(orbitMeta).map(([key, orbit]) => {
+            const meta = categoryMeta[key] ?? defaultMeta;
+            return (
+              <div
+                key={`orbit-${key}`}
+                className="orbit-lane"
+                style={{
+                  "--orbit-w": `${orbit.radius * 164}px`,
+                  "--orbit-h": `${orbit.radius * 84}px`,
+                  "--y": `${-orbit.lane * 70}px`,
+                  "--accent": meta.color,
+                }}
+              />
+            );
+          })}
           {clusterLabels.map((cluster) => {
             const meta = categoryMeta[cluster.key];
-            const x = meta.center[0] * 82;
-            const y = -meta.center[1] * 70;
-            const z = (meta.center[2] * 120) - 90;
+            const orbit = orbitMeta[cluster.key] ?? { lane: 0, radius: 5.4, labelAngle: 0 };
+            const labelAngle = orbit.labelAngle ?? orbit.start ?? 0;
+            const x = Math.cos(labelAngle) * orbit.radius * 82;
+            const y = -orbit.lane * 70;
+            const z = Math.sin(labelAngle) * 320;
             const isMuted = featured && featured.category !== cluster.key;
             return (
               <div
