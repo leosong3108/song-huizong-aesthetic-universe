@@ -120,7 +120,7 @@ main::after {
   position: absolute;
   left: 0;
   top: 0;
-  border: 1px solid rgba(207, 161, 83, 0.11);
+  border: 1px solid rgba(207, 161, 83, 0.07);
   border-radius: 50%;
   pointer-events: none;
   transform-style: preserve-3d;
@@ -131,8 +131,8 @@ main::after {
   height: 420px;
   translate: -50% -50%;
   transform: rotateX(78deg) translateZ(-260px);
-  background: radial-gradient(ellipse at center, rgba(183, 133, 55, 0.055), transparent 62%);
-  box-shadow: inset 0 0 60px rgba(206, 159, 78, 0.05);
+  background: radial-gradient(ellipse at center, rgba(183, 133, 55, 0.035), transparent 62%);
+  box-shadow: inset 0 0 60px rgba(206, 159, 78, 0.035);
 }
 
 .depth-ring-one {
@@ -158,14 +158,18 @@ main::after {
 }
 
 .fallback-constellation line {
-  stroke: rgba(214, 170, 88, 0.25);
+  stroke: rgba(214, 170, 88, 0.13);
   stroke-width: 0.055;
   filter: drop-shadow(0 0 1px rgba(224, 176, 86, 0.35));
 }
 
+.fallback-constellation.focus-mode line {
+  stroke: rgba(226, 182, 95, 0.2);
+}
+
 .fallback-red-ring {
   fill: none;
-  stroke: rgba(139, 14, 12, 0.6);
+  stroke: rgba(139, 14, 12, 0.36);
   stroke-width: 0.16;
   stroke-dasharray: 2.7 2.1;
 }
@@ -181,7 +185,7 @@ main::after {
 
 .cluster-orbit {
   fill: none;
-  stroke: rgba(204, 158, 81, 0.14);
+  stroke: rgba(204, 158, 81, 0.08);
   stroke-width: 0.08;
   stroke-dasharray: 0.8 1.3;
 }
@@ -193,6 +197,10 @@ main::after {
 .dust-dot {
   fill: #d8aa5d;
   filter: drop-shadow(0 0 1px rgba(223, 177, 92, 0.5));
+}
+
+.focus-mode .dust-dot {
+  opacity: 0.18;
 }
 
 .fallback-node-button {
@@ -248,6 +256,15 @@ main::after {
   opacity: 1;
   border-color: rgba(242, 207, 133, 0.9);
   filter: blur(0);
+}
+
+.fallback-node-button.dimmed {
+  border-color: rgba(126, 105, 72, 0.2) !important;
+  box-shadow: none !important;
+}
+
+.fallback-node-button.dimmed img {
+  filter: sepia(0.28) saturate(0.42) brightness(0.62) contrast(0.92);
 }
 
 .fallback-node-button.core {
@@ -315,36 +332,6 @@ main::after {
 .fallback-node-button.featured::after {
   inset: -16px;
   border-color: rgba(226, 177, 93, 0.07);
-}
-
-.core-hint {
-  position: absolute;
-  left: 50%;
-  top: 51%;
-  translate: -50% -50%;
-  display: grid;
-  gap: 5px;
-  width: 160px;
-  height: 160px;
-  place-items: center;
-  border: 1px solid rgba(212, 171, 94, 0.18);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(214, 171, 90, 0.1), rgba(3, 3, 2, 0.18) 58%, transparent 72%);
-  color: rgba(218, 186, 118, 0.68);
-  cursor: pointer;
-  z-index: 2;
-  font-family: inherit;
-  pointer-events: auto;
-}
-
-.core-hint span {
-  font-size: 11px;
-}
-
-.core-hint strong {
-  color: rgba(223, 190, 119, 0.88);
-  font-size: 18px;
-  font-weight: 500;
 }
 
 .view-hud {

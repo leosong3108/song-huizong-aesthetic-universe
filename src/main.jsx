@@ -119,12 +119,13 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly) {
     return item.id === central?.id || (categoryOk && timeOk && queryOk && coreOk);
   });
 
+  const hasIntent = Boolean(activeCategory || timeMode !== "all" || query.trim() || coreOnly);
   const huizong = filteredRecords
     .filter((item) => item.related_to_huizong)
-    .slice(0, 46);
+    .slice(0, hasIntent ? 36 : 22);
   const peripheral = filteredRecords
     .filter((item) => item.id !== central?.id && !huizong.some((core) => core.id === item.id))
-    .slice(0, 64);
+    .slice(0, hasIntent ? 36 : 18);
 
   const all = [central, ...huizong.filter((item) => item.id !== central?.id), ...peripheral].filter(Boolean);
 
@@ -133,7 +134,7 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly) {
     const rand = seededRandom(hash(item.id ?? item.title));
     const core = item.related_to_huizong || index === 0;
     const center = index === 0 ? [0, 0, 0.15] : meta.center;
-    const radius = index === 0 ? 0 : core ? 0.7 + rand() * 2.1 : 0.4 + rand() * 1.5;
+    const radius = index === 0 ? 0 : core ? 1.0 + rand() * 2.35 : 0.75 + rand() * 1.7;
     const angle = rand() * Math.PI * 2;
     const drift = (rand() - 0.5) * 0.85;
     const position =
@@ -147,7 +148,7 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly) {
 
     const relationBoost = item.huizong_relation === "huizong_work" ? 0.16 : item.related_to_huizong ? 0.08 : 0;
     const imageRatio = item.width && item.height ? item.width / item.height : 1;
-    const base = index === 0 ? 1.52 : core ? 0.38 + relationBoost : 0.2 + rand() * 0.18;
+    const base = index === 0 ? 1.28 : core ? 0.32 + relationBoost : 0.17 + rand() * 0.14;
     const width = base * Math.min(Math.max(imageRatio, 0.55), 2.2);
     const height = base * Math.min(Math.max(1 / imageRatio, 0.58), 1.9);
 
@@ -252,10 +253,15 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
   const [view, setView] = useState({ rotateX: -5, rotateY: 0, zoom: 1, panX: 0, panY: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef(null);
+  const lineOrigin = featured ?? central;
   const connectors = nodes
-    .filter((node) => node.core && !node.central)
-    .slice(0, 36)
-    .map((node) => ({ from: central, to: node }))
+    .filter((node) => {
+      if (!lineOrigin || node.id === lineOrigin.id) return false;
+      if (!featured) return node.core && !node.central;
+      return node.category === featured.category || (node.related_to_huizong && featured.related_to_huizong);
+    })
+    .slice(0, featured ? 12 : 16)
+    .map((node) => ({ from: lineOrigin, to: node }))
     .filter((line) => line.from && line.to);
 
   const dust = useMemo(() => {
@@ -332,9 +338,22 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
     setView({ rotateX: -5, rotateY: 0, zoom: 1, panX: 0, panY: 0 });
   };
 
+  const isRelatedToFeatured = (node) => {
+    if (!featured) return true;
+    if (node.id === featured.id || node.central) return true;
+    if (node.category === featured.category) return true;
+    if (node.related_to_huizong && featured.related_to_huizong) return true;
+    return node.source && node.source === featured.source;
+  };
+
   return (
     <div
-      className={isDragging ? "fallback-constellation constellation-3d dragging" : "fallback-constellation constellation-3d"}
+      className={[
+        "fallback-constellation",
+        "constellation-3d",
+        featured ? "focus-mode" : "",
+        isDragging ? "dragging" : "",
+      ].filter(Boolean).join(" ")}
       data-testid="constellation"
       onPointerDown={beginDrag}
       onPointerMove={moveDrag}
@@ -379,20 +398,21 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
           <div className="depth-ring depth-ring-one" />
           <div className="depth-ring depth-ring-two" />
           <div className="depth-ring depth-ring-three" />
-      {nodes.slice(0, 110).map((node) => {
+      {nodes.slice(0, 72).map((node) => {
         const point = project(node.position);
         const point3d = project3d(node);
         const isFeatured = featured?.id === node.id;
+        const isDimmed = featured && !isRelatedToFeatured(node);
         const style = {
           left: "50%",
           top: "51%",
           width: isFeatured
             ? "min(20vw, 300px)"
             : node.central
-              ? "clamp(48px, 6vw, 92px)"
+              ? "clamp(42px, 5vw, 74px)"
               : node.core
-                ? "clamp(30px, 4.6vw, 72px)"
-                : "clamp(17px, 2.3vw, 42px)",
+                ? "clamp(26px, 3.7vw, 58px)"
+                : "clamp(13px, 1.8vw, 34px)",
           borderColor: isFeatured || node.central ? "#e1bf79" : node.meta.color,
           boxShadow: isFeatured
             ? "0 0 44px rgba(229, 189, 112, .48)"
@@ -401,10 +421,10 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
               : `0 0 14px ${node.meta.color}42`,
           "--x": `${isFeatured ? 0 : point3d.x}px`,
           "--y": `${isFeatured ? 0 : point3d.y}px`,
-          "--z": `${isFeatured ? 330 : point3d.z}px`,
-          "--d": `${isFeatured ? 1 : clamp(0.86 + (point3d.z + 260) / 1800, 0.72, 1.2)}`,
-          "--blur": `${isFeatured ? 0 : point3d.z < -260 ? 0.45 : point3d.z < -80 ? 0.18 : 0}px`,
-          "--alpha": `${isFeatured ? 1 : clamp(0.68 + (point3d.z + 340) / 1300, 0.62, 0.96)}`,
+          "--z": `${isFeatured ? 330 : isDimmed ? point3d.z - 220 : point3d.z}px`,
+          "--d": `${isFeatured ? 1 : isDimmed ? 0.62 : clamp(0.82 + (point3d.z + 260) / 2200, 0.68, 1.08)}`,
+          "--blur": `${isFeatured ? 0 : isDimmed ? 1.15 : point3d.z < -260 ? 0.45 : point3d.z < -80 ? 0.18 : 0}px`,
+          "--alpha": `${isFeatured ? 1 : isDimmed ? 0.16 : clamp(0.58 + (point3d.z + 340) / 1500, 0.5, 0.9)}`,
         };
         return (
           <button
@@ -414,6 +434,8 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
                 ? "fallback-node-button featured"
                 : selected?.id === node.id
                   ? "fallback-node-button selected"
+                : isDimmed
+                  ? `fallback-node-button dimmed cat-${node.category}`
                   : node.central
                     ? "fallback-node-button central-core"
                     : node.core
@@ -439,15 +461,8 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
       })}
         </div>
       </div>
-      {!featured && (
-        <button className="core-hint" onClick={() => central && setSelected(central)}>
-          <span>点选任一星图作品</span>
-          <strong>展开画芯</strong>
-        </button>
-      )}
       <div className="view-hud">
         <button onClick={resetView}>归位</button>
-        <span>拖动画面旋转 · 双指滑动旋转 · 捏合缩放</span>
       </div>
     </div>
   );
