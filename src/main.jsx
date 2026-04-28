@@ -819,9 +819,9 @@ function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onCho
   const hasNext = activeIndex < chapters.length - 1;
   const storyWorks = getStoryWorks(current, nodes, selected);
   return (
-    <section className="story-panel">
+    <section className={storyBeat >= 0 ? "story-panel story-panel-playing" : "story-panel"}>
       <div className="story-kicker">
-        <span>分幕导览</span>
+        <span>{storyBeat >= 0 ? "关系路径" : "分幕导览"}</span>
         <b>{String(activeIndex + 1).padStart(2, "0")} / {String(chapters.length).padStart(2, "0")}</b>
       </div>
       <h2>{current.title}</h2>
@@ -928,7 +928,7 @@ function FallbackConstellation({
       if (!featured) return node.core && !node.central;
       return node.category === featured.category || (node.related_to_huizong && featured.related_to_huizong);
     })
-    .slice(0, featured ? 12 : 16)
+    .slice(0, featured ? 6 : 10)
     .map((node) => ({ from: lineOrigin, to: node }))
     .filter((line) =>
       line.from &&
@@ -948,7 +948,7 @@ function FallbackConstellation({
 
   const dust = useMemo(() => {
     const rand = seededRandom(1602);
-    return Array.from({ length: 150 }, (_, index) => ({
+    return Array.from({ length: 72 }, (_, index) => ({
       id: index,
       x: 4 + rand() * 92,
       y: 8 + rand() * 82,
