@@ -15,24 +15,75 @@ const categoryMeta = {
 
 const defaultMeta = { label: "文物", color: "#bda16b", icon: Sparkles, center: [0, 0, -1] };
 
-const clusterLabels = [
-  { key: "flower_bird", seal: "物", title: "格物花鸟", subtitle: "细密观看" },
-  { key: "porcelain", seal: "釉", title: "宋瓷清供", subtitle: "色与形" },
-  { key: "calligraphy", seal: "书", title: "瘦金题跋", subtitle: "笔画秩序" },
-  { key: "landscape", seal: "境", title: "山水远意", subtitle: "空间气韵" },
-  { key: "figure", seal: "雅", title: "宫廷雅集", subtitle: "人物仪式" },
-  { key: "object", seal: "器", title: "器物星尘", subtitle: "材料工艺" },
-];
-
-const orbitMeta = {
-  flower_bird: { yBase: 0.88, inner: 1.3, outer: 5.6, turns: 1.75, start: -0.95, labelT: 0.7, depth: 560, tilt: -18 },
-  calligraphy: { yBase: 0.55, inner: 1.45, outer: 6.1, turns: 1.42, start: 0.18, labelT: 0.62, depth: 540, tilt: 14 },
-  landscape: { yBase: -0.18, inner: 1.85, outer: 6.8, turns: 1.15, start: 1.25, labelT: 0.64, depth: 620, tilt: -9 },
-  figure: { yBase: 1.22, inner: 1.6, outer: 5.35, turns: 1.25, start: 2.38, labelT: 0.58, depth: 500, tilt: 22 },
-  porcelain: { yBase: -1.42, inner: 1.65, outer: 6.05, turns: 1.52, start: 3.1, labelT: 0.68, depth: 570, tilt: -24 },
-  object: { yBase: -1.92, inner: 2.1, outer: 6.7, turns: 1.1, start: 4.14, labelT: 0.66, depth: 590, tilt: 19 },
-  painting: { yBase: 0.02, inner: 1.1, outer: 4.95, turns: 1.88, start: 5.02, labelT: 0.6, depth: 520, tilt: 6 },
+const domainMeta = {
+  omen: {
+    label: "天象祥瑞",
+    short: "祥瑞",
+    seal: "瑞",
+    color: "#d8b56f",
+    icon: Sparkles,
+    tag: "天命叙事",
+    angle: -0.38,
+    radius: 3.25,
+    y: 1.12,
+    depth: 560,
+    note: "瑞鹤、彩云、宫门与题诗构成徽宗的天命叙事",
+  },
+  nature: {
+    label: "格物花鸟",
+    short: "花鸟",
+    seal: "物",
+    color: "#cfa65e",
+    icon: Feather,
+    tag: "画院写生",
+    angle: -2.5,
+    radius: 4.8,
+    y: 0.76,
+    depth: 470,
+    note: "以细密观看自然，建立画院的写生与传神标准",
+  },
+  inscription: {
+    label: "瘦金题跋",
+    short: "书法",
+    seal: "书",
+    color: "#d8c7a1",
+    icon: Brush,
+    tag: "诗书画印",
+    angle: 0.78,
+    radius: 4.65,
+    y: 0.92,
+    depth: 510,
+    note: "诗、书、题签、印章把图像纳入帝王观看秩序",
+  },
+  collection: {
+    label: "宣和收藏",
+    short: "收藏",
+    seal: "藏",
+    color: "#b99a69",
+    icon: BookOpen,
+    tag: "内府秩序",
+    angle: 2.55,
+    radius: 4.55,
+    y: -1.03,
+    depth: 500,
+    note: "古画、宫廷图像与雅集共同组成宣和内府的收藏系统",
+  },
+  vessel: {
+    label: "复古器用",
+    short: "器用",
+    seal: "器",
+    color: "#9fb8a9",
+    icon: CircleDot,
+    tag: "清供礼制",
+    angle: 1.55,
+    radius: 5.05,
+    y: -1.55,
+    depth: 570,
+    note: "宋瓷、茶器与古器物把清供、礼制和复古趣味连成一体",
+  },
 };
+
+const domainOrder = ["omen", "nature", "inscription", "collection", "vessel"];
 
 const timeModes = {
   all: { label: "全景", years: "960-1279", range: [960, 1279], description: "宋代图像与器物的全景星图" },
@@ -115,6 +166,27 @@ function formatDate(value) {
   return text || "宋代";
 }
 
+function inferDomain(item, centralId) {
+  if (!item) return "collection";
+  if (item.id === centralId) return "omen";
+  const text = [
+    item.title,
+    item.artist,
+    item.medium,
+    item.period,
+    item.tags?.join(" "),
+    item.huizong_relation,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  if (/auspicious|crane|瑞|鹤|鶴|parakeet|five-colored|五色|祥瑞|端门/.test(text)) return "omen";
+  if (item.category === "calligraphy" || /calligraphy|poem|瘦金|诗|書|书|题跋|inscription/.test(text)) return "inscription";
+  if (item.category === "porcelain" || item.category === "object" || /ceramic|porcelain|glaze|bronze|jade|vessel|bowl|dish|jar|釉|瓷|青铜|古器|茶|器/.test(text)) return "vessel";
+  if (item.category === "flower_bird" || /bird|flower|bamboo|finch|禽|花|鸟|鳥|竹|写生/.test(text)) return "nature";
+  return "collection";
+}
+
 const relationLabels = {
   huizong_work: "徽宗相关作品",
   huizong_attributed: "传为徽宗",
@@ -133,13 +205,13 @@ const categoryDescriptions = {
 };
 
 function buildDescription(item) {
-  const categoryLabel = item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物";
+  const categoryLabel = item.domainMeta?.label ?? item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物";
   const relation = relationLabels[item.huizong_relation] ?? "宋代审美参照";
   const date = formatDate(item.date || item.period || item.dynasty);
   const author = cleanText(item.artist);
   const medium = cleanText(item.medium);
   const source = cleanText(item.source);
-  const categoryNote = categoryDescriptions[item.category] ?? "这件作品作为宋代审美星图中的一个节点，用来观察图像、材质、年代与馆藏来源之间的关系。";
+  const categoryNote = item.domainMeta?.note ?? categoryDescriptions[item.category] ?? "这件作品作为宋代审美星图中的一个节点，用来观察图像、材质、年代与馆藏来源之间的关系。";
   const authorPart = author ? `作者/相关人物为 ${author}。` : "";
   const mediumPart = medium ? `媒介记录为 ${medium}。` : "";
   const sourcePart = source ? `数据来自 ${source}。` : "";
@@ -149,7 +221,7 @@ function buildDescription(item) {
 function detailFacts(item) {
   if (!item) return [];
   return [
-    ["类别", item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物"],
+    ["星域", item.domainMeta?.label ?? item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物"],
     ["年代", formatDate(item.date || item.period || item.dynasty)],
     ["关系", relationLabels[item.huizong_relation] ?? "宋代参照"],
     ["来源", cleanText(item.source, "馆藏数据")],
@@ -186,6 +258,7 @@ function getRelatedWorks(item, nodes) {
   return nodes
     .filter((node) => node.id !== item.id)
     .filter((node) => {
+      if (node.domain === item.domain) return true;
       if (node.category === item.category) return true;
       if (node.related_to_huizong && item.related_to_huizong) return true;
       return node.source && node.source === item.source;
@@ -208,18 +281,21 @@ function tourScore(item) {
 
 function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMode) {
   const central =
+    records.find((item) => /Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图/i.test(item.title)) ??
+    records.find((item) => /瑞|crane/i.test(item.title)) ??
     records.find((item) => /芙蓉锦鸡|芙蓉錦雞|Songhuizong4/i.test(item.title)) ??
     records.find((item) => /枇杷山鸟|梅花绣眼|山鳥|繡眼/i.test(item.title)) ??
     records.find((item) => /Finches and bamboo|竹禽/i.test(item.title)) ??
-    records.find((item) => /Auspicious Cranes|瑞/i.test(item.title)) ??
     records[0];
+  const centralId = central?.id;
 
   const filteredRecords = records.filter((item) => {
-    const categoryOk = !activeCategory || item.category === activeCategory || item.related_to_huizong;
+    const domain = inferDomain(item, centralId);
+    const categoryOk = !activeCategory || domain === activeCategory || item.id === centralId;
     const timeOk = withinTimeMode(item, timeMode);
     const queryOk = matchesQuery(item, query);
-    const coreOk = !coreOnly || item.related_to_huizong || item.id === central?.id;
-    return item.id === central?.id || (categoryOk && timeOk && queryOk && coreOk);
+    const coreOk = !coreOnly || item.related_to_huizong || item.id === centralId;
+    return item.id === centralId || (categoryOk && timeOk && queryOk && coreOk);
   });
 
   const hasIntent = Boolean(activeCategory || timeMode !== "all" || query.trim() || coreOnly);
@@ -234,44 +310,45 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
 
   const all = [central, ...huizong.filter((item) => item.id !== central?.id), ...peripheral].filter(Boolean);
   const countsByCategory = all.reduce((result, item) => {
-    result[item.category] = (result[item.category] ?? 0) + 1;
+    const domain = inferDomain(item, centralId);
+    result[domain] = (result[domain] ?? 0) + 1;
     return result;
   }, {});
   const seenByCategory = {};
 
   return all.map((item, index) => {
-    const meta = categoryMeta[item.category] ?? defaultMeta;
+    const domain = inferDomain(item, centralId);
+    const domainInfo = domainMeta[domain] ?? domainMeta.collection;
+    const meta = {
+      ...(categoryMeta[item.category] ?? defaultMeta),
+      label: domainInfo.short,
+      color: domainInfo.color,
+      icon: domainInfo.icon,
+    };
     const rand = seededRandom(hash(item.id ?? item.title));
     const core = item.related_to_huizong || index === 0;
-    const categoryIndex = seenByCategory[item.category] ?? 0;
-    seenByCategory[item.category] = categoryIndex + 1;
-    const categoryCount = countsByCategory[item.category] ?? 1;
+    const categoryIndex = seenByCategory[domain] ?? 0;
+    seenByCategory[domain] = categoryIndex + 1;
+    const categoryCount = countsByCategory[domain] ?? 1;
     const center = index === 0 ? [0, 0, 0.15] : meta.center;
     const radius = index === 0 ? 0 : core ? 1.0 + rand() * 2.35 : 0.75 + rand() * 1.7;
     const angle = rand() * Math.PI * 2;
     const drift = (rand() - 0.5) * 0.85;
-    const orbit = orbitMeta[item.category] ?? { yBase: 0, inner: 1.4, outer: 5.8, turns: 1.35, start: 0, depth: 540 };
+    const localTheta = categoryIndex * 2.399963 + rand() * 0.34;
     const progress = categoryCount <= 1 ? 0 : categoryIndex / (categoryCount - 1);
-    const spiralNoise = (rand() - 0.5) * 0.58;
-    const orbitLayer = categoryIndex % 4;
-    const orbitAngle = orbit.start + progress * orbit.turns * Math.PI * 2 + spiralNoise + orbitLayer * 0.17;
-    const radiusProgress = Math.sqrt(progress);
-    const orbitRadius =
-      (core ? orbit.inner + (orbit.outer - orbit.inner) * radiusProgress * 0.76 : orbit.inner + (orbit.outer - orbit.inner) * radiusProgress) +
-      (rand() - 0.5) * 0.48 +
-      orbitLayer * 0.12;
-    const orbitY =
-      orbit.yBase +
-      Math.sin(orbitAngle * 0.72 + progress * Math.PI) * 0.92 +
-      Math.cos(orbitAngle * 1.6) * 0.18 +
-      (rand() - 0.5) * 0.72;
-    const denseDepth = Math.round((Math.sin(orbitAngle) * orbit.depth + Math.cos(progress * Math.PI * 2) * 90 + (core ? 90 : -80)) / 10) * 10;
+    const localRadius = (core ? 0.36 : 0.58) + Math.sqrt(progress) * (core ? 1.26 : 1.92) + (rand() - 0.5) * 0.26;
+    const anchorX = Math.cos(domainInfo.angle) * domainInfo.radius;
+    const anchorZ = Math.sin(domainInfo.angle) * domainInfo.depth;
+    const localX = Math.cos(localTheta) * localRadius * 0.95;
+    const localY = Math.sin(localTheta) * localRadius * 0.54 + (rand() - 0.5) * 0.28;
+    const localZ = Math.sin(localTheta) * localRadius * 108 + (rand() - 0.5) * 72;
+    const denseDepth = Math.round((anchorZ + localZ + (core ? 70 : -30)) / 10) * 10;
     const position = denseMode
       ? index === 0
         ? [0, -0.05, 0.2]
         : [
-            Math.cos(orbitAngle) * orbitRadius * (0.86 + progress * 0.2),
-            orbitY,
+            anchorX + localX,
+            domainInfo.y + localY,
             0,
           ]
       : index === 0
@@ -300,6 +377,8 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
         : index === 0 ? 80 : Math.round(clamp((rand() - 0.5) * 620 + (core ? 80 : -60), -360, 220) / 10) * 10,
       size: [width, height],
       meta,
+      domain,
+      domainMeta: domainInfo,
       core,
       central: index === 0,
       seed: rand(),
@@ -312,7 +391,7 @@ function clamp(value, min, max) {
 }
 
 function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
-  const entries = ["flower_bird", "porcelain", "calligraphy", "landscape", "object"];
+  const entries = domainOrder;
   return (
     <aside className="sidebar">
       <button className={activeCategory ? "seal-mark" : "seal-mark active"} onClick={() => {
@@ -323,7 +402,7 @@ function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
       </button>
       <div className="tool-stack">
         {entries.map((key) => {
-          const meta = categoryMeta[key];
+          const meta = domainMeta[key];
           const Icon = meta.icon;
           return (
             <button
@@ -343,9 +422,9 @@ function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
         })}
       </div>
       <button className="bottom-sigil" onClick={() => {
-        setActiveCategory("flower_bird");
+        setActiveCategory("omen");
         setSelected(null);
-      }} title="徽宗花鸟">
+      }} title="宣和天象">
         徽
       </button>
     </aside>
@@ -368,7 +447,7 @@ function DetailPanel({ selected, hovered, setSelected, nodes }) {
         <>
           <img src={item.local_thumb ?? item.image_thumb ?? item.image_url} alt={item.title} />
           <div>
-            <p className="meta">{item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物"} · {displayDate}</p>
+            <p className="meta">{item.domainMeta?.label ?? item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物"} · {displayDate}</p>
             <h2>{displayTitle}</h2>
             <p>{displaySource}</p>
             <p className="relation">{displayRelation}</p>
@@ -458,14 +537,19 @@ function TourPanel({ items, selected, setSelected }) {
   );
 }
 
-function FallbackConstellation({ nodes, selected, setSelected, setHovered, denseMode }) {
+function FallbackConstellation({ nodes, selected, setSelected, setHovered, denseMode, activeCategory, setActiveCategory }) {
   const central = nodes.find((node) => node.central);
   const featured = selected || null;
   const [view, setView] = useState({ rotateX: -5, rotateY: 0, zoom: 1, panX: 0, panY: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef(null);
+  const domainCounts = useMemo(() => {
+    const result = {};
+    for (const node of nodes) result[node.domain] = (result[node.domain] ?? 0) + 1;
+    return result;
+  }, [nodes]);
   const lineOrigin = featured ?? central;
-  const connectors = nodes
+  const connectors = (featured ? nodes : [])
     .filter((node) => {
       if (!lineOrigin || node.id === lineOrigin.id) return false;
       if (!featured) return node.core && !node.central;
@@ -557,6 +641,7 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
   const isRelatedToFeatured = (node) => {
     if (!featured) return true;
     if (node.id === featured.id || node.central) return true;
+    if (node.domain === featured.domain) return true;
     if (node.category === featured.category) return true;
     if (node.related_to_huizong && featured.related_to_huizong) return true;
     return node.source && node.source === featured.source;
@@ -616,51 +701,62 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           <div className="depth-ring depth-ring-one" />
           <div className="depth-ring depth-ring-two" />
           <div className="depth-ring depth-ring-three" />
-          {Object.entries(orbitMeta).map(([key, orbit]) => {
-            const meta = categoryMeta[key] ?? defaultMeta;
-            const armT = 0.58;
-            const armAngle = orbit.start + armT * orbit.turns * Math.PI * 2;
-            const armRadius = orbit.inner + (orbit.outer - orbit.inner) * Math.sqrt(armT);
+          <div className="central-caption">
+            <b>宣和天象</b>
+            <span>《瑞鹤图》 · 1112 · 宫门祥瑞</span>
+          </div>
+          {domainOrder.map((key) => {
+            const meta = domainMeta[key];
+            const x = Math.cos(meta.angle) * meta.radius * 82;
+            const y = -meta.y * 70;
+            const z = Math.sin(meta.angle) * meta.depth * 0.48;
             return (
               <div
-                key={`orbit-${key}`}
+                key={`domain-halo-${key}`}
                 className="orbit-lane"
                 style={{
-                  "--orbit-w": `${(orbit.outer - orbit.inner) * 142 + 250}px`,
-                  "--orbit-h": `${(orbit.outer - orbit.inner) * 42 + 86}px`,
-                  "--x": `${Math.cos(armAngle) * armRadius * 58}px`,
-                  "--y": `${(-orbit.yBase * 58) + Math.sin(armAngle * 0.7) * 34}px`,
-                  "--z": `${Math.sin(armAngle) * orbit.depth * 0.56}px`,
-                  "--tilt": `${orbit.tilt}deg`,
+                  "--orbit-w": `${key === "omen" ? 270 : 330}px`,
+                  "--orbit-h": `${key === "omen" ? 150 : 190}px`,
+                  "--x": `${x}px`,
+                  "--y": `${y}px`,
+                  "--z": `${z}px`,
+                  "--tilt": `${meta.angle * 18}deg`,
                   "--accent": meta.color,
                 }}
               />
             );
           })}
-          {clusterLabels.map((cluster) => {
-            const meta = categoryMeta[cluster.key];
-            const orbit = orbitMeta[cluster.key] ?? { yBase: 0, inner: 1.4, outer: 5.8, turns: 1.35, start: 0, labelT: 0.6, depth: 540 };
-            const labelAngle = orbit.start + orbit.labelT * orbit.turns * Math.PI * 2;
-            const labelRadius = orbit.inner + (orbit.outer - orbit.inner) * Math.sqrt(orbit.labelT);
-            const x = Math.cos(labelAngle) * labelRadius * 82;
-            const y = -(orbit.yBase + Math.sin(labelAngle * 0.72 + orbit.labelT * Math.PI) * 0.78) * 70;
-            const z = Math.sin(labelAngle) * orbit.depth * 0.56;
-            const isMuted = featured && featured.category !== cluster.key;
+          {domainOrder.map((key) => {
+            const meta = domainMeta[key];
+            const x = Math.cos(meta.angle) * meta.radius * 82;
+            const y = -meta.y * 70 - 58;
+            const z = Math.sin(meta.angle) * meta.depth * 0.34 + 76;
+            const isMuted = activeCategory && activeCategory !== key;
+            const isActive = activeCategory === key;
             return (
-              <div
-                key={cluster.key}
-                className={isMuted ? "cluster-label muted" : "cluster-label"}
+              <button
+                key={key}
+                className={[
+                  "domain-label",
+                  isActive ? "active" : "",
+                  isMuted ? "muted" : "",
+                ].filter(Boolean).join(" ")}
                 style={{
                   "--x": `${x}px`,
                   "--y": `${y}px`,
                   "--z": `${z}px`,
                   "--accent": meta.color,
                 }}
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={() => {
+                  setActiveCategory(activeCategory === key ? null : key);
+                  setSelected(null);
+                }}
               >
-                <b>{cluster.seal}</b>
-                <span>{cluster.title}</span>
-                <small>{cluster.subtitle}</small>
-              </div>
+                <b>{meta.seal}</b>
+                <span>{meta.label}</span>
+                <small>{domainCounts[key] ?? 0} 件 · {meta.tag}</small>
+              </button>
             );
           })}
       {nodes.slice(0, denseMode ? 152 : 72).map((node) => {
@@ -684,10 +780,10 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           width: isFeatured
             ? featuredWidth
             : node.central
-              ? denseMode ? "clamp(38px, 4.6vw, 68px)" : "clamp(42px, 5vw, 74px)"
+              ? denseMode ? "clamp(160px, 18vw, 260px)" : "clamp(140px, 16vw, 230px)"
               : node.core
-                ? denseMode ? "clamp(20px, 3.1vw, 50px)" : "clamp(26px, 3.7vw, 58px)"
-                : denseMode ? "clamp(8px, 1.25vw, 24px)" : "clamp(13px, 1.8vw, 34px)",
+                ? denseMode ? "clamp(24px, 3vw, 54px)" : "clamp(26px, 3.7vw, 58px)"
+                : denseMode ? "clamp(10px, 1.35vw, 26px)" : "clamp(13px, 1.8vw, 34px)",
           aspectRatio: isFeatured ? `${featureRatio}` : undefined,
           borderColor: isFeatured || node.central ? "#e1bf79" : node.meta.color,
           boxShadow: isFeatured
@@ -711,12 +807,12 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
                 : selected?.id === node.id
                   ? "fallback-node-button selected"
                 : isDimmed
-                  ? `fallback-node-button dimmed cat-${node.category}`
+                  ? `fallback-node-button dimmed domain-${node.domain}`
                   : node.central
                     ? "fallback-node-button central-core"
                     : node.core
-                      ? `fallback-node-button core cat-${node.category}`
-                      : `fallback-node-button cat-${node.category}`
+                      ? `fallback-node-button core domain-${node.domain} cat-${node.category}`
+                      : `fallback-node-button domain-${node.domain} cat-${node.category}`
             }
             data-testid="artifact-node"
             aria-label={node.title}
@@ -745,12 +841,12 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
 }
 
 function ViewStatus({ activeCategory, timeMode }) {
-  const category = activeCategory ? categoryMeta[activeCategory]?.label : "全类";
+  const category = activeCategory ? domainMeta[activeCategory]?.label : "全类";
   const time = timeModes[timeMode];
   return (
     <section className="view-status">
       <p>{category} · {time.label}</p>
-      <strong>{time.description}</strong>
+      <strong>{activeCategory ? domainMeta[activeCategory]?.note : "以《瑞鹤图》为中心，展开徽宗的画院、题跋、收藏与器用系统"}</strong>
     </section>
   );
 }
@@ -799,7 +895,7 @@ function ControlPanel({ query, setQuery, coreOnly, setCoreOnly, denseMode, setDe
       >
         {denseMode ? "繁星层" : "策展层"}
       </button>
-      <p>{timeModes[timeMode].label} · {activeCategory ? categoryMeta[activeCategory]?.label : "全类"} · {denseMode ? "多层" : "精简"}</p>
+      <p>{timeModes[timeMode].label} · {activeCategory ? domainMeta[activeCategory]?.label : "五域"} · {denseMode ? "多层" : "精简"}</p>
     </section>
   );
 }
@@ -807,14 +903,13 @@ function ControlPanel({ query, setQuery, coreOnly, setCoreOnly, denseMode, setDe
 function LegendStrip({ nodes }) {
   const counts = useMemo(() => {
     const result = {};
-    for (const node of nodes) result[node.category] = (result[node.category] ?? 0) + 1;
+    for (const node of nodes) result[node.domain] = (result[node.domain] ?? 0) + 1;
     return result;
   }, [nodes]);
-  const entries = ["flower_bird", "porcelain", "calligraphy", "landscape", "figure", "object"];
   return (
     <section className="legend-strip">
-      {entries.map((key) => {
-        const meta = categoryMeta[key];
+      {domainOrder.map((key) => {
+        const meta = domainMeta[key];
         return (
           <div key={key}>
             <i style={{ background: meta.color }} />
@@ -888,7 +983,7 @@ function App() {
       .slice(0, 12),
     [visibleNodes],
   );
-  const activeLabel = activeCategory ? categoryMeta[activeCategory]?.label : "全类";
+  const activeLabel = activeCategory ? domainMeta[activeCategory]?.label : "五域";
   const timeLabel = timeModes[timeMode].label;
 
   return (
@@ -915,7 +1010,15 @@ function App() {
         timeMode={timeMode}
       />
       <TourPanel items={tourItems} selected={selected} setSelected={setSelected} />
-      <FallbackConstellation nodes={visibleNodes} selected={selected} setSelected={setSelected} setHovered={setHovered} denseMode={denseMode} />
+      <FallbackConstellation
+        nodes={visibleNodes}
+        selected={selected}
+        setSelected={setSelected}
+        setHovered={setHovered}
+        denseMode={denseMode}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+      />
       <LegendStrip nodes={visibleNodes} />
       <DetailPanel selected={selected} hovered={hovered} setSelected={setSelected} nodes={visibleNodes} />
       <TimelineControl timeMode={timeMode} setTimeMode={setTimeMode} setSelected={setSelected} />
