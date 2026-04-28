@@ -1,0 +1,252 @@
+{
+  "core": {
+    "total": 238,
+    "related_to_huizong": 3,
+    "by_source": {
+      "Cleveland Museum of Art": 164,
+      "The Metropolitan Museum of Art": 74
+    },
+    "by_category": {
+      "porcelain": 128,
+      "painting": 72,
+      "calligraphy": 1,
+      "object": 33,
+      "flower_bird": 4
+    },
+    "top_examples": [
+      {
+        "title": "Black Glazed Teabowl",
+        "source": "Cleveland Museum of Art",
+        "date": "1100s–1200s",
+        "category": "porcelain",
+        "relevance_score": 207,
+        "image_url": "https://openaccess-cdn.clevelandart.org/2020.176/2020.176_web.jpg",
+        "source_url": "https://clevelandart.org/art/2020.176"
+      },
+      {
+        "title": "Finches and bamboo",
+        "source": "The Metropolitan Museum of Art",
+        "date": "early 12th century",
+        "category": "painting",
+        "relevance_score": 187,
+        "image_url": "https://images.metmuseum.org/CRDImages/as/web-large/DP151504_CRD.jpg",
+        "source_url": "https://www.metmuseum.org/art/collection/search/39936"
+      },
+      {
+        "title": "Scepter (Gui) with Miscellaneous Poems by Tao Qian (365–427 CE)",
+        "source": "Cleveland Museum of Art",
+        "date": "1122 or later",
+        "category": "calligraphy",
+        "relevance_score": 151,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1960.278/1960.278_web.jpg",
+        "source_url": "https://clevelandart.org/art/1960.278"
+      },
+      {
+        "title": "Album of Daoist and Buddhist Themes: Search the Mountain: Leaf 41",
+        "source": "Cleveland Museum of Art",
+        "date": "1200s",
+        "category": "painting",
+        "relevance_score": 109,
+        "image_url": "https://openaccess-cdn.clevelandart.org/2004.1.41/2004.1.41_web.jpg",
+        "source_url": "https://clevelandart.org/art/2004.1.41"
+      },
+      {
+        "title": "Cruciform Mirror with Six Blossoms",
+        "source": "Cleveland Museum of Art",
+        "date": "960–1127",
+        "category": "porcelain",
+        "relevance_score": 101,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1999.222/1999.222_web.jpg",
+        "source_url": "https://clevelandart.org/art/1999.222"
+      },
+      {
+        "title": "Lady Holding a Vase",
+        "source": "Cleveland Museum of Art",
+        "date": "1100s–1200s",
+        "category": "porcelain",
+        "relevance_score": 101,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1957.56/1957.56_web.jpg",
+        "source_url": "https://clevelandart.org/art/1957.56"
+      },
+      {
+        "title": "Meiping (Plum Blossom) Vase",
+        "source": "Cleveland Museum of Art",
+        "date": "1100s–1200s",
+        "category": "porcelain",
+        "relevance_score": 101,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1986.245/1986.245_web.jpg",
+        "source_url": "https://clevelandart.org/art/1986.245"
+      },
+      {
+        "title": "Streams and Mountains without End",
+        "source": "Cleveland Museum of Art",
+        "date": "1100–1150",
+        "category": "painting",
+        "relevance_score": 91,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1953.126/1953.126_web.jpg",
+        "source_url": "https://clevelandart.org/art/1953.126"
+      },
+      {
+        "title": "Palace Landscape",
+        "source": "Cleveland Museum of Art",
+        "date": "1000s",
+        "category": "painting",
+        "relevance_score": 91,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1971.40/1971.40_web.jpg",
+        "source_url": "https://clevelandart.org/art/1971.40"
+      },
+      {
+        "title": "Tea Bowl",
+        "source": "Cleveland Museum of Art",
+        "date": "1100–1200s",
+        "category": "porcelain",
+        "relevance_score": 89,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1989.272/1989.272_web.jpg",
+        "source_url": "https://clevelandart.org/art/1989.272"
+      },
+      {
+        "title": "Ewer: Cizhou ware",
+        "source": "Cleveland Museum of Art",
+        "date": "1105",
+        "category": "painting",
+        "relevance_score": 89,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1956.717/1956.717_web.jpg",
+        "source_url": "https://clevelandart.org/art/1956.717"
+      },
+      {
+        "title": "Brush Washer",
+        "source": "Cleveland Museum of Art",
+        "date": "late 1000s–1127",
+        "category": "porcelain",
+        "relevance_score": 89,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1957.40/1957.40_web.jpg",
+        "source_url": "https://clevelandart.org/art/1957.40"
+      }
+    ]
+  },
+  "candidates": {
+    "total": 320,
+    "related_to_huizong": 3,
+    "by_source": {
+      "Cleveland Museum of Art": 234,
+      "The Metropolitan Museum of Art": 86
+    },
+    "by_category": {
+      "porcelain": 138,
+      "painting": 141,
+      "calligraphy": 1,
+      "object": 36,
+      "flower_bird": 4
+    },
+    "top_examples": [
+      {
+        "title": "Black Glazed Teabowl",
+        "source": "Cleveland Museum of Art",
+        "date": "1100s–1200s",
+        "category": "porcelain",
+        "relevance_score": 207,
+        "image_url": "https://openaccess-cdn.clevelandart.org/2020.176/2020.176_web.jpg",
+        "source_url": "https://clevelandart.org/art/2020.176"
+      },
+      {
+        "title": "Finches and bamboo",
+        "source": "The Metropolitan Museum of Art",
+        "date": "early 12th century",
+        "category": "painting",
+        "relevance_score": 187,
+        "image_url": "https://images.metmuseum.org/CRDImages/as/web-large/DP151504_CRD.jpg",
+        "source_url": "https://www.metmuseum.org/art/collection/search/39936"
+      },
+      {
+        "title": "Scepter (Gui) with Miscellaneous Poems by Tao Qian (365–427 CE)",
+        "source": "Cleveland Museum of Art",
+        "date": "1122 or later",
+        "category": "calligraphy",
+        "relevance_score": 151,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1960.278/1960.278_web.jpg",
+        "source_url": "https://clevelandart.org/art/1960.278"
+      },
+      {
+        "title": "Album of Daoist and Buddhist Themes: Search the Mountain: Leaf 41",
+        "source": "Cleveland Museum of Art",
+        "date": "1200s",
+        "category": "painting",
+        "relevance_score": 109,
+        "image_url": "https://openaccess-cdn.clevelandart.org/2004.1.41/2004.1.41_web.jpg",
+        "source_url": "https://clevelandart.org/art/2004.1.41"
+      },
+      {
+        "title": "Herbaceous Peony",
+        "source": "Cleveland Museum of Art",
+        "date": "1685",
+        "category": "painting",
+        "relevance_score": 103,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1967.192/1967.192_web.jpg",
+        "source_url": "https://clevelandart.org/art/1967.192"
+      },
+      {
+        "title": "Cruciform Mirror with Six Blossoms",
+        "source": "Cleveland Museum of Art",
+        "date": "960–1127",
+        "category": "porcelain",
+        "relevance_score": 101,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1999.222/1999.222_web.jpg",
+        "source_url": "https://clevelandart.org/art/1999.222"
+      },
+      {
+        "title": "Lady Holding a Vase",
+        "source": "Cleveland Museum of Art",
+        "date": "1100s–1200s",
+        "category": "porcelain",
+        "relevance_score": 101,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1957.56/1957.56_web.jpg",
+        "source_url": "https://clevelandart.org/art/1957.56"
+      },
+      {
+        "title": "Meiping (Plum Blossom) Vase",
+        "source": "Cleveland Museum of Art",
+        "date": "1100s–1200s",
+        "category": "porcelain",
+        "relevance_score": 101,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1986.245/1986.245_web.jpg",
+        "source_url": "https://clevelandart.org/art/1986.245"
+      },
+      {
+        "title": "Streams and Mountains without End",
+        "source": "Cleveland Museum of Art",
+        "date": "1100–1150",
+        "category": "painting",
+        "relevance_score": 91,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1953.126/1953.126_web.jpg",
+        "source_url": "https://clevelandart.org/art/1953.126"
+      },
+      {
+        "title": "Cloudy Mountains",
+        "source": "Cleveland Museum of Art",
+        "date": "1130",
+        "category": "painting",
+        "relevance_score": 91,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1933.220/1933.220_web.jpg",
+        "source_url": "https://clevelandart.org/art/1933.220"
+      },
+      {
+        "title": "Palace Landscape",
+        "source": "Cleveland Museum of Art",
+        "date": "1000s",
+        "category": "painting",
+        "relevance_score": 91,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1971.40/1971.40_web.jpg",
+        "source_url": "https://clevelandart.org/art/1971.40"
+      },
+      {
+        "title": "Tea Bowl",
+        "source": "Cleveland Museum of Art",
+        "date": "1100–1200s",
+        "category": "porcelain",
+        "relevance_score": 89,
+        "image_url": "https://openaccess-cdn.clevelandart.org/1989.272/1989.272_web.jpg",
+        "source_url": "https://clevelandart.org/art/1989.272"
+      }
+    ]
+  }
+}

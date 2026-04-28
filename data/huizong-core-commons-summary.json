@@ -1,0 +1,126 @@
+{
+  "total": 62,
+  "by_category": {
+    "figure": 14,
+    "flower_bird": 27,
+    "painting": 11,
+    "calligraphy": 9,
+    "landscape": 1
+  },
+  "by_relation": {
+    "attributed_to_huizong": 5,
+    "copy_or_after": 4,
+    "huizong_work": 47,
+    "traditionally_attributed": 6
+  },
+  "top_examples": [
+    {
+      "title": "Court Ladies Preparing Newly Woven Silk (捣练图) by Emperor Huizong (1082–1135)",
+      "category": "figure",
+      "huizong_relation": "attributed_to_huizong",
+      "width": 1873,
+      "height": 420,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Court_Ladies_Preparing_Newly_Woven_Silk_%28%E6%8D%A3%E7%BB%83%E5%9B%BE%29_by_Emperor_Huizong_%281082%E2%80%931135%29.jpg/1280px-Court_Ladies_Preparing_Newly_Woven_Silk_%28%E6%8D%A3%E7%BB%83%E5%9B%BE%29_by_Emperor_Huizong_%281082%E2%80%931135%29.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3ACourt_Ladies_Preparing_Newly_Woven_Silk_(%E6%8D%A3%E7%BB%83%E5%9B%BE)_by_Emperor_Huizong_(1082%E2%80%931135).jpg"
+    },
+    {
+      "title": "Court ladies pounding silk from a painting (捣练图) by Emperor Huizong",
+      "category": "figure",
+      "huizong_relation": "attributed_to_huizong",
+      "width": 2024,
+      "height": 2366,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Court_ladies_pounding_silk_from_a_painting_%28%E6%8D%A3%E7%BB%83%E5%9B%BE%29_by_Emperor_Huizong.jpg/1280px-Court_ladies_pounding_silk_from_a_painting_%28%E6%8D%A3%E7%BB%83%E5%9B%BE%29_by_Emperor_Huizong.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3ACourt_ladies_pounding_silk_from_a_painting_(%E6%8D%A3%E7%BB%83%E5%9B%BE)_by_Emperor_Huizong.jpg"
+    },
+    {
+      "title": "Song Dynasty Elegant Party",
+      "category": "figure",
+      "huizong_relation": "attributed_to_huizong",
+      "width": 1211,
+      "height": 895,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Song_Dynasty_Elegant_Party.JPG",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3ASong_Dynasty_Elegant_Party.JPG"
+    },
+    {
+      "title": "The Five-Color Parakeet, Song Dynasty",
+      "category": "flower_bird",
+      "huizong_relation": "attributed_to_huizong",
+      "width": 1898,
+      "height": 685,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/The_Five-Color_Parakeet%2C_Song_Dynasty.jpg/1280px-The_Five-Color_Parakeet%2C_Song_Dynasty.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3AThe_Five-Color_Parakeet%2C_Song_Dynasty.jpg"
+    },
+    {
+      "title": "红蓼白鹅图轴.传宋徽宗赵佶.绘.绢本设色.台北故宫博物院藏",
+      "category": "flower_bird",
+      "huizong_relation": "attributed_to_huizong",
+      "width": 7139,
+      "height": 10929,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/%E7%BA%A2%E8%93%BC%E7%99%BD%E9%B9%85%E5%9B%BE%E8%BD%B4.%E4%BC%A0%E5%AE%8B%E5%BE%BD%E5%AE%97%E8%B5%B5%E4%BD%B6.%E7%BB%98.%E7%BB%A2%E6%9C%AC%E8%AE%BE%E8%89%B2.%E5%8F%B0%E5%8C%97%E6%95%85%E5%AE%AB%E5%8D%9A%E7%89%A9%E9%99%A2%E8%97%8F.jpg/1280px-%E7%BA%A2%E8%93%BC%E7%99%BD%E9%B9%85%E5%9B%BE%E8%BD%B4.%E4%BC%A0%E5%AE%8B%E5%BE%BD%E5%AE%97%E8%B5%B5%E4%BD%B6.%E7%BB%98.%E7%BB%A2%E6%9C%AC%E8%AE%BE%E8%89%B2.%E5%8F%B0%E5%8C%97%E6%95%85%E5%AE%AB%E5%8D%9A%E7%89%A9%E9%99%A2%E8%97%8F.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3A%E7%BA%A2%E8%93%BC%E7%99%BD%E9%B9%85%E5%9B%BE%E8%BD%B4.%E4%BC%A0%E5%AE%8B%E5%BE%BD%E5%AE%97%E8%B5%B5%E4%BD%B6.%E7%BB%98.%E7%BB%A2%E6%9C%AC%E8%AE%BE%E8%89%B2.%E5%8F%B0%E5%8C%97%E6%95%85%E5%AE%AB%E5%8D%9A%E7%89%A9%E9%99%A2%E8%97%8F.jpg"
+    },
+    {
+      "title": "Meister nach Chang Hsüan 001",
+      "category": "painting",
+      "huizong_relation": "copy_or_after",
+      "width": 2048,
+      "height": 1259,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Meister_nach_Chang_Hs%C3%BCan_001.jpg/1280px-Meister_nach_Chang_Hs%C3%BCan_001.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3AMeister_nach_Chang_Hs%C3%BCan_001.jpg"
+    },
+    {
+      "title": "Emperor Huizong (1101-1125) Painting of Auspicious Cranes, Copy",
+      "category": "flower_bird",
+      "huizong_relation": "copy_or_after",
+      "width": 3888,
+      "height": 2592,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Emperor_Huizong_%281101-1125%29_Painting_of_Auspicious_Cranes%2C_Copy.jpg/1280px-Emperor_Huizong_%281101-1125%29_Painting_of_Auspicious_Cranes%2C_Copy.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3AEmperor_Huizong_(1101-1125)_Painting_of_Auspicious_Cranes%2C_Copy.jpg"
+    },
+    {
+      "title": "Tanghanfu",
+      "category": "figure",
+      "huizong_relation": "copy_or_after",
+      "width": 799,
+      "height": 385,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/42/Tanghanfu.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3ATanghanfu.jpg"
+    },
+    {
+      "title": "Zhang Xuan Huizong",
+      "category": "painting",
+      "huizong_relation": "copy_or_after",
+      "width": 12310,
+      "height": 952,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Zhang_Xuan_Huizong.jpg/1280px-Zhang_Xuan_Huizong.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3AZhang_Xuan_Huizong.jpg"
+    },
+    {
+      "title": "Songhuizong",
+      "category": "calligraphy",
+      "huizong_relation": "huizong_work",
+      "width": 1484,
+      "height": 793,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Songhuizong.jpg/1280px-Songhuizong.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3ASonghuizong.jpg"
+    },
+    {
+      "title": "Poem",
+      "category": "calligraphy",
+      "huizong_relation": "huizong_work",
+      "width": 2873,
+      "height": 250,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Poem.jpg/1280px-Poem.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3APoem.jpg"
+    },
+    {
+      "title": "Songhuizong3",
+      "category": "flower_bird",
+      "huizong_relation": "huizong_work",
+      "width": 1733,
+      "height": 2709,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Songhuizong3.jpg/1280px-Songhuizong3.jpg",
+      "source_url": "https://commons.wikimedia.org/wiki/File%3ASonghuizong3.jpg"
+    }
+  ]
+}
