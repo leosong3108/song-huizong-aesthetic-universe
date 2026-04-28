@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BookOpen, Brush, ChevronLeft, ChevronRight, CircleDot, ExternalLink, Feather, Mountain, Play, Search, Sparkles, Waves, X } from "lucide-react";
+import { BookOpen, Brush, ChevronLeft, ChevronRight, CircleDot, ExternalLink, Feather, Mountain, Search, Sparkles, Waves, X } from "lucide-react";
 import "./styles.css";
 
 const categoryMeta = {
@@ -91,6 +91,114 @@ const timeModes = {
   xuanhe: { label: "宣和", years: "1100-1127", range: [1100, 1127], description: "徽宗时代的花鸟、书法与宫廷审美" },
   southern: { label: "南宋", years: "1128-1279", range: [1128, 1279], description: "靖康之后的南宋余韵与风格延续" },
 };
+
+const storyChapters = [
+  {
+    id: "thesis",
+    label: "命题",
+    domain: null,
+    timeMode: "all",
+    focus: [/Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图/i],
+    title: "他不是只会画画",
+    hook: "把画、字、收藏和器物连起来看，宋徽宗更像是在设计一套王朝视觉系统。",
+    insight: "这条线索从《瑞鹤图》开始：图像负责制造天命，花鸟负责训练观看，题跋负责认证，收藏负责归档，器物负责进入日常。",
+    links: [
+      ["《瑞鹤图》", "把天象变成王朝叙事"],
+      ["瘦金题跋", "把皇帝签名写进图像"],
+      ["宣和收藏", "把作品变成可管理的档案"],
+    ],
+  },
+  {
+    id: "omen",
+    label: "祥瑞",
+    domain: "omen",
+    timeMode: "xuanhe",
+    focus: [/Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图|Song-Palace/i],
+    title: "鹤不是鸟，是一条通知",
+    hook: "1112 年的《瑞鹤图》把宫门、云气、题诗和鹤群放在一起，让自然现象变成政治图像。",
+    insight: "这一幕连接的是“天象”和“皇权”：同样是鸟，飞过宫门时就不只是花鸟画，而是一套视觉合法性。",
+    links: [
+      ["瑞鹤", "从自然物变成祥瑞符号"],
+      ["宫门", "把事件固定在权力中心"],
+      ["御题", "用文字给图像盖章"],
+    ],
+  },
+  {
+    id: "nature",
+    label: "格物",
+    domain: "nature",
+    timeMode: "xuanhe",
+    focus: [/Finches and bamboo|竹禽|Five-colored|parakeet|写生珍禽|芙蓉|枇杷|梅花/i],
+    title: "花鸟不是装饰，是观察方法",
+    hook: "徽宗花鸟的重点不只是好看，而是把羽毛、竹枝、花叶都纳入细密的观看秩序。",
+    insight: "这条线把《竹禽图》和写生珍禽连接起来：它们共同证明宫廷审美在训练一种“看见万物细节”的能力。",
+    links: [
+      ["竹禽", "把鸟的神态做成标准"],
+      ["写生珍禽", "把自然拆成连续样本"],
+      ["画院", "把观看变成制度"],
+    ],
+  },
+  {
+    id: "signature",
+    label: "签名",
+    domain: "inscription",
+    timeMode: "xuanhe",
+    focus: [/楷书千字文|Nongfang|Summer poem|Huizong-Calligraphy|Poem|Round fan|赵佶等法书/i],
+    title: "瘦金体不是字，是界面签名",
+    hook: "当文字进入画面，它不只是说明，而是在告诉观看者：这件图像被谁观看、谁认证、谁纳入秩序。",
+    insight: "瘦金体把作品从“画”变成“被皇帝命名的对象”，也把审美权力从图像延伸到题跋、款识和印章。",
+    links: [
+      ["瘦金书", "形成独特识别系统"],
+      ["题跋", "给图像增加权威层"],
+      ["印章", "把观看变成认证"],
+    ],
+  },
+  {
+    id: "archive",
+    label: "归档",
+    domain: "collection",
+    timeMode: "xuanhe",
+    focus: [/文會|文会|聽琴|听琴|Literary Gathering|Court Ladies|Preparing Newly-Woven|捣练/i],
+    title: "收藏不是爱好，是数据库",
+    hook: "文会、听琴、摹古和内府收藏把作品连成网络：谁画、谁题、谁藏、谁被观看。",
+    insight: "这一幕的关系是“图像进入档案”：人物场景、古画摹本和宫廷题签共同构成宣和内府的管理方式。",
+    links: [
+      ["文会图", "展示审美共同体"],
+      ["听琴图", "把宫廷生活图像化"],
+      ["内府收藏", "把作品编入系统"],
+    ],
+  },
+  {
+    id: "vessel",
+    label: "器用",
+    domain: "vessel",
+    timeMode: "all",
+    focus: [/Black-Glazed Teabowl|Imperial Tribute|Tea Bowl|Brush Washer|Cup and Stand|Meiping|供御/i],
+    title: "器物把审美带进日常",
+    hook: "如果说画和字塑造观看，宋瓷、茶碗和清供器物就是把这种审美带到手边。",
+    insight: "这一幕连接图像和生活：同样的克制、留白、釉色和比例，开始进入饮茶、书斋、供养和陈设。",
+    links: [
+      ["茶碗", "把审美放进日常动作"],
+      ["供御", "让器物接近宫廷秩序"],
+      ["宋瓷釉色", "把克制变成质感"],
+    ],
+  },
+  {
+    id: "after",
+    label: "余波",
+    domain: null,
+    timeMode: "southern",
+    focus: [/Quatrain|West Lake|Narcissus|Gaozong|Lizong|Couplet/i],
+    title: "系统被打断，但审美还在延续",
+    hook: "1127 之后，王朝中心破碎，但题诗、山水、花鸟和器物的观看方式并没有消失。",
+    insight: "结尾不是单纯怀旧，而是反转：宋徽宗留下的不是几幅名作，而是一套被历史中断、又继续扩散的审美系统。",
+    links: [
+      ["1127", "政治断裂"],
+      ["南宋题诗", "视觉习惯延续"],
+      ["后世收藏", "系统变成记忆"],
+    ],
+  },
+];
 
 function seededRandom(seed) {
   let value = seed % 2147483647;
@@ -286,6 +394,74 @@ function getRelatedWorks(item, nodes) {
     })
     .sort((a, b) => tourScore(b) - tourScore(a))
     .slice(0, 5);
+}
+
+function findStoryTarget(chapter, nodes) {
+  if (!chapter || !nodes.length) return null;
+  const patterns = chapter.focus ?? [];
+  const directMatch = nodes.find((node) =>
+    patterns.some((pattern) =>
+      pattern.test([
+        node.title,
+        node.artist,
+        node.date,
+        node.period,
+        node.medium,
+        node.tags?.join(" "),
+      ].filter(Boolean).join(" "))
+    )
+  );
+  if (directMatch) return directMatch;
+  return nodes.find((node) => chapter.domain && node.domain === chapter.domain && node.related_to_huizong) ??
+    nodes.find((node) => chapter.domain && node.domain === chapter.domain) ??
+    nodes.find((node) => node.central) ??
+    nodes[0] ??
+    null;
+}
+
+function storyRelationLabel(chapter, item) {
+  if (!chapter || !item) return "作品节点";
+  const text = [item.title, item.category, item.medium, item.huizong_relation, item.tags?.join(" ")]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  if (chapter.id === "omen") return /crane|瑞|鹤|鶴|palace/.test(text) ? "祥瑞叙事" : "天象旁证";
+  if (chapter.id === "nature") return /bird|禽|竹|flower|花|parakeet|写生/.test(text) ? "画院样本" : "格物参照";
+  if (chapter.id === "signature") return /calligraphy|poem|楷书|书|瘦金|题/.test(text) ? "御笔认证" : "题跋线索";
+  if (chapter.id === "archive") return /文会|聽琴|听琴|court|literary|ladies|figure|捣练/.test(text) ? "内府归档" : "收藏网络";
+  if (chapter.id === "vessel") return /tea|bowl|cup|washer|vase|瓷|器|供御/.test(text) ? "日常器用" : "质感参照";
+  if (chapter.id === "after") return /southern|gaozong|lizong|quatrain|west lake|narcissus/.test(text) ? "南宋余波" : "系统延续";
+  return item.related_to_huizong ? "徽宗核心" : "关系节点";
+}
+
+function getStoryWorks(chapter, nodes, selected) {
+  if (!chapter) return [];
+  const patterns = chapter.focus ?? [];
+  const matches = nodes.filter((node) =>
+    patterns.some((pattern) =>
+      pattern.test([
+        node.title,
+        node.artist,
+        node.date,
+        node.period,
+        node.medium,
+        node.tags?.join(" "),
+      ].filter(Boolean).join(" "))
+    )
+  );
+  const related = selected ? getRelatedWorks(selected, nodes) : [];
+  const fallback = nodes
+    .filter((node) => !chapter.domain || node.domain === chapter.domain || node.central)
+    .sort((a, b) => tourScore(b) - tourScore(a));
+  const seen = new Set();
+  return [selected, ...matches, ...related, ...fallback]
+    .filter(Boolean)
+    .filter((node) => {
+      if (seen.has(node.id)) return false;
+      seen.add(node.id);
+      return true;
+    })
+    .slice(0, 4);
 }
 
 function tourScore(item) {
@@ -637,32 +813,78 @@ function ViewingRoom({ item, nodes, setItem, setSelected, onClose }) {
   );
 }
 
-function TourPanel({ items, selected, setSelected }) {
-  const currentIndex = Math.max(0, items.findIndex((item) => item.id === selected?.id));
-  const active = items[currentIndex];
-  const move = (direction) => {
-    if (!items.length) return;
-    const start = currentIndex >= 0 ? currentIndex : 0;
-    const next = (start + direction + items.length) % items.length;
-    setSelected(items[next]);
-  };
-
+function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onChoose }) {
+  const current = chapters[activeIndex] ?? chapters[0];
+  const hasPrevious = activeIndex > 0;
+  const hasNext = activeIndex < chapters.length - 1;
+  const storyWorks = getStoryWorks(current, nodes, selected);
   return (
-    <section className="tour-panel">
-      <button className="tour-start" onClick={() => items[0] && setSelected(items[0])}>
-        <Play size={13} />
-        徽宗导览
-      </button>
-      <button className="tour-step" onClick={() => move(-1)} aria-label="上一件">
-        <ChevronLeft size={15} />
-      </button>
-      <div>
-        <strong>{active ? cleanText(active.title, "核心作品") : "核心作品"}</strong>
-        <span>{items.length ? `${currentIndex + 1}/${items.length}` : "0/0"}</span>
+    <section className="story-panel">
+      <div className="story-kicker">
+        <span>分幕导览</span>
+        <b>{String(activeIndex + 1).padStart(2, "0")} / {String(chapters.length).padStart(2, "0")}</b>
       </div>
-      <button className="tour-step" onClick={() => move(1)} aria-label="下一件">
-        <ChevronRight size={15} />
-      </button>
+      <h2>{current.title}</h2>
+      <p>{current.hook}</p>
+      <strong>{current.insight}</strong>
+
+      <div className="story-link-chain" aria-label="本幕关系链">
+        {current.links.map(([from, relation]) => (
+          <div key={`${current.id}-${from}`}>
+            <span>{from}</span>
+            <i />
+            <b>{relation}</b>
+          </div>
+        ))}
+      </div>
+
+      <div className="story-work-chain" aria-label="本幕作品链">
+        {storyWorks.map((work) => (
+          <button
+            key={`${current.id}-${work.id}`}
+            className={selected?.id === work.id ? "active" : ""}
+            onClick={() => setSelected(work)}
+            title={cleanText(work.title, "作品")}
+            aria-label={`查看${cleanText(work.title, "作品")}`}
+          >
+            <img src={artworkImage(work)} alt="" />
+            <span>{storyRelationLabel(current, work)}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="story-steps" role="group" aria-label="故事分幕">
+        {chapters.map((chapter, index) => (
+          <button
+            key={chapter.id}
+            className={index === activeIndex ? "active" : ""}
+            onClick={() => onChoose(index)}
+            title={chapter.title}
+            aria-label={`进入第 ${index + 1} 幕：${chapter.title}`}
+          >
+            <span>{index + 1}</span>
+            <small>{chapter.label}</small>
+          </button>
+        ))}
+      </div>
+
+      <div className="story-actions">
+        <button disabled={!hasPrevious} onClick={() => hasPrevious && onChoose(activeIndex - 1)}>
+          <ChevronLeft size={14} />
+          上一幕
+        </button>
+        <button className="primary" onClick={() => onChoose(activeIndex)}>
+          进入本幕
+        </button>
+        <button disabled={!hasNext} onClick={() => hasNext && onChoose(activeIndex + 1)}>
+          下一幕
+          <ChevronRight size={14} />
+        </button>
+      </div>
+
+      <p className="story-focus">
+        当前焦点 · {selected ? cleanText(selected.title, "作品") : "等待进入本幕"}
+      </p>
     </section>
   );
 }
@@ -1113,6 +1335,7 @@ function App() {
   const [selected, setSelected] = useState(null);
   const [viewingItem, setViewingItem] = useState(null);
   const [hovered, setHovered] = useState(null);
+  const [storyIndex, setStoryIndex] = useState(0);
   const [activeCategory, setActiveCategory] = useState(null);
   const [timeMode, setTimeMode] = useState("all");
   const [query, setQuery] = useState("");
@@ -1126,22 +1349,29 @@ function App() {
     () => getDomainCounts(artifacts, timeMode),
     [artifacts, timeMode],
   );
-  const tourItems = useMemo(
-    () => visibleNodes
-      .filter((node) => node.related_to_huizong || node.central)
-      .sort((a, b) => tourScore(b) - tourScore(a))
-      .slice(0, 12),
-    [visibleNodes],
-  );
   const activeLabel = activeCategory ? domainMeta[activeCategory]?.label : "五域";
   const timeLabel = timeModes[timeMode].label;
+  const chooseStoryChapter = (index) => {
+    const chapter = storyChapters[index] ?? storyChapters[0];
+    const chapterTime = chapter.timeMode ?? "all";
+    const chapterDomain = chapter.domain ?? null;
+    const chapterNodes = buildNodes(artifacts, chapterDomain, chapterTime, "", false, true);
+    setStoryIndex(index);
+    setActiveCategory(chapterDomain);
+    setTimeMode(chapterTime);
+    setQuery("");
+    setCoreOnly(false);
+    setDenseMode(true);
+    setViewingItem(null);
+    setSelected(findStoryTarget(chapter, chapterNodes));
+  };
 
   return (
     <main>
       <Sidebar activeCategory={activeCategory} setActiveCategory={setActiveCategory} setSelected={setSelected} />
       <header className="title-block">
-        <h1>宋徽宗的审美宇宙</h1>
-        <span>{timeLabel} · {activeLabel} · {visibleNodes.length} 件图像与器物</span>
+        <h1>大宋审美操作系统</h1>
+        <span>{timeLabel} · {activeLabel} · {visibleNodes.length} 件作品关系</span>
       </header>
       <div className="stats">
         <strong>{visibleNodes.length}</strong>
@@ -1159,7 +1389,14 @@ function App() {
         activeCategory={activeCategory}
         timeMode={timeMode}
       />
-      <TourPanel items={tourItems} selected={selected} setSelected={setSelected} />
+      <StoryPanel
+        chapters={storyChapters}
+        activeIndex={storyIndex}
+        selected={selected}
+        nodes={visibleNodes}
+        setSelected={setSelected}
+        onChoose={chooseStoryChapter}
+      />
       <FallbackConstellation
         nodes={visibleNodes}
         selected={selected}

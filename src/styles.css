@@ -1474,6 +1474,220 @@ main::after {
   font: 10px Inter, Arial, sans-serif;
 }
 
+.story-panel {
+  position: absolute;
+  z-index: 26;
+  left: 116px;
+  top: 106px;
+  width: min(370px, calc(100vw - 520px));
+  min-width: 320px;
+  padding: 14px;
+  border: 1px solid rgba(190, 149, 80, 0.2);
+  background:
+    linear-gradient(180deg, rgba(12, 10, 7, 0.72), rgba(5, 5, 4, 0.48)),
+    rgba(5, 5, 4, 0.52);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 68px rgba(0, 0, 0, 0.24);
+}
+
+.story-kicker {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(176, 43, 34, 0.9);
+  font: 10px Inter, Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.story-kicker b {
+  color: rgba(220, 188, 123, 0.62);
+  font-weight: 500;
+}
+
+.story-panel h2 {
+  margin: 8px 0 7px;
+  color: #d9bd7c;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.18;
+}
+
+.story-panel p,
+.story-panel strong {
+  display: block;
+  margin: 0;
+  color: rgba(229, 205, 157, 0.75);
+  font-size: 13px;
+  line-height: 1.52;
+  font-weight: 400;
+}
+
+.story-panel strong {
+  margin-top: 8px;
+  color: rgba(197, 162, 101, 0.76);
+}
+
+.story-link-chain {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(190, 149, 80, 0.16);
+}
+
+.story-link-chain div {
+  display: grid;
+  grid-template-columns: 82px 24px 1fr;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: rgba(221, 194, 138, 0.72);
+  font-size: 12px;
+}
+
+.story-link-chain span,
+.story-link-chain b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+.story-link-chain span {
+  color: rgba(221, 188, 117, 0.88);
+}
+
+.story-link-chain i {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(174, 43, 34, 0.2), rgba(226, 186, 100, 0.76));
+}
+
+.story-work-chain {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(190, 149, 80, 0.14);
+}
+
+.story-work-chain button {
+  min-width: 0;
+  padding: 3px;
+  border: 1px solid rgba(190, 149, 80, 0.18);
+  background: rgba(12, 10, 7, 0.68);
+  color: rgba(221, 188, 117, 0.72);
+  cursor: pointer;
+}
+
+.story-work-chain button:hover,
+.story-work-chain button.active {
+  border-color: rgba(232, 190, 105, 0.66);
+  box-shadow: 0 0 15px rgba(217, 174, 97, 0.16);
+}
+
+.story-work-chain img {
+  display: block;
+  width: 100%;
+  height: 54px;
+  object-fit: cover;
+  background: rgba(10, 8, 5, 0.74);
+  filter: sepia(0.16) saturate(0.84) brightness(0.86);
+}
+
+.story-work-chain span {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(218, 190, 128, 0.78);
+  font: 10px Inter, Arial, sans-serif;
+}
+
+.story-steps {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 13px;
+}
+
+.story-steps button {
+  min-width: 0;
+  padding: 5px 2px;
+  border: 1px solid rgba(190, 149, 80, 0.18);
+  background: rgba(12, 10, 7, 0.7);
+  color: rgba(211, 181, 119, 0.58);
+  cursor: pointer;
+}
+
+.story-steps button.active,
+.story-steps button:hover {
+  border-color: rgba(229, 188, 109, 0.7);
+  color: rgba(232, 204, 142, 0.94);
+  box-shadow: 0 0 16px rgba(217, 174, 97, 0.12);
+}
+
+.story-steps span,
+.story-steps small {
+  display: block;
+}
+
+.story-steps span {
+  font: 12px Inter, Arial, sans-serif;
+}
+
+.story-steps small {
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+}
+
+.story-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.story-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  height: 30px;
+  border: 1px solid rgba(190, 149, 80, 0.26);
+  background: rgba(12, 10, 7, 0.72);
+  color: rgba(221, 188, 117, 0.76);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.story-actions button.primary {
+  border-color: rgba(178, 39, 30, 0.62);
+  color: rgba(230, 197, 126, 0.92);
+  background: linear-gradient(180deg, rgba(97, 28, 19, 0.4), rgba(12, 10, 7, 0.82));
+}
+
+.story-actions button:disabled {
+  opacity: 0.34;
+  cursor: default;
+}
+
+.story-panel .story-focus {
+  margin-top: 10px;
+  color: rgba(178, 42, 34, 0.86);
+  font: 11px Inter, Arial, sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .legend-strip {
   position: absolute;
   z-index: 20;
