@@ -103,6 +103,30 @@ const relationLabels = {
   related_style: "宋代审美参照",
 };
 
+const categoryDescriptions = {
+  flower_bird: "花鸟层关注宋代对物象的细密观看：羽毛、枝叶、花色与留白共同构成一种克制而精确的宫廷审美。",
+  porcelain: "宋瓷层强调器物轮廓、釉色和光泽的纯度，适合观察宋代审美中安静、节制、近乎抽象的一面。",
+  calligraphy: "书法层把笔画、题跋和帝王身份放在一起看，文字不只是说明，也参与建立作品的秩序和权威。",
+  landscape: "山水层呈现宋代关于空间、远近和气韵的观看方式，山水不只是景物，也是可进入的精神场域。",
+  figure: "人物与雅集层把观看重点转向宫廷、文人和仪式场景，适合观察人物关系与审美生活如何被组织。",
+  object: "器物层展示材料、工艺和装饰如何共同构成宋代视觉文化的物质基础。",
+  painting: "画卷层保留长卷、册页和立轴的观看节奏，适合观察图像如何在时间中被展开。",
+};
+
+function buildDescription(item) {
+  const categoryLabel = item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物";
+  const relation = relationLabels[item.huizong_relation] ?? "宋代审美参照";
+  const date = formatDate(item.date || item.period || item.dynasty);
+  const author = cleanText(item.artist);
+  const medium = cleanText(item.medium);
+  const source = cleanText(item.source);
+  const categoryNote = categoryDescriptions[item.category] ?? "这件作品作为宋代审美星图中的一个节点，用来观察图像、材质、年代与馆藏来源之间的关系。";
+  const authorPart = author ? `作者/相关人物为 ${author}。` : "";
+  const mediumPart = medium ? `媒介记录为 ${medium}。` : "";
+  const sourcePart = source ? `数据来自 ${source}。` : "";
+  return `${date} · ${categoryLabel} · ${relation}。${categoryNote}${authorPart}${mediumPart}${sourcePart}`;
+}
+
 function buildNodes(records, activeCategory, timeMode, query, coreOnly) {
   const central =
     records.find((item) => /芙蓉锦鸡|芙蓉錦雞|Songhuizong4/i.test(item.title)) ??
@@ -216,6 +240,7 @@ function DetailPanel({ selected, hovered, setSelected }) {
   const displayTitle = item ? cleanText(item.title, "未命名作品") : "";
   const displaySource = item ? cleanText(item.artist || item.source, "馆藏记录") : "";
   const displayRelation = item ? relationLabels[item.huizong_relation] ?? cleanText(item.huizong_relation || item.source, "宋代审美参照") : "";
+  const description = item ? buildDescription(item) : "";
   return (
     <section className={item ? "detail visible" : "detail"}>
       {item && (
@@ -226,6 +251,7 @@ function DetailPanel({ selected, hovered, setSelected }) {
             <h2>{displayTitle}</h2>
             <p>{displaySource}</p>
             <p className="relation">{displayRelation}</p>
+            <p className="curator-note">{description}</p>
             <div className="detail-actions">
               {item.source_url && (
                 <a href={item.source_url} target="_blank" rel="noreferrer">
@@ -403,16 +429,27 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered }) {
         const point3d = project3d(node);
         const isFeatured = featured?.id === node.id;
         const isDimmed = featured && !isRelatedToFeatured(node);
+        const rawRatio = node.width && node.height ? node.width / node.height : 1;
+        const featureRatio = clamp(rawRatio, 0.48, 6);
+        const featuredWidth =
+          rawRatio > 2.4
+            ? "min(58vw, 760px)"
+            : rawRatio > 1.15
+              ? "min(42vw, 560px)"
+              : rawRatio < 0.72
+                ? "min(24vw, 340px)"
+                : "min(34vw, 440px)";
         const style = {
           left: "50%",
           top: "51%",
           width: isFeatured
-            ? "min(20vw, 300px)"
+            ? featuredWidth
             : node.central
               ? "clamp(42px, 5vw, 74px)"
               : node.core
                 ? "clamp(26px, 3.7vw, 58px)"
                 : "clamp(13px, 1.8vw, 34px)",
+          aspectRatio: isFeatured ? `${featureRatio}` : undefined,
           borderColor: isFeatured || node.central ? "#e1bf79" : node.meta.color,
           boxShadow: isFeatured
             ? "0 0 44px rgba(229, 189, 112, .48)"
