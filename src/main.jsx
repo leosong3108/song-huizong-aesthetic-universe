@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BookOpen, Brush, CircleDot, ExternalLink, Feather, Mountain, Search, Sparkles, Waves, X } from "lucide-react";
+import { BookOpen, Brush, ChevronLeft, ChevronRight, CircleDot, ExternalLink, Feather, Mountain, Play, Search, Sparkles, Waves, X } from "lucide-react";
 import "./styles.css";
 
 const categoryMeta = {
@@ -127,6 +127,28 @@ function buildDescription(item) {
   return `${date} · ${categoryLabel} · ${relation}。${categoryNote}${authorPart}${mediumPart}${sourcePart}`;
 }
 
+function detailFacts(item) {
+  if (!item) return [];
+  return [
+    ["类别", item.meta?.label ?? categoryMeta[item.category]?.label ?? "文物"],
+    ["年代", formatDate(item.date || item.period || item.dynasty)],
+    ["关系", relationLabels[item.huizong_relation] ?? "宋代参照"],
+    ["来源", cleanText(item.source, "馆藏数据")],
+  ];
+}
+
+function tourScore(item) {
+  const relationScore = item.huizong_relation === "huizong_work" ? 4 : item.related_to_huizong ? 3 : 1;
+  const categoryScore = {
+    flower_bird: 5,
+    calligraphy: 4,
+    painting: 3,
+    landscape: 2,
+    porcelain: 1,
+  }[item.category] ?? 0;
+  return relationScore * 10 + categoryScore + (item.relevance_score ?? 0) / 100;
+}
+
 function buildNodes(records, activeCategory, timeMode, query, coreOnly) {
   const central =
     records.find((item) => /芙蓉锦鸡|芙蓉錦雞|Songhuizong4/i.test(item.title)) ??
@@ -241,6 +263,7 @@ function DetailPanel({ selected, hovered, setSelected }) {
   const displaySource = item ? cleanText(item.artist || item.source, "馆藏记录") : "";
   const displayRelation = item ? relationLabels[item.huizong_relation] ?? cleanText(item.huizong_relation || item.source, "宋代审美参照") : "";
   const description = item ? buildDescription(item) : "";
+  const facts = item ? detailFacts(item) : [];
   return (
     <section className={item ? "detail visible" : "detail"}>
       {item && (
@@ -251,6 +274,14 @@ function DetailPanel({ selected, hovered, setSelected }) {
             <h2>{displayTitle}</h2>
             <p>{displaySource}</p>
             <p className="relation">{displayRelation}</p>
+            <div className="detail-facts">
+              {facts.map(([label, value]) => (
+                <span key={label}>
+                  <small>{label}</small>
+                  {value}
+                </span>
+              ))}
+            </div>
             <p className="curator-note">{description}</p>
             <div className="detail-actions">
               {item.source_url && (
@@ -269,6 +300,36 @@ function DetailPanel({ selected, hovered, setSelected }) {
           </div>
         </>
       )}
+    </section>
+  );
+}
+
+function TourPanel({ items, selected, setSelected }) {
+  const currentIndex = Math.max(0, items.findIndex((item) => item.id === selected?.id));
+  const active = items[currentIndex];
+  const move = (direction) => {
+    if (!items.length) return;
+    const start = currentIndex >= 0 ? currentIndex : 0;
+    const next = (start + direction + items.length) % items.length;
+    setSelected(items[next]);
+  };
+
+  return (
+    <section className="tour-panel">
+      <button className="tour-start" onClick={() => items[0] && setSelected(items[0])}>
+        <Play size={13} />
+        徽宗导览
+      </button>
+      <button className="tour-step" onClick={() => move(-1)} aria-label="上一件">
+        <ChevronLeft size={15} />
+      </button>
+      <div>
+        <strong>{active ? cleanText(active.title, "核心作品") : "核心作品"}</strong>
+        <span>{items.length ? `${currentIndex + 1}/${items.length}` : "0/0"}</span>
+      </div>
+      <button className="tour-step" onClick={() => move(1)} aria-label="下一件">
+        <ChevronRight size={15} />
+      </button>
     </section>
   );
 }
@@ -632,6 +693,13 @@ function App() {
     () => buildNodes(artifacts, activeCategory, timeMode, query, coreOnly),
     [artifacts, activeCategory, timeMode, query, coreOnly],
   );
+  const tourItems = useMemo(
+    () => visibleNodes
+      .filter((node) => node.related_to_huizong || node.central)
+      .sort((a, b) => tourScore(b) - tourScore(a))
+      .slice(0, 12),
+    [visibleNodes],
+  );
   const activeLabel = activeCategory ? categoryMeta[activeCategory]?.label : "全类";
   const timeLabel = timeModes[timeMode].label;
 
@@ -656,6 +724,7 @@ function App() {
         activeCategory={activeCategory}
         timeMode={timeMode}
       />
+      <TourPanel items={tourItems} selected={selected} setSelected={setSelected} />
       <FallbackConstellation nodes={visibleNodes} selected={selected} setSelected={setSelected} setHovered={setHovered} />
       <LegendStrip nodes={visibleNodes} />
       <DetailPanel selected={selected} hovered={hovered} setSelected={setSelected} />
