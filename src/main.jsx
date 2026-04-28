@@ -813,7 +813,7 @@ function ViewingRoom({ item, nodes, setItem, setSelected, onClose }) {
   );
 }
 
-function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onChoose }) {
+function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onChoose, storyBeat }) {
   const current = chapters[activeIndex] ?? chapters[0];
   const hasPrevious = activeIndex > 0;
   const hasNext = activeIndex < chapters.length - 1;
@@ -839,10 +839,14 @@ function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onCho
       </div>
 
       <div className="story-work-chain" aria-label="本幕作品链">
-        {storyWorks.map((work) => (
+        {storyWorks.map((work, index) => (
           <button
             key={`${current.id}-${work.id}`}
-            className={selected?.id === work.id ? "active" : ""}
+            className={[
+              selected?.id === work.id ? "active" : "",
+              storyBeat >= index ? "story-lit" : "",
+              storyBeat === index ? "story-current" : "",
+            ].filter(Boolean).join(" ")}
             onClick={() => setSelected(work)}
             title={cleanText(work.title, "作品")}
             aria-label={`查看${cleanText(work.title, "作品")}`}
@@ -889,12 +893,29 @@ function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onCho
   );
 }
 
-function FallbackConstellation({ nodes, selected, setSelected, setHovered, denseMode, activeCategory, setActiveCategory, allDomainCounts }) {
+function FallbackConstellation({
+  nodes,
+  selected,
+  setSelected,
+  setHovered,
+  denseMode,
+  activeCategory,
+  setActiveCategory,
+  allDomainCounts,
+  storyWorks,
+  storyBeat,
+}) {
   const central = nodes.find((node) => node.central);
   const featured = selected || null;
   const [view, setView] = useState({ rotateX: -5, rotateY: 0, zoom: 1, panX: 0, panY: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef(null);
+  const storyPath = (storyWorks ?? [])
+    .filter((node) => node?.position?.every(Number.isFinite))
+    .slice(0, 4);
+  const storyPathIds = new Set(storyPath.map((node) => node.id));
+  const activeStoryNode = storyBeat >= 0 && storyBeat < storyPath.length ? storyPath[storyBeat] : null;
+  const isStoryPlaying = storyBeat >= 0 && storyPath.length > 0;
   const domainCounts = useMemo(() => {
     const result = {};
     for (const node of nodes) result[node.domain] = (result[node.domain] ?? 0) + 1;
@@ -915,6 +936,15 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
       line.from.position?.every(Number.isFinite) &&
       line.to.position?.every(Number.isFinite)
     );
+  const storyConnectors = storyPath
+    .slice(1)
+    .map((node, index) => ({
+      from: storyPath[index],
+      to: node,
+      active: storyBeat >= index + 1,
+      index,
+    }))
+    .filter((line) => line.from && line.to);
 
   const dust = useMemo(() => {
     const rand = seededRandom(1602);
@@ -1006,6 +1036,7 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
         "constellation-3d",
         denseMode ? "dense-mode" : "",
         featured ? "focus-mode" : "",
+        isStoryPlaying ? "story-playing" : "",
         isDragging ? "dragging" : "",
       ].filter(Boolean).join(" ")}
       data-testid="constellation"
@@ -1042,6 +1073,22 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           const to = project(line.to.position);
           if (![from.x, from.y, to.x, to.y].every(Number.isFinite)) return null;
           return <line key={`${line.from.id}-${line.to.id}`} x1={from.x} y1={from.y} x2={to.x} y2={to.y} />;
+        })}
+        {storyConnectors.map((line) => {
+          const from = project(line.from.position);
+          const to = project(line.to.position);
+          if (![from.x, from.y, to.x, to.y].every(Number.isFinite)) return null;
+          return (
+            <line
+              key={`story-${line.from.id}-${line.to.id}`}
+              className={line.active ? "story-path-line active" : "story-path-line"}
+              x1={from.x}
+              y1={from.y}
+              x2={to.x}
+              y2={to.y}
+              style={{ "--path-delay": `${line.index * 120}ms` }}
+            />
+          );
         })}
         {dust.map((dot) => (
           <circle key={dot.id} className="dust-dot" cx={dot.x} cy={dot.y} r={dot.r} opacity={dot.opacity} />
@@ -1117,6 +1164,10 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
         const isFeatured = featured?.id === node.id;
         if (isFeatured) return null;
         const isDimmed = featured && !isRelatedToFeatured(node);
+        const storyPathIndex = storyPath.findIndex((work) => work.id === node.id);
+        const isStoryPathNode = storyPathIndex >= 0;
+        const isStoryActiveNode = activeStoryNode?.id === node.id;
+        const isStorySeenNode = storyPathIndex >= 0 && storyBeat >= storyPathIndex;
         const style = {
           left: "50%",
           top: "51%",
@@ -1140,17 +1191,18 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           <button
             key={`fallback-${node.id}`}
             className={
-              isFeatured
-                ? "fallback-node-button featured"
-                : selected?.id === node.id
-                  ? "fallback-node-button selected"
-                : isDimmed
-                  ? `fallback-node-button dimmed domain-${node.domain}`
-                  : node.central
-                    ? "fallback-node-button central-core"
-                    : node.core
-                      ? `fallback-node-button core domain-${node.domain} cat-${node.category}`
-                      : `fallback-node-button domain-${node.domain} cat-${node.category}`
+              [
+                "fallback-node-button",
+                selected?.id === node.id ? "selected" : "",
+                isDimmed ? "dimmed" : "",
+                node.central ? "central-core" : "",
+                node.core && !node.central ? "core" : "",
+                isStoryPathNode ? "story-path-node" : "",
+                isStorySeenNode ? "story-seen-node" : "",
+                isStoryActiveNode ? "story-active-node" : "",
+                `domain-${node.domain}`,
+                `cat-${node.category}`,
+              ].filter(Boolean).join(" ")
             }
             data-testid="artifact-node"
             aria-label={node.title}
@@ -1185,7 +1237,11 @@ function FallbackConstellation({ nodes, selected, setSelected, setHovered, dense
           <>
             <div className="focus-scrim" />
             <button
-              className="focus-artwork-frame"
+              className={[
+                "focus-artwork-frame",
+                storyPathIds.has(featured.id) ? "story-path-frame" : "",
+                activeStoryNode?.id === featured.id ? "story-active-frame" : "",
+              ].filter(Boolean).join(" ")}
               data-testid="featured-artwork"
               aria-label={`已选中 ${cleanText(featured.title, "作品")}`}
               style={{ "--focus-width": focusWidth }}
@@ -1341,6 +1397,8 @@ function App() {
   const [query, setQuery] = useState("");
   const [coreOnly, setCoreOnly] = useState(false);
   const [denseMode, setDenseMode] = useState(false);
+  const [storyRun, setStoryRun] = useState(0);
+  const [storyBeat, setStoryBeat] = useState(-1);
   const visibleNodes = useMemo(
     () => buildNodes(artifacts, activeCategory, timeMode, query, coreOnly, denseMode),
     [artifacts, activeCategory, timeMode, query, coreOnly, denseMode],
@@ -1351,6 +1409,25 @@ function App() {
   );
   const activeLabel = activeCategory ? domainMeta[activeCategory]?.label : "五域";
   const timeLabel = timeModes[timeMode].label;
+  const activeChapter = storyChapters[storyIndex] ?? storyChapters[0];
+  const activeStoryWorks = useMemo(
+    () => getStoryWorks(activeChapter, visibleNodes, selected),
+    [activeChapter, visibleNodes, selected],
+  );
+
+  React.useEffect(() => {
+    if (!storyRun) return undefined;
+    setStoryBeat(0);
+    const timers = [1, 2, 3].map((beat) =>
+      window.setTimeout(() => setStoryBeat(beat), 520 + beat * 620)
+    );
+    const endTimer = window.setTimeout(() => setStoryBeat(4), 3500);
+    return () => {
+      timers.forEach(window.clearTimeout);
+      window.clearTimeout(endTimer);
+    };
+  }, [storyRun, storyIndex]);
+
   const chooseStoryChapter = (index) => {
     const chapter = storyChapters[index] ?? storyChapters[0];
     const chapterTime = chapter.timeMode ?? "all";
@@ -1364,6 +1441,7 @@ function App() {
     setDenseMode(false);
     setViewingItem(null);
     setSelected(findStoryTarget(chapter, chapterNodes));
+    setStoryRun((value) => value + 1);
   };
 
   return (
@@ -1396,6 +1474,7 @@ function App() {
         nodes={visibleNodes}
         setSelected={setSelected}
         onChoose={chooseStoryChapter}
+        storyBeat={storyBeat}
       />
       <FallbackConstellation
         nodes={visibleNodes}
@@ -1406,6 +1485,8 @@ function App() {
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
         allDomainCounts={allDomainCounts}
+        storyWorks={activeStoryWorks}
+        storyBeat={storyBeat}
       />
       <LegendStrip nodes={visibleNodes} allDomainCounts={allDomainCounts} />
       <DetailPanel
