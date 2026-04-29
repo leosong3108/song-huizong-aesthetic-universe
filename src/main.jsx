@@ -1355,6 +1355,15 @@ function FallbackConstellation({
           ["120px", "-206px", "-260px", "72px", "164deg", "-12s"],
           ["-420px", "210px", "160px", "118px", "8deg", "-16s"],
         ];
+        const satelliteBeams = satelliteWorks.map((work, index) => {
+          const [x, y] = satelliteSlots[index % satelliteSlots.length];
+          return {
+            id: work.id,
+            length: Math.round(Math.hypot(x, y)),
+            angle: Math.atan2(y, x) * 180 / Math.PI,
+            delay: `${index * 120}ms`,
+          };
+        });
         const narrativeMeta = [
           ["年代", date],
           ["作者", source],
@@ -1387,7 +1396,22 @@ function FallbackConstellation({
                 />
               ))}
             </div>
+            {satelliteBeams.length > 0 && (
+              <div className="focus-link-layer" aria-hidden="true">
+                {satelliteBeams.map((beam) => (
+                  <i
+                    key={`focus-beam-${beam.id}`}
+                    style={{
+                      "--beam-length": `${beam.length}px`,
+                      "--beam-angle": `${beam.angle}deg`,
+                      "--beam-delay": beam.delay,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
             <button
+              key={`focus-artwork-${featured.id}`}
               className={[
                 "focus-artwork-frame",
                 storyPathIds.has(featured.id) ? "story-path-frame" : "",

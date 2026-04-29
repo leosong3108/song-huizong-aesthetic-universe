@@ -718,6 +718,45 @@ main::after {
   transform: rotate(-18deg);
 }
 
+.focus-link-layer {
+  position: absolute;
+  z-index: 78;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.focus-link-layer i {
+  position: absolute;
+  left: 46%;
+  top: 47%;
+  width: var(--beam-length);
+  height: 1px;
+  background:
+    linear-gradient(90deg, rgba(239, 203, 128, 0.48), rgba(239, 203, 128, 0.12) 64%, transparent);
+  opacity: 0.24;
+  transform: translateY(-50%) rotate(var(--beam-angle));
+  transform-origin: left center;
+  animation: beamPulse 5.8s ease-in-out infinite;
+  animation-delay: var(--beam-delay);
+}
+
+.focus-link-layer i::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 34%;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 230, 165, 0.68), transparent);
+  filter: blur(1px);
+  opacity: 0;
+  animation: beamSignal 5.8s ease-in-out infinite;
+  animation-delay: var(--beam-delay);
+}
+
 .focus-artwork-frame {
   position: absolute;
   z-index: 80;
@@ -2581,6 +2620,39 @@ main::after {
   to {
     opacity: 1;
     filter: sepia(0.12) saturate(0.9) brightness(0.93) contrast(1.04);
+  }
+}
+
+@keyframes beamPulse {
+  0%,
+  100% {
+    opacity: 0.16;
+  }
+
+  50% {
+    opacity: 0.34;
+  }
+}
+
+@keyframes beamSignal {
+  0%,
+  22% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+
+  34% {
+    opacity: 0.55;
+  }
+
+  58% {
+    opacity: 0;
+    transform: translateX(calc(var(--beam-length) * 0.62));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(calc(var(--beam-length) * 0.62));
   }
 }
 
