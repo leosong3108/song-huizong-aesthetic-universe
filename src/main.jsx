@@ -92,6 +92,22 @@ const timeModes = {
   southern: { label: "南宋", years: "1128-1279", range: [1128, 1279], description: "靖康之后的南宋余韵与风格延续" },
 };
 
+const directorAnchors = {
+  omen: [0.15, 1.78, 0.22],
+  nature: [-4.9, 0.82, -0.24],
+  inscription: [4.85, 0.92, -0.18],
+  collection: [4.28, -1.08, -0.34],
+  vessel: [-4.38, -1.18, -0.28],
+};
+
+const directorDepths = {
+  omen: 160,
+  nature: 20,
+  inscription: 60,
+  collection: -90,
+  vessel: -60,
+};
+
 const storyChapters = [
   {
     id: "thesis",
@@ -541,8 +557,9 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
   });
 
   const hasIntent = Boolean(activeCategory || timeMode !== "all" || query.trim() || coreOnly);
-  const huizongLimit = denseMode ? (hasIntent ? 58 : 46) : (hasIntent ? 36 : 22);
-  const peripheralLimit = denseMode ? (hasIntent ? 90 : 104) : (hasIntent ? 36 : 18);
+  const directorMode = !denseMode && !hasIntent;
+  const huizongLimit = denseMode ? (hasIntent ? 58 : 46) : (directorMode ? 14 : hasIntent ? 36 : 22);
+  const peripheralLimit = denseMode ? (hasIntent ? 90 : 104) : (directorMode ? 8 : hasIntent ? 36 : 18);
   const huizong = filteredRecords
     .filter((item) => item.related_to_huizong)
     .slice(0, huizongLimit);
@@ -585,6 +602,13 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
     const localY = Math.sin(localTheta) * localRadius * 0.54 + (rand() - 0.5) * 0.28;
     const localZ = Math.sin(localTheta) * localRadius * 108 + (rand() - 0.5) * 72;
     const denseDepth = Math.round((anchorZ + localZ + (core ? 70 : -30)) / 10) * 10;
+    const directorAnchor = directorAnchors[domain] ?? [0, 0, 0];
+    const directorSlots = domain === "omen" ? 5 : 6;
+    const directorSlot = categoryIndex % directorSlots;
+    const directorRing = Math.floor(categoryIndex / directorSlots);
+    const directorTheta = -Math.PI / 2 + (directorSlot / directorSlots) * Math.PI * 2 + directorRing * 0.34;
+    const directorRadiusX = (core ? 1.05 : 1.28) + directorRing * 0.68;
+    const directorRadiusY = (core ? 0.5 : 0.62) + directorRing * 0.34;
     const position = denseMode
       ? index === 0
         ? [0, -0.05, 0.2]
@@ -593,6 +617,14 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
             domainInfo.y + localY,
             0,
           ]
+      : directorMode
+        ? index === 0
+          ? [0, -0.05, 0.2]
+          : [
+              directorAnchor[0] + Math.cos(directorTheta) * directorRadiusX,
+              directorAnchor[1] + Math.sin(directorTheta) * directorRadiusY,
+              directorAnchor[2],
+            ]
       : index === 0
         ? [0, -0.05, 0.2]
         : [
@@ -616,7 +648,9 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
       position,
       depth: denseMode
         ? index === 0 ? 120 : denseDepth
-        : index === 0 ? 80 : Math.round(clamp((rand() - 0.5) * 620 + (core ? 80 : -60), -360, 220) / 10) * 10,
+        : directorMode
+          ? index === 0 ? 100 : (directorDepths[domain] ?? -40) + directorRing * 28 + (core ? 35 : -10)
+          : index === 0 ? 80 : Math.round(clamp((rand() - 0.5) * 620 + (core ? 80 : -60), -360, 220) / 10) * 10,
       size: [width, height],
       meta,
       domain,

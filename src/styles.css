@@ -73,7 +73,7 @@ main::after {
 }
 
 .story-layout .fallback-constellation {
-  inset: 84px 0 92px 70px;
+  inset: 84px 0 138px 70px;
   background:
     radial-gradient(circle at 52% 51%, rgba(217, 173, 96, 0.12), transparent 20%),
     radial-gradient(circle at 23% 60%, rgba(112, 147, 125, 0.05), transparent 18%),
@@ -102,7 +102,7 @@ main::after {
 }
 
 .story-layout .fallback-constellation:not(.focus-mode) .central-caption {
-  opacity: 0.28;
+  display: none;
 }
 
 .story-layout .fallback-constellation svg {
@@ -123,13 +123,50 @@ main::after {
 }
 
 .story-layout .fallback-node-button.central-core {
-  width: clamp(250px, 24vw, 410px) !important;
+  width: clamp(220px, 21vw, 360px) !important;
   opacity: 0.98;
   z-index: 12;
 }
 
 .story-layout .fallback-node-button.central-core img {
-  max-height: min(38vh, 390px);
+  max-height: min(34vh, 330px);
+}
+
+.story-layout .fallback-node-button.core:not(.central-core) {
+  width: clamp(22px, 2.5vw, 46px) !important;
+}
+
+.story-layout .fallback-node-button:not(.central-core):not(.core) {
+  width: clamp(10px, 1.35vw, 24px) !important;
+}
+
+.story-layout .domain-label {
+  width: 124px;
+  min-height: 38px;
+  padding: 6px 8px 6px 32px;
+}
+
+.story-layout .domain-label b {
+  left: 8px;
+  top: 8px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
+
+.story-layout .domain-label span {
+  font-size: 12px;
+}
+
+.story-layout .domain-label small {
+  display: none;
+}
+
+.story-layout .view-hud {
+  left: auto;
+  right: 24px;
+  top: 18px;
+  transform: none;
 }
 
 .fallback-constellation {
@@ -1620,13 +1657,13 @@ main::after {
 }
 
 .story-layout .story-panel {
-  bottom: 22px;
-  width: min(1060px, calc(100vw - 250px));
-  grid-template-columns: 116px minmax(310px, 1fr) 310px 230px;
+  bottom: 18px;
+  width: min(930px, calc(100vw - 230px));
+  grid-template-columns: 92px minmax(250px, 1fr) 260px 194px;
   grid-template-areas: "kicker works steps actions";
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
+  gap: 8px;
+  padding: 6px 9px;
   background:
     linear-gradient(180deg, rgba(12, 10, 7, 0.7), rgba(5, 5, 4, 0.54)),
     rgba(5, 5, 4, 0.62);
@@ -1647,11 +1684,11 @@ main::after {
 
 .story-layout .story-work-chain {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 7px;
+  gap: 5px;
 }
 
 .story-layout .story-work-chain img {
-  height: 54px;
+  height: 38px;
 }
 
 .story-layout .story-steps {
