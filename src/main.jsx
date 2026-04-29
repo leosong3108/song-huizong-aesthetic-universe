@@ -371,6 +371,28 @@ function buildDescription(item) {
   return `${date} · ${categoryLabel} · ${relation}。${noteSentence}${authorPart}${mediumPart}${sourcePart}`;
 }
 
+function displayArtworkTitle(item, fallback = "未命名作品") {
+  const title = cleanText(item?.title, fallback);
+  const aliases = [
+    [/Auspicious Cranes/i, "瑞鹤图"],
+    [/Five-colou?red parakeet|Five-coulored parakeet/i, "五色鹦鹉图"],
+    [/Finches and bamboo|竹禽/i, "竹禽图"],
+    [/Songhuizong3/i, "枇杷山鸟图"],
+    [/Songhuizong4/i, "芙蓉锦鸡图"],
+  ];
+  return aliases.find(([pattern]) => pattern.test(title))?.[1] ?? title;
+}
+
+function poeticLine(item) {
+  const domain = item?.domain;
+  if (domain === "omen") return "它把飞鸟、宫门与云气连成一束光，让自然现象成为王朝想象的投影。";
+  if (domain === "nature") return "一枝一羽被放大成宇宙尺度，宋人的观看从此变得安静、精密而有秩序。";
+  if (domain === "inscription") return "笔画像星轨一样穿过画面，题跋不再解释作品，而是在为它建立身份。";
+  if (domain === "vessel") return "釉色与器形收住了所有喧哗，把日常器物变成可以触摸的光。";
+  if (domain === "collection") return "它不是孤立的藏品，而是宣和内府星图里被命名、收藏和再观看的一颗星。";
+  return "这件作品在宋代审美的暗处发光，连接图像、材质、时间与观看者。";
+}
+
 function detailFacts(item) {
   if (!item) return [];
   return [
@@ -668,7 +690,7 @@ function clamp(value, min, max) {
 }
 
 function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
-  const entries = domainOrder;
+  const entries = ["omen", "nature", "inscription", "vessel"];
   return (
     <aside className="sidebar">
       <button className={activeCategory ? "seal-mark" : "seal-mark active"} onClick={() => {
@@ -678,9 +700,20 @@ function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
         宋
       </button>
       <div className="tool-stack">
+        <button
+          className={activeCategory ? "tool" : "tool active"}
+          onClick={() => {
+            setActiveCategory(null);
+            setSelected(null);
+          }}
+          title="宇宙全景"
+          aria-label="宇宙全景"
+        >
+          <b>全</b>
+          <span>全景</span>
+        </button>
         {entries.map((key) => {
           const meta = domainMeta[key];
-          const Icon = meta.icon;
           return (
             <button
               key={key}
@@ -692,18 +725,12 @@ function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
               title={`聚焦${meta.label}`}
               aria-label={`聚焦${meta.label}`}
             >
-              <Icon size={18} />
-              <span>{meta.label}</span>
+              <b>{meta.seal}</b>
+              <span>{meta.short}</span>
             </button>
           );
         })}
       </div>
-      <button className="bottom-sigil" onClick={() => {
-        setActiveCategory("omen");
-        setSelected(null);
-      }} title="宣和天象">
-        徽
-      </button>
     </aside>
   );
 }
@@ -938,13 +965,10 @@ function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onCho
       <div className="story-actions">
         <button disabled={!hasPrevious} onClick={() => hasPrevious && onChoose(activeIndex - 1)}>
           <ChevronLeft size={14} />
-          上一幕
-        </button>
-        <button className="primary" onClick={() => onChoose(activeIndex)}>
-          进入本幕
+          回溯
         </button>
         <button disabled={!hasNext} onClick={() => hasNext && onChoose(activeIndex + 1)}>
-          下一幕
+          流向
           <ChevronRight size={14} />
         </button>
       </div>
@@ -1301,25 +1325,46 @@ function FallbackConstellation({
               : rawRatio < 0.72
                 ? "min(26vw, 320px)"
                 : "min(30vw, 390px)";
-        const title = cleanText(featured.title, "未命名作品");
+        const title = displayArtworkTitle(featured);
         const date = formatDate(featured.date || featured.period || featured.dynasty);
         const source = cleanText(featured.artist || featured.source, "馆藏记录");
         const relation = relationLabels[featured.huizong_relation] ?? cleanText(featured.huizong_relation, "宋代审美参照");
-        const note = buildDescription(featured);
-        const conciseNote = note.length > 112 ? `${note.slice(0, 112)}...` : note;
-        const relatedWorks = focusRelatedWorks.slice(0, 3);
-        const satelliteWorks = focusRelatedWorks.slice(0, 6);
+        const sourceName = cleanText(featured.source, "馆藏记录");
+        const medium = cleanText(featured.medium, "材质未详");
+        const seenSatelliteTitles = new Set([title]);
+        const satelliteWorks = focusRelatedWorks
+          .filter((work) => {
+            const key = displayArtworkTitle(work, "相关作品").toLowerCase();
+            if (seenSatelliteTitles.has(key)) return false;
+            seenSatelliteTitles.add(key);
+            return true;
+          })
+          .slice(0, 6);
         const satelliteSlots = [
-          ["24%", "36%"],
-          ["25%", "64%"],
-          ["38%", "24%"],
-          ["60%", "24%"],
-          ["38%", "77%"],
-          ["60%", "77%"],
+          [-260, 146],
+          [-292, -88],
+          [-56, -224],
+          [98, -188],
+          [112, 204],
+          [-88, 226],
+        ];
+        const narrativeMeta = [
+          ["年代", date],
+          ["作者", source],
+          ["星域", featured.domainMeta?.label ?? featured.meta?.label ?? "宋代审美"],
+          ["材质", medium],
+          ["来源", sourceName],
         ];
         return (
           <>
             <div className="focus-scrim" />
+            <div className="focus-orbit-system" aria-hidden="true">
+              <i className="focus-orbit-ring ring-one" />
+              <i className="focus-orbit-ring ring-two" />
+              <i className="focus-orbit-ring ring-three" />
+              <i className="focus-orbit-ray ray-one" />
+              <i className="focus-orbit-ray ray-two" />
+            </div>
             <button
               className={[
                 "focus-artwork-frame",
@@ -1338,7 +1383,11 @@ function FallbackConstellation({
               <img src={artworkImage(featured, "full")} alt="" />
             </button>
             {satelliteWorks.length > 0 && (
-              <div className="focus-satellite-layer" data-testid="focus-satellites" aria-label="相关展品路径">
+              <div
+                className="focus-satellite-layer"
+                data-testid="focus-satellites"
+                aria-label="相关作品轨道"
+              >
                 {satelliteWorks.map((work, index) => {
                   const slot = satelliteSlots[index % satelliteSlots.length];
                   return (
@@ -1346,17 +1395,25 @@ function FallbackConstellation({
                       key={`focus-satellite-${work.id}`}
                       className="focus-satellite-button"
                       style={{
-                        "--sat-left": slot[0],
-                        "--sat-top": slot[1],
-                        "--focus-delay": `${index * 60}ms`,
+                        "--sat-x": `${slot[0]}px`,
+                        "--sat-y": `${slot[1]}px`,
+                        "--focus-delay": `${index * 80}ms`,
                       }}
-                      onPointerDown={(event) => event.stopPropagation()}
-                      onClick={() => setSelected(work)}
-                      title={cleanText(work.title, "相关作品")}
-                      aria-label={`切换到${cleanText(work.title, "相关作品")}`}
+                      onMouseEnter={() => setHovered(work)}
+                      onMouseLeave={() => setHovered(null)}
+                      onPointerDown={(event) => {
+                        event.stopPropagation();
+                        setSelected(work);
+                      }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setSelected(work);
+                      }}
+                      title={displayArtworkTitle(work, "相关作品")}
+                      aria-label={`切换到${displayArtworkTitle(work, "相关作品")}`}
                     >
                       <img src={artworkImage(work)} alt="" />
-                      <span>{index + 1} · {work.domainMeta?.short ?? work.meta?.label ?? "相关"}</span>
+                      <span>{index + 1} · {work.domainMeta?.short ?? work.meta?.label ?? "旁证"}</span>
                     </button>
                   );
                 })}
@@ -1367,29 +1424,21 @@ function FallbackConstellation({
               data-testid="featured-label"
               onPointerDown={(event) => event.stopPropagation()}
             >
-              <p>{featured.domainMeta?.label ?? featured.meta?.label ?? "宋代审美"} · {date}</p>
+              <p className="focus-kicker">画心节点 · {relation}</p>
               <h2>{title}</h2>
-              <span>{source}</span>
-              <b>{relation}</b>
-              <em>{conciseNote}</em>
-              {relatedWorks.length > 0 && (
-                <div className="focus-related-strip" aria-label="相关作品">
-                  {relatedWorks.map((work) => (
-                    <button
-                      key={work.id}
-                      onClick={() => setSelected(work)}
-                      title={cleanText(work.title, "相关作品")}
-                      aria-label={`切换到${cleanText(work.title, "相关作品")}`}
-                    >
-                      <img src={artworkImage(work)} alt="" />
-                    </button>
-                  ))}
-                </div>
-              )}
+              <strong>{poeticLine(featured)}</strong>
+              <dl className="focus-meta-list">
+                {narrativeMeta.map(([label, value]) => (
+                  <div key={label}>
+                    <dt>{label}</dt>
+                    <dd>{value}</dd>
+                  </div>
+                ))}
+              </dl>
               <div className="focus-label-actions">
                 <button onClick={() => openViewingRoom?.(featured)}>
                   <Search size={13} />
-                  鉴赏
+                  入画
                 </button>
                 <button onClick={() => setSelected(null)}>
                   <X size={13} />
@@ -1535,6 +1584,7 @@ function App() {
   const [selected, setSelected] = useState(null);
   const [viewingItem, setViewingItem] = useState(null);
   const [hovered, setHovered] = useState(null);
+  const didAutoFocus = useRef(false);
   const [storyIndex, setStoryIndex] = useState(0);
   const [activeCategory, setActiveCategory] = useState(null);
   const [timeMode, setTimeMode] = useState("all");
@@ -1558,6 +1608,14 @@ function App() {
     () => getStoryWorks(activeChapter, visibleNodes, selected),
     [activeChapter, visibleNodes, selected],
   );
+
+  React.useEffect(() => {
+    if (didAutoFocus.current || selected || !visibleNodes.length) return;
+    const centralNode = visibleNodes.find((node) => node.central);
+    if (!centralNode) return;
+    didAutoFocus.current = true;
+    setSelected(centralNode);
+  }, [selected, visibleNodes]);
 
   React.useEffect(() => {
     if (!storyRun) return undefined;
@@ -1592,8 +1650,8 @@ function App() {
     <main className={selected ? "story-layout has-focus" : "story-layout"}>
       <Sidebar activeCategory={activeCategory} setActiveCategory={setActiveCategory} setSelected={setSelected} />
       <header className="title-block">
-        <h1>大宋审美操作系统</h1>
-        <span>{timeLabel} · {activeLabel} · {visibleNodes.length} 件作品关系</span>
+        <h1>宣和观象图</h1>
+        <span>宋代审美 · {timeLabel} · {activeLabel} · {visibleNodes.length} 个节点</span>
       </header>
       <div className="stats">
         <strong>{visibleNodes.length}</strong>
