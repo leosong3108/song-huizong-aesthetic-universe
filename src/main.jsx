@@ -100,8 +100,10 @@ const storyChapters = [
     timeMode: "all",
     focus: [/Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图/i],
     title: "他不是只会画画",
+    claim: "宋徽宗不是“艺术家皇帝”，而是在设计一套王朝视觉系统。",
     hook: "把画、字、收藏和器物连起来看，宋徽宗更像是在设计一套王朝视觉系统。",
     insight: "这条线索从《瑞鹤图》开始：图像负责制造天命，花鸟负责训练观看，题跋负责认证，收藏负责归档，器物负责进入日常。",
+    punchline: "谁有资格定义美，谁就有资格定义秩序。",
     links: [
       ["《瑞鹤图》", "把天象变成王朝叙事"],
       ["瘦金题跋", "把皇帝签名写进图像"],
@@ -115,8 +117,10 @@ const storyChapters = [
     timeMode: "xuanhe",
     focus: [/Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图|Song-Palace/i],
     title: "鹤不是鸟，是一条通知",
+    claim: "《瑞鹤图》不是在画鸟，而是在把天象变成政治公告。",
     hook: "1112 年的《瑞鹤图》把宫门、云气、题诗和鹤群放在一起，让自然现象变成政治图像。",
     insight: "这一幕连接的是“天象”和“皇权”：同样是鸟，飞过宫门时就不只是花鸟画，而是一套视觉合法性。",
+    punchline: "15 年后，这个祥瑞中心反而成了北宋崩塌前的挽歌。",
     links: [
       ["瑞鹤", "从自然物变成祥瑞符号"],
       ["宫门", "把事件固定在权力中心"],
@@ -130,8 +134,10 @@ const storyChapters = [
     timeMode: "xuanhe",
     focus: [/Finches and bamboo|竹禽|Five-colored|parakeet|写生珍禽|芙蓉|枇杷|梅花/i],
     title: "花鸟不是装饰，是观察方法",
+    claim: "徽宗花鸟真正迷人的地方，是它把“看见细节”变成了一种制度。",
     hook: "徽宗花鸟的重点不只是好看，而是把羽毛、竹枝、花叶都纳入细密的观看秩序。",
     insight: "这条线把《竹禽图》和写生珍禽连接起来：它们共同证明宫廷审美在训练一种“看见万物细节”的能力。",
+    punchline: "鸟的眼神、竹的斜枝、花的姿态，都是画院训练出来的观看精度。",
     links: [
       ["竹禽", "把鸟的神态做成标准"],
       ["写生珍禽", "把自然拆成连续样本"],
@@ -145,8 +151,10 @@ const storyChapters = [
     timeMode: "xuanhe",
     focus: [/楷书千字文|Nongfang|Summer poem|Huizong-Calligraphy|Poem|Round fan|赵佶等法书/i],
     title: "瘦金体不是字，是界面签名",
+    claim: "瘦金体不是附在画上的字，而是徽宗给作品加上的视觉认证层。",
     hook: "当文字进入画面，它不只是说明，而是在告诉观看者：这件图像被谁观看、谁认证、谁纳入秩序。",
     insight: "瘦金体把作品从“画”变成“被皇帝命名的对象”，也把审美权力从图像延伸到题跋、款识和印章。",
+    punchline: "一行题跋，就能把普通图像变成帝王系统里的对象。",
     links: [
       ["瘦金书", "形成独特识别系统"],
       ["题跋", "给图像增加权威层"],
@@ -160,8 +168,10 @@ const storyChapters = [
     timeMode: "xuanhe",
     focus: [/文會|文会|聽琴|听琴|Literary Gathering|Court Ladies|Preparing Newly-Woven|捣练/i],
     title: "收藏不是爱好，是数据库",
+    claim: "宣和收藏不是私人趣味，而是一套给图像编号、命名、归档的王朝数据库。",
     hook: "文会、听琴、摹古和内府收藏把作品连成网络：谁画、谁题、谁藏、谁被观看。",
     insight: "这一幕的关系是“图像进入档案”：人物场景、古画摹本和宫廷题签共同构成宣和内府的管理方式。",
+    punchline: "当作品被题写、登录、收藏，它就进入了皇帝的观看秩序。",
     links: [
       ["文会图", "展示审美共同体"],
       ["听琴图", "把宫廷生活图像化"],
@@ -175,8 +185,10 @@ const storyChapters = [
     timeMode: "all",
     focus: [/Black-Glazed Teabowl|Imperial Tribute|Tea Bowl|Brush Washer|Cup and Stand|Meiping|供御/i],
     title: "器物把审美带进日常",
+    claim: "宋代审美不是只挂在墙上，它会落到茶碗、瓷器、书斋和手的动作里。",
     hook: "如果说画和字塑造观看，宋瓷、茶碗和清供器物就是把这种审美带到手边。",
     insight: "这一幕连接图像和生活：同样的克制、留白、釉色和比例，开始进入饮茶、书斋、供养和陈设。",
+    punchline: "真正高级的审美，不只是看见，而是可以被使用。",
     links: [
       ["茶碗", "把审美放进日常动作"],
       ["供御", "让器物接近宫廷秩序"],
@@ -190,8 +202,10 @@ const storyChapters = [
     timeMode: "southern",
     focus: [/Quatrain|West Lake|Narcissus|Gaozong|Lizong|Couplet/i],
     title: "系统被打断，但审美还在延续",
+    claim: "1127 年打断的是王朝，不是宋代审美的传播。",
     hook: "1127 之后，王朝中心破碎，但题诗、山水、花鸟和器物的观看方式并没有消失。",
     insight: "结尾不是单纯怀旧，而是反转：宋徽宗留下的不是几幅名作，而是一套被历史中断、又继续扩散的审美系统。",
+    punchline: "这就是故事的反差：政治失败了，审美却活得很久。",
     links: [
       ["1127", "政治断裂"],
       ["南宋题诗", "视觉习惯延续"],
@@ -809,6 +823,29 @@ function ViewingRoom({ item, nodes, setItem, setSelected, onClose }) {
           </div>
         )}
       </aside>
+    </section>
+  );
+}
+
+const storyBeatLabels = ["中心作品", "关联证据", "制度接口", "日常扩散"];
+
+function StoryThesisCard({ chapter, activeIndex, total, storyBeat }) {
+  const isRunning = storyBeat >= 0;
+  const stageIndex = Math.min(Math.max(storyBeat, 0), storyBeatLabels.length - 1);
+  const stageText = isRunning
+    ? storyBeat >= storyBeatLabels.length
+      ? "关系成立"
+      : storyBeatLabels[stageIndex]
+    : "等待进入本幕";
+
+  return (
+    <section className={isRunning ? "story-thesis-card story-thesis-active" : "story-thesis-card"}>
+      <div className="story-thesis-meta">
+        <span>{String(activeIndex + 1).padStart(2, "0")} / {String(total).padStart(2, "0")} · {chapter.label}</span>
+        <b>{stageText}</b>
+      </div>
+      <h2>{chapter.claim ?? chapter.title}</h2>
+      <p>{chapter.punchline ?? chapter.hook}</p>
     </section>
   );
 }
@@ -1466,6 +1503,12 @@ function App() {
         setSelected={setSelected}
         activeCategory={activeCategory}
         timeMode={timeMode}
+      />
+      <StoryThesisCard
+        chapter={activeChapter}
+        activeIndex={storyIndex}
+        total={storyChapters.length}
+        storyBeat={storyBeat}
       />
       <StoryPanel
         chapters={storyChapters}

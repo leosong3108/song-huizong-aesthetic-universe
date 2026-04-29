@@ -1573,6 +1573,60 @@ main::after {
   font: 10px Inter, Arial, sans-serif;
 }
 
+.story-thesis-card {
+  position: absolute;
+  z-index: 43;
+  top: 88px;
+  left: 50%;
+  width: clamp(380px, 35vw, 610px);
+  max-width: calc(100vw - 360px);
+  padding: 10px 14px 12px;
+  border: 1px solid rgba(190, 149, 80, 0.2);
+  background:
+    linear-gradient(90deg, rgba(92, 22, 15, 0.18), transparent 26%),
+    linear-gradient(180deg, rgba(12, 10, 7, 0.78), rgba(5, 5, 4, 0.62));
+  box-shadow:
+    0 16px 50px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(244, 211, 137, 0.04);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.story-thesis-card.story-thesis-active {
+  border-color: rgba(226, 181, 93, 0.36);
+  animation: thesisEnter 360ms ease-out both;
+}
+
+.story-thesis-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  color: rgba(178, 42, 34, 0.92);
+  font: 10px Inter, Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.story-thesis-meta b {
+  color: rgba(223, 190, 121, 0.74);
+  font-weight: 500;
+}
+
+.story-thesis-card h2 {
+  margin: 7px 0 5px;
+  color: #dcc07e;
+  font-size: clamp(18px, 1.55vw, 25px);
+  font-weight: 540;
+  line-height: 1.22;
+}
+
+.story-thesis-card p {
+  margin: 0;
+  color: rgba(226, 203, 159, 0.76);
+  font-size: 12px;
+  line-height: 1.44;
+}
+
 .story-panel {
   position: absolute;
   z-index: 44;
@@ -2060,6 +2114,30 @@ main::after {
   }
 }
 
+@keyframes thesisEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes thesisEnterMobile {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .loading {
   color: #c8ad78;
   font-size: 14px;
@@ -2085,6 +2163,19 @@ main::after {
     margin-top: 8px;
     padding-left: 0;
     border-left: 0;
+  }
+
+  .story-thesis-card {
+    left: 72px;
+    right: 16px;
+    top: 92px;
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+
+  .story-thesis-card.story-thesis-active {
+    animation-name: thesisEnterMobile;
   }
 
   .stats {
