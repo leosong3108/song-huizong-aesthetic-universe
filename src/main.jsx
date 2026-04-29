@@ -364,10 +364,11 @@ function buildDescription(item) {
   const medium = cleanText(item.medium);
   const source = cleanText(item.source);
   const categoryNote = item.domainMeta?.note ?? categoryDescriptions[item.category] ?? "这件作品作为宋代审美星图中的一个节点，用来观察图像、材质、年代与馆藏来源之间的关系。";
+  const noteSentence = /[。.!?]$/.test(categoryNote) ? categoryNote : `${categoryNote}。`;
   const authorPart = author ? `作者/相关人物为 ${author}。` : "";
   const mediumPart = medium ? `媒介记录为 ${medium}。` : "";
   const sourcePart = source ? `数据来自 ${source}。` : "";
-  return `${date} · ${categoryLabel} · ${relation}。${categoryNote}${authorPart}${mediumPart}${sourcePart}`;
+  return `${date} · ${categoryLabel} · ${relation}。${noteSentence}${authorPart}${mediumPart}${sourcePart}`;
 }
 
 function detailFacts(item) {
@@ -960,6 +961,7 @@ function FallbackConstellation({
   selected,
   setSelected,
   setHovered,
+  openViewingRoom,
   denseMode,
   activeCategory,
   setActiveCategory,
@@ -1295,6 +1297,13 @@ function FallbackConstellation({
               : rawRatio < 0.72
                 ? "min(26vw, 320px)"
                 : "min(30vw, 390px)";
+        const title = cleanText(featured.title, "未命名作品");
+        const date = formatDate(featured.date || featured.period || featured.dynasty);
+        const source = cleanText(featured.artist || featured.source, "馆藏记录");
+        const relation = relationLabels[featured.huizong_relation] ?? cleanText(featured.huizong_relation, "宋代审美参照");
+        const note = buildDescription(featured);
+        const conciseNote = note.length > 112 ? `${note.slice(0, 112)}...` : note;
+        const relatedWorks = getRelatedWorks(featured, nodes).slice(0, 3);
         return (
           <>
             <div className="focus-scrim" />
@@ -1310,11 +1319,46 @@ function FallbackConstellation({
               onPointerDown={(event) => event.stopPropagation()}
               onMouseEnter={() => setHovered(featured)}
               onMouseLeave={() => setHovered(null)}
-              onClick={() => setSelected(featured)}
-              title={cleanText(featured.title, "作品")}
+              onClick={() => openViewingRoom?.(featured)}
+              title={title}
             >
-              <img src={artworkImage(featured)} alt="" />
+              <img src={artworkImage(featured, "full")} alt="" />
             </button>
+            <aside
+              className="focus-artwork-label"
+              data-testid="featured-label"
+              onPointerDown={(event) => event.stopPropagation()}
+            >
+              <p>{featured.domainMeta?.label ?? featured.meta?.label ?? "宋代审美"} · {date}</p>
+              <h2>{title}</h2>
+              <span>{source}</span>
+              <b>{relation}</b>
+              <em>{conciseNote}</em>
+              {relatedWorks.length > 0 && (
+                <div className="focus-related-strip" aria-label="相关作品">
+                  {relatedWorks.map((work) => (
+                    <button
+                      key={work.id}
+                      onClick={() => setSelected(work)}
+                      title={cleanText(work.title, "相关作品")}
+                      aria-label={`切换到${cleanText(work.title, "相关作品")}`}
+                    >
+                      <img src={artworkImage(work)} alt="" />
+                    </button>
+                  ))}
+                </div>
+              )}
+              <div className="focus-label-actions">
+                <button onClick={() => openViewingRoom?.(featured)}>
+                  <Search size={13} />
+                  鉴赏
+                </button>
+                <button onClick={() => setSelected(null)}>
+                  <X size={13} />
+                  收起
+                </button>
+              </div>
+            </aside>
           </>
         );
       })()}
@@ -1507,7 +1551,7 @@ function App() {
   };
 
   return (
-    <main className="story-layout">
+    <main className={selected ? "story-layout has-focus" : "story-layout"}>
       <Sidebar activeCategory={activeCategory} setActiveCategory={setActiveCategory} setSelected={setSelected} />
       <header className="title-block">
         <h1>大宋审美操作系统</h1>
@@ -1543,6 +1587,10 @@ function App() {
         selected={selected}
         setSelected={setSelected}
         setHovered={setHovered}
+        openViewingRoom={(item) => {
+          setViewingItem(item);
+          setSelected(item);
+        }}
         denseMode={denseMode}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}

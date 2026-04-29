@@ -653,6 +653,138 @@ main::after {
     linear-gradient(105deg, transparent 18%, rgba(246, 220, 158, 0.16) 44%, transparent 62%);
 }
 
+.focus-artwork-label {
+  position: absolute;
+  z-index: 82;
+  right: 28px;
+  top: 50%;
+  width: min(320px, 24vw);
+  display: grid;
+  gap: 8px;
+  padding: 13px 14px;
+  border: 1px solid rgba(220, 184, 112, 0.3);
+  background:
+    linear-gradient(180deg, rgba(13, 10, 6, 0.88), rgba(5, 4, 3, 0.78)),
+    rgba(5, 4, 3, 0.86);
+  box-shadow:
+    0 0 0 1px rgba(80, 45, 18, 0.32),
+    0 18px 70px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(247, 220, 150, 0.08);
+  color: rgba(226, 201, 145, 0.88);
+  pointer-events: auto;
+  transform: translateY(-50%);
+}
+
+.focus-artwork-label::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 1px solid rgba(220, 184, 112, 0.08);
+  pointer-events: none;
+}
+
+.focus-artwork-label p,
+.focus-artwork-label h2,
+.focus-artwork-label span,
+.focus-artwork-label b,
+.focus-artwork-label em {
+  margin: 0;
+}
+
+.focus-artwork-label p {
+  color: rgba(176, 43, 34, 0.92);
+  font: 11px Inter, Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.focus-artwork-label h2 {
+  color: #e1c986;
+  font-size: clamp(20px, 1.75vw, 29px);
+  font-weight: 500;
+  line-height: 1.14;
+}
+
+.focus-artwork-label span {
+  overflow: hidden;
+  color: rgba(220, 195, 138, 0.58);
+  font: 12px Inter, Arial, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.focus-artwork-label b {
+  width: fit-content;
+  padding: 3px 7px;
+  border: 1px solid rgba(176, 43, 34, 0.38);
+  color: rgba(224, 80, 68, 0.9);
+  font: 11px Inter, Arial, sans-serif;
+  font-weight: 500;
+}
+
+.focus-artwork-label em {
+  max-height: 6.7em;
+  overflow: hidden;
+  color: rgba(226, 201, 145, 0.72);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.52;
+}
+
+.focus-related-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.focus-related-strip button {
+  min-width: 0;
+  height: 58px;
+  padding: 3px;
+  border: 1px solid rgba(190, 149, 80, 0.18);
+  background: rgba(12, 10, 7, 0.72);
+  cursor: pointer;
+}
+
+.focus-related-strip button:hover {
+  border-color: rgba(232, 190, 105, 0.6);
+  box-shadow: 0 0 18px rgba(217, 174, 97, 0.13);
+}
+
+.focus-related-strip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(0.14) saturate(0.84) brightness(0.86);
+}
+
+.focus-label-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.focus-label-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  height: 32px;
+  border: 1px solid rgba(190, 149, 80, 0.26);
+  background: rgba(12, 10, 7, 0.78);
+  color: rgba(230, 198, 126, 0.78);
+  cursor: pointer;
+  font: 12px Inter, Arial, sans-serif;
+}
+
+.focus-label-actions button:hover {
+  border-color: rgba(232, 190, 105, 0.62);
+  color: rgba(242, 213, 145, 0.94);
+}
+
 .fallback-node-button {
   position: absolute;
   padding: 0;
@@ -1714,6 +1846,11 @@ main::after {
   max-height: min(56vh, 560px);
 }
 
+.story-layout.has-focus .detail.visible {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .story-layout .legend-strip {
   opacity: 0;
   pointer-events: none;
@@ -2196,6 +2333,24 @@ main::after {
     right: 14px;
     bottom: 54px;
     width: calc(100vw - 82px);
+  }
+
+  .focus-artwork-label {
+    right: 14px;
+    left: 68px;
+    top: auto;
+    bottom: 86px;
+    width: auto;
+    transform: none;
+  }
+
+  .focus-artwork-label em,
+  .focus-related-strip {
+    display: none;
+  }
+
+  .story-layout .focus-artwork-frame {
+    max-width: min(70vw, 420px);
   }
 
   .timeline {
