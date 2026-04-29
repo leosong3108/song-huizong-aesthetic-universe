@@ -841,37 +841,6 @@ function ViewingRoom({ item, nodes, setItem, setSelected, onClose }) {
   );
 }
 
-const storyBeatLabels = ["中心作品", "关联证据", "制度接口", "日常扩散"];
-
-function StoryThesisCard({ chapter, activeIndex, total, storyBeat }) {
-  const isRunning = storyBeat >= 0;
-  const stageIndex = Math.min(Math.max(storyBeat, 0), storyBeatLabels.length - 1);
-  const stageText = isRunning
-    ? storyBeat >= storyBeatLabels.length
-      ? "关系成立"
-      : storyBeatLabels[stageIndex]
-    : "等待进入本幕";
-
-  return (
-    <section className={isRunning ? "story-thesis-card story-thesis-active" : "story-thesis-card"}>
-      <div className="story-thesis-meta">
-        <span>{String(activeIndex + 1).padStart(2, "0")} / {String(total).padStart(2, "0")} · 这一幕的问题</span>
-        <b>{stageText}</b>
-      </div>
-      <h2>{chapter.question ?? chapter.claim ?? chapter.title}</h2>
-      <p><b>答案</b>{chapter.answer ?? chapter.punchline ?? chapter.hook}</p>
-      <div className="story-proof-pills" aria-label="本幕证据">
-        {chapter.links.slice(0, 3).map(([from, relation]) => (
-          <span key={`${chapter.id}-proof-${from}`}>
-            <b>{from}</b>
-            {relation}
-          </span>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onChoose, storyBeat }) {
   const current = chapters[activeIndex] ?? chapters[0];
   const hasPrevious = activeIndex > 0;
@@ -1525,12 +1494,6 @@ function App() {
         setSelected={setSelected}
         activeCategory={activeCategory}
         timeMode={timeMode}
-      />
-      <StoryThesisCard
-        chapter={activeChapter}
-        activeIndex={storyIndex}
-        total={storyChapters.length}
-        storyBeat={storyBeat}
       />
       <StoryPanel
         chapters={storyChapters}
