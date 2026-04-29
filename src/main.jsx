@@ -1348,6 +1348,13 @@ function FallbackConstellation({
           [112, 204],
           [-88, 226],
         ];
+        const motionMarks = [
+          ["-390px", "-116px", "240px", "-34px", "-6deg", "0s"],
+          ["-330px", "92px", "280px", "-126px", "-18deg", "-4s"],
+          ["-180px", "-248px", "210px", "150px", "22deg", "-8s"],
+          ["120px", "-206px", "-260px", "72px", "164deg", "-12s"],
+          ["-420px", "210px", "160px", "118px", "8deg", "-16s"],
+        ];
         const narrativeMeta = [
           ["年代", date],
           ["作者", source],
@@ -1364,6 +1371,21 @@ function FallbackConstellation({
               <i className="focus-orbit-ring ring-three" />
               <i className="focus-orbit-ray ray-one" />
               <i className="focus-orbit-ray ray-two" />
+            </div>
+            <div className="focus-motion-layer" aria-hidden="true">
+              {motionMarks.map(([fromX, fromY, toX, toY, angle, delay], index) => (
+                <i
+                  key={`motion-mark-${index}`}
+                  style={{
+                    "--from-x": fromX,
+                    "--from-y": fromY,
+                    "--to-x": toX,
+                    "--to-y": toY,
+                    "--flight-angle": angle,
+                    "--flight-delay": delay,
+                  }}
+                />
+              ))}
             </div>
             <button
               className={[
@@ -1397,7 +1419,10 @@ function FallbackConstellation({
                       style={{
                         "--sat-x": `${slot[0]}px`,
                         "--sat-y": `${slot[1]}px`,
+                        "--float-x": `${index % 2 === 0 ? 8 : -7}px`,
+                        "--float-y": `${index % 3 === 0 ? -9 : 7}px`,
                         "--focus-delay": `${index * 80}ms`,
+                        "--float-delay": `${index * -920}ms`,
                       }}
                       onMouseEnter={() => setHovered(work)}
                       onMouseLeave={() => setHovered(null)}
