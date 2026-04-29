@@ -100,6 +100,8 @@ const storyChapters = [
     timeMode: "all",
     focus: [/Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图/i],
     title: "他不是只会画画",
+    question: "一个亡国皇帝，为什么还能定义“宋代高级感”？",
+    answer: "因为他不是只留下几幅画，而是把天象、花鸟、书法、收藏和器物连成一套视觉秩序。",
     claim: "宋徽宗不是“艺术家皇帝”，而是在设计一套王朝视觉系统。",
     hook: "把画、字、收藏和器物连起来看，宋徽宗更像是在设计一套王朝视觉系统。",
     insight: "这条线索从《瑞鹤图》开始：图像负责制造天命，花鸟负责训练观看，题跋负责认证，收藏负责归档，器物负责进入日常。",
@@ -117,6 +119,8 @@ const storyChapters = [
     timeMode: "xuanhe",
     focus: [/Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图|Song-Palace/i],
     title: "鹤不是鸟，是一条通知",
+    question: "为什么一群鹤，会成为王朝大事？",
+    answer: "因为《瑞鹤图》把自然事件放进宫门、云气和御题里，变成可传播的祥瑞公告。",
     claim: "《瑞鹤图》不是在画鸟，而是在把天象变成政治公告。",
     hook: "1112 年的《瑞鹤图》把宫门、云气、题诗和鹤群放在一起，让自然现象变成政治图像。",
     insight: "这一幕连接的是“天象”和“皇权”：同样是鸟，飞过宫门时就不只是花鸟画，而是一套视觉合法性。",
@@ -134,6 +138,8 @@ const storyChapters = [
     timeMode: "xuanhe",
     focus: [/Finches and bamboo|竹禽|Five-colored|parakeet|写生珍禽|芙蓉|枇杷|梅花/i],
     title: "花鸟不是装饰，是观察方法",
+    question: "为什么徽宗花鸟看起来安静，却有权力感？",
+    answer: "因为它把观看自然训练成标准：羽毛、枝叶、眼神都被纳入画院规则。",
     claim: "徽宗花鸟真正迷人的地方，是它把“看见细节”变成了一种制度。",
     hook: "徽宗花鸟的重点不只是好看，而是把羽毛、竹枝、花叶都纳入细密的观看秩序。",
     insight: "这条线把《竹禽图》和写生珍禽连接起来：它们共同证明宫廷审美在训练一种“看见万物细节”的能力。",
@@ -151,6 +157,8 @@ const storyChapters = [
     timeMode: "xuanhe",
     focus: [/楷书千字文|Nongfang|Summer poem|Huizong-Calligraphy|Poem|Round fan|赵佶等法书/i],
     title: "瘦金体不是字，是界面签名",
+    question: "为什么瘦金体一出现，画就像被认证了？",
+    answer: "因为题跋把观看者、作者和收藏者绑定起来，让皇帝的字成为图像的界面签名。",
     claim: "瘦金体不是附在画上的字，而是徽宗给作品加上的视觉认证层。",
     hook: "当文字进入画面，它不只是说明，而是在告诉观看者：这件图像被谁观看、谁认证、谁纳入秩序。",
     insight: "瘦金体把作品从“画”变成“被皇帝命名的对象”，也把审美权力从图像延伸到题跋、款识和印章。",
@@ -168,6 +176,8 @@ const storyChapters = [
     timeMode: "xuanhe",
     focus: [/文會|文会|聽琴|听琴|Literary Gathering|Court Ladies|Preparing Newly-Woven|捣练/i],
     title: "收藏不是爱好，是数据库",
+    question: "为什么宣和收藏不像爱好，更像数据库？",
+    answer: "因为内府关心的不只是拥有作品，而是命名、题写、记录、排序和管理。",
     claim: "宣和收藏不是私人趣味，而是一套给图像编号、命名、归档的王朝数据库。",
     hook: "文会、听琴、摹古和内府收藏把作品连成网络：谁画、谁题、谁藏、谁被观看。",
     insight: "这一幕的关系是“图像进入档案”：人物场景、古画摹本和宫廷题签共同构成宣和内府的管理方式。",
@@ -185,6 +195,8 @@ const storyChapters = [
     timeMode: "all",
     focus: [/Black-Glazed Teabowl|Imperial Tribute|Tea Bowl|Brush Washer|Cup and Stand|Meiping|供御/i],
     title: "器物把审美带进日常",
+    question: "宋代高级感为什么会让人想反复看？",
+    answer: "因为它不只存在于名画里，还落到茶碗、釉色、书斋和日常手感里。",
     claim: "宋代审美不是只挂在墙上，它会落到茶碗、瓷器、书斋和手的动作里。",
     hook: "如果说画和字塑造观看，宋瓷、茶碗和清供器物就是把这种审美带到手边。",
     insight: "这一幕连接图像和生活：同样的克制、留白、釉色和比例，开始进入饮茶、书斋、供养和陈设。",
@@ -202,6 +214,8 @@ const storyChapters = [
     timeMode: "southern",
     focus: [/Quatrain|West Lake|Narcissus|Gaozong|Lizong|Couplet/i],
     title: "系统被打断，但审美还在延续",
+    question: "北宋亡了，为什么宋代审美没有结束？",
+    answer: "因为政治中心断裂后，题诗、花鸟、山水和器物的观看方式继续被后世收藏和复制。",
     claim: "1127 年打断的是王朝，不是宋代审美的传播。",
     hook: "1127 之后，王朝中心破碎，但题诗、山水、花鸟和器物的观看方式并没有消失。",
     insight: "结尾不是单纯怀旧，而是反转：宋徽宗留下的不是几幅名作，而是一套被历史中断、又继续扩散的审美系统。",
@@ -841,11 +855,19 @@ function StoryThesisCard({ chapter, activeIndex, total, storyBeat }) {
   return (
     <section className={isRunning ? "story-thesis-card story-thesis-active" : "story-thesis-card"}>
       <div className="story-thesis-meta">
-        <span>{String(activeIndex + 1).padStart(2, "0")} / {String(total).padStart(2, "0")} · {chapter.label}</span>
+        <span>{String(activeIndex + 1).padStart(2, "0")} / {String(total).padStart(2, "0")} · 这一幕的问题</span>
         <b>{stageText}</b>
       </div>
-      <h2>{chapter.claim ?? chapter.title}</h2>
-      <p>{chapter.punchline ?? chapter.hook}</p>
+      <h2>{chapter.question ?? chapter.claim ?? chapter.title}</h2>
+      <p><b>答案</b>{chapter.answer ?? chapter.punchline ?? chapter.hook}</p>
+      <div className="story-proof-pills" aria-label="本幕证据">
+        {chapter.links.slice(0, 3).map(([from, relation]) => (
+          <span key={`${chapter.id}-proof-${from}`}>
+            <b>{from}</b>
+            {relation}
+          </span>
+        ))}
+      </div>
     </section>
   );
 }
@@ -862,8 +884,8 @@ function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onCho
         <b>{String(activeIndex + 1).padStart(2, "0")} / {String(chapters.length).padStart(2, "0")}</b>
       </div>
       <h2>{current.title}</h2>
-      <p>{current.hook}</p>
-      <strong>{current.insight}</strong>
+      <p>{current.answer ?? current.hook}</p>
+      <strong>{current.punchline ?? current.insight}</strong>
 
       <div className="story-link-chain" aria-label="本幕关系链">
         {current.links.map(([from, relation]) => (
