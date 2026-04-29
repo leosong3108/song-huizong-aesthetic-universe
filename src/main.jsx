@@ -985,6 +985,10 @@ function FallbackConstellation({
     for (const node of nodes) result[node.domain] = (result[node.domain] ?? 0) + 1;
     return result;
   }, [nodes]);
+  const focusRelatedWorks = useMemo(
+    () => featured ? getRelatedWorks(featured, nodes).slice(0, 6) : [],
+    [featured, nodes],
+  );
   const lineOrigin = featured ?? central;
   const connectors = (featured ? nodes : [])
     .filter((node) => {
@@ -1303,7 +1307,16 @@ function FallbackConstellation({
         const relation = relationLabels[featured.huizong_relation] ?? cleanText(featured.huizong_relation, "宋代审美参照");
         const note = buildDescription(featured);
         const conciseNote = note.length > 112 ? `${note.slice(0, 112)}...` : note;
-        const relatedWorks = getRelatedWorks(featured, nodes).slice(0, 3);
+        const relatedWorks = focusRelatedWorks.slice(0, 3);
+        const satelliteWorks = focusRelatedWorks.slice(0, 6);
+        const satelliteSlots = [
+          ["24%", "36%"],
+          ["25%", "64%"],
+          ["38%", "24%"],
+          ["60%", "24%"],
+          ["38%", "77%"],
+          ["60%", "77%"],
+        ];
         return (
           <>
             <div className="focus-scrim" />
@@ -1324,6 +1337,31 @@ function FallbackConstellation({
             >
               <img src={artworkImage(featured, "full")} alt="" />
             </button>
+            {satelliteWorks.length > 0 && (
+              <div className="focus-satellite-layer" data-testid="focus-satellites" aria-label="相关展品路径">
+                {satelliteWorks.map((work, index) => {
+                  const slot = satelliteSlots[index % satelliteSlots.length];
+                  return (
+                    <button
+                      key={`focus-satellite-${work.id}`}
+                      className="focus-satellite-button"
+                      style={{
+                        "--sat-left": slot[0],
+                        "--sat-top": slot[1],
+                        "--focus-delay": `${index * 60}ms`,
+                      }}
+                      onPointerDown={(event) => event.stopPropagation()}
+                      onClick={() => setSelected(work)}
+                      title={cleanText(work.title, "相关作品")}
+                      aria-label={`切换到${cleanText(work.title, "相关作品")}`}
+                    >
+                      <img src={artworkImage(work)} alt="" />
+                      <span>{index + 1} · {work.domainMeta?.short ?? work.meta?.label ?? "相关"}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <aside
               className="focus-artwork-label"
               data-testid="featured-label"
