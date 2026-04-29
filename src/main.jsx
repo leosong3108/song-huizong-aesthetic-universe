@@ -558,8 +558,8 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
 
   const hasIntent = Boolean(activeCategory || timeMode !== "all" || query.trim() || coreOnly);
   const directorMode = !denseMode && !hasIntent;
-  const huizongLimit = denseMode ? (hasIntent ? 58 : 46) : (directorMode ? 14 : hasIntent ? 36 : 22);
-  const peripheralLimit = denseMode ? (hasIntent ? 90 : 104) : (directorMode ? 8 : hasIntent ? 36 : 18);
+  const huizongLimit = denseMode ? (hasIntent ? 58 : 46) : (directorMode ? 20 : hasIntent ? 36 : 22);
+  const peripheralLimit = denseMode ? (hasIntent ? 90 : 104) : (directorMode ? 12 : hasIntent ? 36 : 18);
   const huizong = filteredRecords
     .filter((item) => item.related_to_huizong)
     .slice(0, huizongLimit);
