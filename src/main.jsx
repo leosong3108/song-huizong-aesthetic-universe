@@ -92,22 +92,6 @@ const timeModes = {
   southern: { label: "南宋", years: "1128-1279", range: [1128, 1279], description: "靖康之后的南宋余韵与风格延续" },
 };
 
-const directorAnchors = {
-  omen: [0.15, 1.78, 0.22],
-  nature: [-4.9, 0.82, -0.24],
-  inscription: [4.85, 0.92, -0.18],
-  collection: [4.28, -1.08, -0.34],
-  vessel: [-4.38, -1.18, -0.28],
-};
-
-const directorDepths = {
-  omen: 160,
-  nature: 20,
-  inscription: 60,
-  collection: -90,
-  vessel: -60,
-};
-
 const storyChapters = [
   {
     id: "thesis",
@@ -554,6 +538,202 @@ function findCentralRecord(records) {
   );
 }
 
+function findDomainCenterRecord(records, domainKey, centralId) {
+  const candidates = records
+    .filter((item) => inferDomain(item, centralId) === domainKey)
+    .sort((a, b) => {
+      const localDelta = Number(Boolean(b.local_thumb)) - Number(Boolean(a.local_thumb));
+      if (localDelta !== 0) return localDelta;
+      return tourScore(b) - tourScore(a);
+    });
+  const textOf = (item) => [
+    item.title,
+    item.artist,
+    item.date,
+    item.period,
+    item.medium,
+    item.tags?.join(" "),
+  ].filter(Boolean).join(" ");
+  const priority = {
+    omen: [
+      /Auspicious Cranes|瑞[鶴鹤]圖|瑞[鶴鹤]图/i,
+      /crane|瑞|鶴|鹤|palace/i,
+    ],
+    nature: [
+      /芙蓉锦鸡|芙蓉錦雞|Songhuizong4|Five-colored|parakeet/i,
+      /Finches and bamboo|竹禽|枇杷山鸟|山鳥|梅花绣眼|繡眼/i,
+      /flower|bird|bamboo|禽|鸟|鳥|花/i,
+    ],
+    inscription: [
+      /楷书千字文|Huizong-Calligraphy|瘦金|赵佶等法书/i,
+      /Poem|calligraphy|inscription|题跋|书|書/i,
+    ],
+    collection: [
+      /文會|文会|Literary Gathering|聽琴|听琴/i,
+      /Court Ladies|Preparing Newly-Woven|捣练|figure|palace/i,
+    ],
+    vessel: [
+      /tea|bowl|cup|washer|vase|porcelain|ceramic|glaze|瓷|盏|碗|瓶|炉|爐|器/i,
+      /object|bronze|jade|lacquer/i,
+    ],
+  }[domainKey] ?? [];
+
+  for (const pattern of priority) {
+    const match = candidates.find((item) => pattern.test(textOf(item)));
+    if (match) return match;
+  }
+  return candidates[0] ?? null;
+}
+
+function openingHeroScore(node) {
+  const text = [
+    node.title,
+    node.artist,
+    node.medium,
+    node.tags?.join(" "),
+  ].filter(Boolean).join(" ");
+  let score = 0;
+  if (node.domain === "nature") score += 24;
+  if (node.local_thumb) score += 18;
+  if (node.related_to_huizong) score += 8;
+  if (/芙蓉锦鸡|芙蓉錦雞|Songhuizong4/i.test(text)) score += 34;
+  if (/Five-colou?red parakeet|parakeet|五色/i.test(text)) score += 30;
+  if (/Finches and bamboo|竹禽|枇杷山鸟|山鳥|梅花绣眼|繡眼/i.test(text)) score += 25;
+  if (/flower|bird|bamboo|禽|鸟|鳥|花/i.test(text)) score += 14;
+  if (node.domain === "omen") score -= 10;
+  return score + tourScore(node) * 0.18;
+}
+
+function pickOpeningHero(nodes) {
+  return [...nodes]
+    .filter((node) => node.local_thumb || node.image_thumb || node.image_url)
+    .sort((a, b) => openingHeroScore(b) - openingHeroScore(a))[0] ?? null;
+}
+
+function openingSort(a, b) {
+  if (a.systemCenter !== b.systemCenter) return a.systemCenter ? -1 : 1;
+  if (a.local_thumb !== b.local_thumb) return a.local_thumb ? -1 : 1;
+  if (a.showcase !== b.showcase) return a.showcase ? -1 : 1;
+  if (a.core !== b.core) return a.core ? -1 : 1;
+  return tourScore(b) - tourScore(a);
+}
+
+function referenceOpeningPoint(domain, index, count, node) {
+  const rand = seededRandom(hash(`${node.id}-reference-layout`));
+  const jitter = (amount) => (rand() - 0.5) * amount;
+  const configs = {
+    nature: { cx: -26, cy: -8, rx: 17, ry: 16, phase: 0.15, z: 36 },
+    vessel: { cx: -25, cy: 18, rx: 23, ry: 13, phase: 1.25, z: 14 },
+    omen: { cx: 1, cy: -17, rx: 17, ry: 10, phase: 2.25, z: 48 },
+    inscription: { cx: 26, cy: -16, rx: 15, ry: 10, phase: 3.1, z: 28 },
+    collection: { cx: 24, cy: 9, rx: 17, ry: 17, phase: 4.15, z: 20 },
+  };
+  const config = configs[domain] ?? configs.collection;
+  const rank = node.systemCenter
+    ? "anchor"
+    : index < 3 && (node.local_thumb || node.showcase || node.core)
+      ? "feature"
+      : node.showcase || node.core || (node.local_thumb && index < 6)
+        ? "major"
+        : index < count * 0.3
+          ? "mid"
+          : "small";
+  const alpha = rank === "small" ? 0.72 : rank === "mid" ? 0.8 : rank === "major" ? 0.9 : 0.98;
+  const countSafe = Math.max(count, 1);
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const normalized = (index + 0.5) / countSafe;
+  const ring = Math.sqrt(normalized);
+  const angle = config.phase + index * golden + Math.sin(index * 0.67 + config.phase) * 0.2;
+  const rankRadius = rank === "anchor"
+    ? 0.14
+    : rank === "feature"
+      ? 0.34 + index * 0.045
+      : rank === "major"
+        ? 0.48 + (index % 5) * 0.035
+        : 0.22 + ring * 0.78;
+  const armOffset = Math.sin(index * 1.91 + config.phase) * 0.075;
+  const x =
+    config.cx
+    + Math.cos(angle) * config.rx * rankRadius
+    + Math.cos(angle * 2.12) * config.rx * armOffset
+    + jitter(rank === "small" ? 0.18 : 0.28);
+  const y =
+    config.cy
+    + Math.sin(angle) * config.ry * rankRadius
+    + Math.sin(angle * 1.58) * config.ry * armOffset
+    + jitter(rank === "small" ? 0.16 : 0.24);
+  const depth =
+    config.z
+    + (rank === "anchor" ? 96 : rank === "feature" ? 64 : rank === "major" ? 36 : rank === "mid" ? 8 : -18)
+    + (1 - ring) * 34
+    + jitter(16);
+  const baseWidth = {
+    nature: rank === "anchor" ? "clamp(48px, 4.3vw, 70px)" : rank === "feature" ? "clamp(38px, 3.4vw, 54px)" : rank === "major" ? "clamp(28px, 2.45vw, 39px)" : rank === "mid" ? "clamp(20px, 1.75vw, 28px)" : "clamp(15px, 1.32vw, 21px)",
+    vessel: rank === "anchor" ? "clamp(38px, 3.45vw, 56px)" : rank === "feature" ? "clamp(29px, 2.62vw, 42px)" : rank === "major" ? "clamp(22px, 1.95vw, 31px)" : rank === "mid" ? "clamp(17px, 1.5vw, 23px)" : "clamp(13px, 1.13vw, 18px)",
+    omen: rank === "anchor" ? "clamp(56px, 5vw, 84px)" : rank === "feature" ? "clamp(40px, 3.55vw, 58px)" : rank === "major" ? "clamp(29px, 2.55vw, 42px)" : rank === "mid" ? "clamp(20px, 1.76vw, 28px)" : "clamp(15px, 1.32vw, 21px)",
+    inscription: rank === "anchor" ? "clamp(46px, 4.1vw, 68px)" : rank === "feature" ? "clamp(34px, 3vw, 50px)" : rank === "major" ? "clamp(25px, 2.2vw, 36px)" : rank === "mid" ? "clamp(18px, 1.58vw, 25px)" : "clamp(13px, 1.16vw, 18px)",
+    collection: rank === "anchor" ? "clamp(48px, 4.25vw, 72px)" : rank === "feature" ? "clamp(36px, 3.2vw, 52px)" : rank === "major" ? "clamp(26px, 2.3vw, 38px)" : rank === "mid" ? "clamp(18px, 1.62vw, 26px)" : "clamp(13px, 1.15vw, 18px)",
+  }[domain] ?? "clamp(14px, 1.2vw, 22px)";
+  return {
+    x,
+    y,
+    width: baseWidth,
+    scale: rank === "small" ? 0.9 : rank === "mid" ? 0.96 : 1,
+    tier: rank,
+    z: depth,
+    zIndex: Math.round(450 + depth + index),
+    alpha,
+  };
+}
+
+function buildReferenceOpeningLayout(nodes, spotlightId) {
+  const layout = new Map();
+  const coverCaps = {
+    omen: Infinity,
+    nature: Infinity,
+    inscription: Infinity,
+    collection: Infinity,
+    vessel: Infinity,
+  };
+  const groups = domainOrder.reduce((result, key) => {
+    result[key] = [];
+    return result;
+  }, {});
+  for (const node of nodes) {
+    if (!groups[node.domain]) groups[node.domain] = [];
+    groups[node.domain].push(node);
+  }
+  for (const key of domainOrder) {
+    const ordered = [...(groups[key] ?? [])].sort(openingSort);
+    ordered.forEach((node, index) => {
+      const point = referenceOpeningPoint(key, index, ordered.length, node);
+      const isSpotlight = node.id === spotlightId;
+      const visible = index < (coverCaps[key] ?? 24) || node.systemCenter || isSpotlight;
+      layout.set(node.id, {
+        x: `${point.x.toFixed(2)}vw`,
+        y: `${point.y.toFixed(2)}vh`,
+        z: isSpotlight ? 180 : point.z ?? 0,
+        scale: isSpotlight ? 1.18 : point.scale,
+        alpha: isSpotlight ? 1 : visible ? point.alpha : 0,
+        width: point.width,
+        tier: point.tier,
+        visible,
+        zIndex: isSpotlight ? 1400 : point.zIndex,
+      });
+    });
+  }
+  return layout;
+}
+
+function uniqueRecords(items) {
+  const seen = new Set();
+  return items.filter((item) => {
+    if (!item || seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
+
 function getDomainCounts(records, timeMode) {
   const central = findCentralRecord(records);
   const centralId = central?.id;
@@ -566,36 +746,169 @@ function getDomainCounts(records, timeMode) {
   return counts;
 }
 
+function semanticGalaxyPosition({ domain, index, count, core, showcase, systemCenter, rand }) {
+  const safeCount = Math.max(count, 1);
+  const jitterX = (rand() - 0.5) * 0.16;
+  const jitterY = (rand() - 0.5) * 0.14;
+  const rankBoost = systemCenter ? 120 : showcase ? 70 : core ? 42 : 0;
+
+  if (domain === "nature") {
+    const columns = 8;
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const mid = (columns - 1) / 2;
+    const t = Math.min(row / Math.max(Math.ceil(safeCount / columns) - 1, 1), 1);
+    return {
+      position: [
+        -3.75 + (column - mid) * (0.28 + t * 0.08) + row * 0.08 + jitterX,
+        1.55 - row * 0.24 + Math.sin(column * 0.95) * 0.08 + jitterY,
+        0,
+      ],
+      depth: 32 + row * 12 - Math.abs(column - mid) * 5 + rankBoost,
+    };
+  }
+
+  if (domain === "inscription") {
+    const columns = 16;
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const mid = (columns - 1) / 2;
+    return {
+      position: [
+        3.55 + (column - mid) * 0.2 + row * 0.08 + jitterX,
+        1.58 - row * 0.24 + Math.sin(column * 0.9) * 0.035 + jitterY,
+        0,
+      ],
+      depth: 70 + row * 18 - Math.abs(column - mid) * 4 + rankBoost,
+    };
+  }
+
+  if (domain === "collection") {
+    const columns = 12;
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const mid = (columns - 1) / 2;
+    return {
+      position: [
+        3.25 + (column - mid) * 0.28 + (row % 2) * 0.06 + jitterX,
+        0.12 - row * 0.26 + jitterY,
+        0,
+      ],
+      depth: 24 + row * 15 + (column % 3) * 10 + rankBoost,
+    };
+  }
+
+  if (domain === "vessel") {
+    const columns = 24;
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const t = columns <= 1 ? 0 : column / (columns - 1);
+    const theta = -1.15 + t * 2.3;
+    return {
+      position: [
+        -2.65 + (column - 11.5) * 0.23 + (row % 2) * 0.05 + jitterX,
+        -1.08 - row * 0.17 + Math.cos(theta) * 0.13 + jitterY,
+        0,
+      ],
+      depth: -18 + Math.cos(theta) * 96 - row * 8 + rankBoost,
+    };
+  }
+
+  const columns = 9;
+  const column = index % columns;
+  const row = Math.floor(index / columns);
+  const mid = (columns - 1) / 2;
+  return {
+    position: [
+      -0.05 + (column - mid) * 0.28 + row * 0.11 + jitterX,
+      1.72 - row * 0.17 + Math.cos(column * 0.8) * 0.08 + jitterY,
+      0,
+    ],
+    depth: 110 + row * 22 - Math.abs(column - mid) * 7 + rankBoost,
+  };
+}
+
 function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMode) {
-  const central = findCentralRecord(records);
-  const centralId = central?.id;
+  const globalCenter = findCentralRecord(records);
+  const centralId = globalCenter?.id;
+  const activeSystemCenter = activeCategory
+    ? findDomainCenterRecord(records, activeCategory, centralId) ?? globalCenter
+    : null;
+  const domainCenters = uniqueRecords(
+    domainOrder.map((key) => findDomainCenterRecord(records, key, centralId) ?? (key === "omen" ? globalCenter : null))
+  );
+  const domainCenterIds = new Set(domainCenters.map((item) => item.id));
+  const activeSystemCenterId = activeSystemCenter?.id;
 
   const filteredRecords = records.filter((item) => {
     const domain = inferDomain(item, centralId);
-    const categoryOk = !activeCategory || domain === activeCategory || item.id === centralId;
+    const isSystemAnchor = activeCategory
+      ? item.id === activeSystemCenterId
+      : domainCenterIds.has(item.id);
+    const categoryOk = !activeCategory || domain === activeCategory || isSystemAnchor;
     const timeOk = withinTimeMode(item, timeMode);
     const queryOk = matchesQuery(item, query);
-    const coreOk = !coreOnly || item.related_to_huizong || item.id === centralId;
-    return item.id === centralId || (categoryOk && timeOk && queryOk && coreOk);
+    const coreOk = !coreOnly || item.related_to_huizong || isSystemAnchor;
+    return isSystemAnchor || (categoryOk && timeOk && queryOk && coreOk);
   });
 
   const hasIntent = Boolean(activeCategory || timeMode !== "all" || query.trim() || coreOnly);
   const directorMode = !denseMode && !hasIntent;
-  const huizongLimit = denseMode ? (hasIntent ? 58 : 46) : (directorMode ? 20 : hasIntent ? 36 : 22);
-  const peripheralLimit = denseMode ? (hasIntent ? 90 : 104) : (directorMode ? 12 : hasIntent ? 36 : 18);
-  const huizong = filteredRecords
-    .filter((item) => item.related_to_huizong)
-    .slice(0, huizongLimit);
-  const peripheral = filteredRecords
-    .filter((item) => item.id !== central?.id && !huizong.some((core) => core.id === item.id))
-    .slice(0, peripheralLimit);
+  const huizongLimit = directorMode
+    ? filteredRecords.length
+    : denseMode ? (hasIntent ? 58 : 46) : hasIntent ? 36 : 22;
+  const peripheralLimit = directorMode
+    ? filteredRecords.length
+    : denseMode ? (hasIntent ? 90 : 104) : hasIntent ? 36 : 18;
+  const takeBalanced = (items, caps) => {
+    if (directorMode || !caps) return items;
+    const seen = {};
+    return items.filter((item) => {
+      const domain = inferDomain(item, centralId);
+      const cap = caps[domain] ?? caps.default ?? Infinity;
+      seen[domain] = seen[domain] ?? 0;
+      if (seen[domain] >= cap) return false;
+      seen[domain] += 1;
+      return true;
+    });
+  };
+  const huizong = takeBalanced(
+    filteredRecords.filter((item) => item.related_to_huizong || domainCenterIds.has(item.id) || item.id === activeSystemCenterId),
+    { omen: 6, nature: 9, inscription: 7, collection: 7, vessel: 7, default: 6 },
+  ).slice(0, huizongLimit);
+  const peripheral = takeBalanced(
+    filteredRecords.filter((item) => item.id !== activeSystemCenterId && !huizong.some((core) => core.id === item.id)),
+    { omen: 3, nature: 7, inscription: 5, collection: 7, vessel: 8, default: 5 },
+  ).slice(0, peripheralLimit);
 
-  const all = [central, ...huizong.filter((item) => item.id !== central?.id), ...peripheral].filter(Boolean);
+  const all = uniqueRecords([
+    ...(activeCategory ? [activeSystemCenter] : domainCenters),
+    ...huizong,
+    ...peripheral,
+  ]);
   const countsByCategory = all.reduce((result, item) => {
     const domain = inferDomain(item, centralId);
     result[domain] = (result[domain] ?? 0) + 1;
     return result;
   }, {});
+  const showcaseCaps = { omen: 4, nature: 6, inscription: 5, collection: 6, vessel: 10 };
+  const showcaseIdsByDomain = new Map(
+    domainOrder.map((key) => {
+      const ids = all
+        .filter((item) => inferDomain(item, centralId) === key)
+        .filter((item) => !domainCenterIds.has(item.id) && item.id !== activeSystemCenterId)
+        .sort((a, b) => {
+          const localDelta = Number(Boolean(b.local_thumb)) - Number(Boolean(a.local_thumb));
+          if (localDelta !== 0) return localDelta;
+          const imageDelta = Number(Boolean(b.image_thumb || b.image_url)) - Number(Boolean(a.image_thumb || a.image_url));
+          if (imageDelta !== 0) return imageDelta;
+          return tourScore(b) - tourScore(a);
+        })
+        .slice(0, showcaseCaps[key] ?? 4)
+        .map((item) => item.id);
+      return [key, new Set(ids)];
+    })
+  );
   const seenByCategory = {};
 
   return all.map((item, index) => {
@@ -608,12 +921,16 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
       icon: domainInfo.icon,
     };
     const rand = seededRandom(hash(item.id ?? item.title));
-    const core = item.related_to_huizong || index === 0;
+    const isActiveSystemCenter = Boolean(activeCategory && item.id === activeSystemCenterId);
+    const isDomainCenter = domainCenterIds.has(item.id) || item.id === activeSystemCenterId;
+    const isGlobalCenter = item.id === globalCenter?.id;
+    const core = item.related_to_huizong || isDomainCenter;
+    const showcase = Boolean(showcaseIdsByDomain.get(domain)?.has(item.id));
     const categoryIndex = seenByCategory[domain] ?? 0;
     seenByCategory[domain] = categoryIndex + 1;
     const categoryCount = countsByCategory[domain] ?? 1;
-    const center = index === 0 ? [0, 0, 0.15] : meta.center;
-    const radius = index === 0 ? 0 : core ? 1.0 + rand() * 2.35 : 0.75 + rand() * 1.7;
+    const center = isActiveSystemCenter ? [0, 0, 0.15] : meta.center;
+    const radius = isActiveSystemCenter ? 0 : core ? 1.0 + rand() * 2.35 : 0.75 + rand() * 1.7;
     const angle = rand() * Math.PI * 2;
     const drift = (rand() - 0.5) * 0.85;
     const localTheta = categoryIndex * 2.399963 + rand() * 0.34;
@@ -625,15 +942,19 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
     const localY = Math.sin(localTheta) * localRadius * 0.54 + (rand() - 0.5) * 0.28;
     const localZ = Math.sin(localTheta) * localRadius * 108 + (rand() - 0.5) * 72;
     const denseDepth = Math.round((anchorZ + localZ + (core ? 70 : -30)) / 10) * 10;
-    const directorAnchor = directorAnchors[domain] ?? [0, 0, 0];
-    const directorSlots = domain === "omen" ? 5 : 6;
-    const directorSlot = categoryIndex % directorSlots;
-    const directorRing = Math.floor(categoryIndex / directorSlots);
-    const directorTheta = -Math.PI / 2 + (directorSlot / directorSlots) * Math.PI * 2 + directorRing * 0.34;
-    const directorRadiusX = (core ? 1.05 : 1.28) + directorRing * 0.68;
-    const directorRadiusY = (core ? 0.5 : 0.62) + directorRing * 0.34;
+    const semanticLayout = directorMode
+      ? semanticGalaxyPosition({
+          domain,
+          index: categoryIndex,
+          count: categoryCount,
+          core,
+          showcase,
+          systemCenter: isDomainCenter,
+          rand,
+        })
+      : null;
     const position = denseMode
-      ? index === 0
+      ? isActiveSystemCenter
         ? [0, -0.05, 0.2]
         : [
             anchorX + localX,
@@ -641,14 +962,10 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
             0,
           ]
       : directorMode
-        ? index === 0
+        ? isActiveSystemCenter
           ? [0, -0.05, 0.2]
-          : [
-              directorAnchor[0] + Math.cos(directorTheta) * directorRadiusX,
-              directorAnchor[1] + Math.sin(directorTheta) * directorRadiusY,
-              directorAnchor[2],
-            ]
-      : index === 0
+          : semanticLayout.position
+      : isActiveSystemCenter
         ? [0, -0.05, 0.2]
         : [
             center[0] + Math.cos(angle) * radius,
@@ -658,8 +975,12 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
 
     const relationBoost = item.huizong_relation === "huizong_work" ? 0.16 : item.related_to_huizong ? 0.08 : 0;
     const imageRatio = item.width && item.height ? item.width / item.height : 1;
-    const base = index === 0
-      ? denseMode ? 1.12 : 1.28
+    const base = isActiveSystemCenter
+      ? denseMode ? 1.02 : 1.14
+      : isDomainCenter
+        ? denseMode ? 0.36 : 0.48
+      : showcase
+        ? denseMode ? 0.24 : domain === "vessel" ? 0.4 : 0.34
       : core
         ? (denseMode ? 0.22 : 0.32) + relationBoost
         : (denseMode ? 0.085 : 0.17) + rand() * (denseMode ? 0.085 : 0.14);
@@ -670,16 +991,19 @@ function buildNodes(records, activeCategory, timeMode, query, coreOnly, denseMod
       ...item,
       position,
       depth: denseMode
-        ? index === 0 ? 120 : denseDepth
+        ? isActiveSystemCenter ? 120 : denseDepth
         : directorMode
-          ? index === 0 ? 100 : (directorDepths[domain] ?? -40) + directorRing * 28 + (core ? 35 : -10)
-          : index === 0 ? 80 : Math.round(clamp((rand() - 0.5) * 620 + (core ? 80 : -60), -360, 220) / 10) * 10,
+          ? isActiveSystemCenter ? 100 : semanticLayout.depth
+          : isActiveSystemCenter ? 80 : Math.round(clamp((rand() - 0.5) * 620 + (core ? 80 : -60), -360, 220) / 10) * 10,
       size: [width, height],
       meta,
       domain,
       domainMeta: domainInfo,
       core,
-      central: index === 0,
+      showcase,
+      central: isActiveSystemCenter,
+      systemCenter: isDomainCenter,
+      globalCenter: isGlobalCenter,
       seed: rand(),
     };
   });
@@ -690,7 +1014,7 @@ function clamp(value, min, max) {
 }
 
 function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
-  const entries = ["omen", "nature", "inscription", "vessel"];
+  const entries = ["nature", "inscription", "collection", "vessel", "omen"];
   return (
     <aside className="sidebar">
       <button className={activeCategory ? "seal-mark" : "seal-mark active"} onClick={() => {
@@ -700,18 +1024,6 @@ function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
         宋
       </button>
       <div className="tool-stack">
-        <button
-          className={activeCategory ? "tool" : "tool active"}
-          onClick={() => {
-            setActiveCategory(null);
-            setSelected(null);
-          }}
-          title="宇宙全景"
-          aria-label="宇宙全景"
-        >
-          <b>全</b>
-          <span>全景</span>
-        </button>
         {entries.map((key) => {
           const meta = domainMeta[key];
           return (
@@ -731,6 +1043,12 @@ function Sidebar({ activeCategory, setActiveCategory, setSelected }) {
           );
         })}
       </div>
+      <button className="bottom-sigil" onClick={() => {
+        setActiveCategory(null);
+        setSelected(null);
+      }} title="回到全景">
+        徽
+      </button>
     </aside>
   );
 }
@@ -983,6 +1301,7 @@ function StoryPanel({ chapters, activeIndex, selected, nodes, setSelected, onCho
 function FallbackConstellation({
   nodes,
   selected,
+  hovered,
   setSelected,
   setHovered,
   openViewingRoom,
@@ -993,7 +1312,11 @@ function FallbackConstellation({
   storyWorks,
   storyBeat,
 }) {
-  const central = nodes.find((node) => node.central);
+  const central =
+    nodes.find((node) => node.central) ??
+    nodes.find((node) => activeCategory && node.systemCenter) ??
+    nodes.find((node) => node.globalCenter) ??
+    nodes.find((node) => node.systemCenter);
   const featured = selected || null;
   const [view, setView] = useState({ rotateX: -5, rotateY: 0, zoom: 1, panX: 0, panY: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -1004,9 +1327,18 @@ function FallbackConstellation({
   const storyPathIds = new Set(storyPath.map((node) => node.id));
   const activeStoryNode = storyBeat >= 0 && storyBeat < storyPath.length ? storyPath[storyBeat] : null;
   const isStoryPlaying = storyBeat >= 0 && storyPath.length > 0;
+  const openingMode = !featured && !activeCategory && !denseMode;
   const domainCounts = useMemo(() => {
     const result = {};
     for (const node of nodes) result[node.domain] = (result[node.domain] ?? 0) + 1;
+    return result;
+  }, [nodes]);
+  const systemCentersByDomain = useMemo(() => {
+    const result = new Map();
+    for (const key of domainOrder) {
+      const centerNode = nodes.find((node) => node.domain === key && node.systemCenter);
+      if (centerNode) result.set(key, centerNode);
+    }
     return result;
   }, [nodes]);
   const focusRelatedWorks = useMemo(
@@ -1014,6 +1346,11 @@ function FallbackConstellation({
     [featured, nodes],
   );
   const lineOrigin = featured ?? central;
+  const activeSystemMeta = activeCategory ? domainMeta[activeCategory] : null;
+  const galaxyTitle = activeSystemMeta?.label ?? "宋代审美银河";
+  const galaxySubtitle = activeSystemMeta && central
+    ? `${cleanText(central.title, activeSystemMeta.short)} · ${activeSystemMeta.tag}`
+    : "五个星系 · 各自成环";
   const connectors = (featured ? nodes : [])
     .filter((node) => {
       if (!lineOrigin || node.id === lineOrigin.id) return false;
@@ -1049,16 +1386,122 @@ function FallbackConstellation({
     }));
   }, []);
 
-  const project = (position) => ({
-    x: 50 + position[0] * 7.05,
-    y: 51 - position[1] * 9.35,
-  });
+  const rotateScenePoint = (point) => {
+    const rx = (view.rotateX * Math.PI) / 180;
+    const ry = (view.rotateY * Math.PI) / 180;
+    const cosY = Math.cos(ry);
+    const sinY = Math.sin(ry);
+    const cosX = Math.cos(rx);
+    const sinX = Math.sin(rx);
 
-  const project3d = (node) => ({
+    const x1 = point.x * cosY + point.z * sinY;
+    const z1 = -point.x * sinY + point.z * cosY;
+    const y2 = point.y * cosX - z1 * sinX;
+    const z2 = point.y * sinX + z1 * cosX;
+
+    return { x: x1, y: y2, z: z2 };
+  };
+
+  const projectScenePoint = (point, options = {}) => {
+    const rotated = rotateScenePoint(point);
+    const depthScale = clamp(980 / (980 - rotated.z * 0.62), 0.66, 1.28);
+    if (options.readable) {
+      const ry = (view.rotateY * Math.PI) / 180;
+      const rx = (view.rotateX * Math.PI) / 180;
+      const parallaxX = Math.sin(ry) * point.z * 0.18 + (rotated.x - point.x) * 0.16;
+      const parallaxY = Math.sin(rx) * point.z * 0.08 + (rotated.y - point.y) * 0.1;
+      return {
+        x: (point.x + parallaxX) * clamp(depthScale, 0.82, 1.12),
+        y: (point.y + parallaxY) * clamp(depthScale, 0.82, 1.1),
+        z: rotated.z,
+        depthScale,
+      };
+    }
+    return {
+      x: rotated.x * depthScale,
+      y: rotated.y * depthScale,
+      z: rotated.z,
+      depthScale,
+    };
+  };
+
+  const rawPointFromNode = (node) => ({
     x: node.position[0] * 82,
     y: -node.position[1] * 70,
     z: featured?.id === node.id ? 320 : node.depth,
   });
+
+  const projectNodeForSvg = (node) => {
+    const point = projectScenePoint(rawPointFromNode(node), { readable: openingMode && !featured });
+    return {
+      x: 50 + point.x * 0.086,
+      y: 51 + point.y * 0.134,
+    };
+  };
+
+  const project3d = (node) => projectScenePoint(rawPointFromNode(node), { readable: openingMode && !featured });
+
+  const galaxyWeb = useMemo(() => {
+    if (featured) return [];
+    return nodes
+      .filter((node) => node.position?.every(Number.isFinite))
+      .sort((a, b) => {
+        if (a.systemCenter !== b.systemCenter) return a.systemCenter ? -1 : 1;
+        if (a.core !== b.core) return a.core ? -1 : 1;
+        return tourScore(b) - tourScore(a);
+      })
+      .slice(0, 56)
+      .map((node, index) => {
+        const point = {
+          x: 50 + node.position[0] * 7.05,
+          y: 51 - node.position[1] * 9.35,
+        };
+        const strength = node.systemCenter ? 0.7 : node.core ? 0.42 : 0.24;
+        return {
+          id: `${node.id}-${index}`,
+          x1: 50,
+          y1: 51,
+          x2: point.x,
+          y2: point.y,
+          r: node.systemCenter ? 0.22 : node.core ? 0.14 : 0.08,
+          lineOpacity: strength * 0.13,
+          dotOpacity: strength * 0.2,
+          delay: `${(index % 14) * -0.31}s`,
+          color: node.domainMeta?.color ?? node.meta?.color ?? "#d6b36e",
+        };
+      });
+  }, [featured, nodes]);
+
+  const rawDomainPoint = (key) => {
+    if (openingMode) {
+      const reference = {
+        nature: { x: -334, y: -54, z: 44 },
+        vessel: { x: -334, y: 86, z: 34 },
+        omen: { x: 8, y: -168, z: 58 },
+        inscription: { x: 300, y: -184, z: 44 },
+        collection: { x: 304, y: -38, z: 38 },
+      }[key];
+      if (reference) return reference;
+    }
+    const node = systemCentersByDomain.get(key);
+    if (node?.position?.every(Number.isFinite)) {
+      return {
+        x: node.position[0] * 82,
+        y: -node.position[1] * 70,
+        z: (node.depth ?? 0) * 0.34,
+      };
+    }
+    const meta = domainMeta[key];
+    return {
+      x: Math.cos(meta.angle) * meta.radius * 82,
+      y: -meta.y * 70,
+      z: Math.sin(meta.angle) * meta.depth * 0.48,
+    };
+  };
+
+  const domainPoint = (key) => projectScenePoint(rawDomainPoint(key));
+
+  const openingField = { particles: [], filaments: [] };
 
   const beginDrag = (event) => {
     if (event.button != null && event.button !== 0) return;
@@ -1114,34 +1557,51 @@ function FallbackConstellation({
 
   const isRelatedToFeatured = (node) => {
     if (!featured) return true;
-    if (node.id === featured.id || node.central) return true;
+    if (node.id === featured.id || node.central || node.systemCenter) return true;
     if (node.domain === featured.domain) return true;
     if (node.category === featured.category) return true;
     if (node.related_to_huizong && featured.related_to_huizong) return true;
     return node.source && node.source === featured.source;
   };
+  const projectedNodes = nodes.map((node) => ({
+    node,
+    point3d: project3d(node),
+  }));
+  const spotlightId = null;
+  const spotlightNode = null;
+  const referenceOpeningLayout = useMemo(
+    () => openingMode ? buildReferenceOpeningLayout(nodes, spotlightId) : new Map(),
+    [nodes, openingMode, spotlightId],
+  );
+  const effectVars = (index) => ({
+    "--i": index,
+    "--row2": index % 2,
+    "--row3": index % 3,
+    "--row4": index % 4,
+  });
 
   return (
     <div
       className={[
         "fallback-constellation",
         "constellation-3d",
+        openingMode ? "opening-mode" : "",
         denseMode ? "dense-mode" : "",
         featured ? "focus-mode" : "",
         isStoryPlaying ? "story-playing" : "",
         isDragging ? "dragging" : "",
       ].filter(Boolean).join(" ")}
       data-testid="constellation"
-      onPointerDown={beginDrag}
-      onPointerMove={moveDrag}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-      onWheel={wheelView}
+      onPointerDown={openingMode ? undefined : beginDrag}
+      onPointerMove={openingMode ? undefined : moveDrag}
+      onPointerUp={openingMode ? undefined : endDrag}
+      onPointerCancel={openingMode ? undefined : endDrag}
+      onWheel={openingMode ? undefined : wheelView}
       style={{
-        "--rx": `${view.rotateX}deg`,
-        "--ry": `${view.rotateY}deg`,
-        "--irx": `${-view.rotateX}deg`,
-        "--iry": `${-view.rotateY}deg`,
+        "--rx": "0deg",
+        "--ry": "0deg",
+        "--irx": "0deg",
+        "--iry": "0deg",
         "--zoom": view.zoom,
         "--pan-x": `${view.panX}px`,
         "--pan-y": `${view.panY}px`,
@@ -1155,20 +1615,90 @@ function FallbackConstellation({
             <stop offset="100%" stopColor="#000" stopOpacity="0" />
           </radialGradient>
         </defs>
+        {openingField.filaments.length > 0 && (
+          <g className="song-field">
+            <circle
+              className="song-field-core"
+              cx={50 + openingField.attractor.x * 0.086}
+              cy={51 + openingField.attractor.y * 0.134}
+              r="0.95"
+            />
+            {openingField.filaments.map((line) => (
+              <line
+                key={line.id}
+                className="song-field-filament"
+                x1={line.x1}
+                y1={line.y1}
+                x2={line.x2}
+                y2={line.y2}
+                style={{
+                  "--field-color": line.color,
+                  "--field-alpha": line.opacity,
+                  "--field-delay": line.delay,
+                }}
+              />
+            ))}
+            {openingField.particles.map((dot) => (
+              <circle
+                key={dot.id}
+                className="song-field-particle"
+                cx={dot.x}
+                cy={dot.y}
+                r={dot.r}
+                style={{
+                  "--field-color": dot.color,
+                  "--field-alpha": dot.opacity,
+                  "--field-delay": dot.delay,
+                }}
+              />
+            ))}
+          </g>
+        )}
+        {!featured && galaxyWeb.length > 0 && (
+          <g className="galaxy-web">
+            {galaxyWeb.map((line) => (
+              <React.Fragment key={line.id}>
+                <line
+                  x1={line.x1}
+                  y1={line.y1}
+                  x2={line.x2}
+                  y2={line.y2}
+                  style={{
+                    "--web-line-alpha": line.lineOpacity,
+                    "--web-delay": line.delay,
+                    "--web-color": line.color,
+                  }}
+                />
+                <circle
+                  className="galaxy-web-dot"
+                  cx={line.x2}
+                  cy={line.y2}
+                  r={line.r}
+                  style={{
+                    "--web-dot-alpha": line.dotOpacity,
+                    "--web-delay": line.delay,
+                    "--web-color": line.color,
+                  }}
+                />
+              </React.Fragment>
+            ))}
+          </g>
+        )}
+        {!featured && <circle className="galaxy-core-dot" cx="50" cy="51" r="0.42" />}
         <ellipse className={featured ? "core-aura active" : "core-aura"} cx="50" cy="51" rx="19" ry="18" />
         <ellipse className="cluster-orbit porcelain-orbit" cx="20.5" cy="69" rx="13.5" ry="14" />
         <ellipse className="cluster-orbit bird-orbit" cx="22" cy="35" rx="17" ry="13" />
         <ellipse className="cluster-orbit script-orbit" cx="75" cy="30" rx="17" ry="13" />
         <circle className="fallback-red-ring" cx="50" cy="50" r="23" />
         {connectors.map((line) => {
-          const from = project(line.from.position);
-          const to = project(line.to.position);
+          const from = projectNodeForSvg(line.from);
+          const to = projectNodeForSvg(line.to);
           if (![from.x, from.y, to.x, to.y].every(Number.isFinite)) return null;
           return <line key={`${line.from.id}-${line.to.id}`} x1={from.x} y1={from.y} x2={to.x} y2={to.y} />;
         })}
         {storyConnectors.map((line) => {
-          const from = project(line.from.position);
-          const to = project(line.to.position);
+          const from = projectNodeForSvg(line.from);
+          const to = projectNodeForSvg(line.to);
           if (![from.x, from.y, to.x, to.y].every(Number.isFinite)) return null;
           return (
             <line
@@ -1193,14 +1723,12 @@ function FallbackConstellation({
           <div className="depth-ring depth-ring-two" />
           <div className="depth-ring depth-ring-three" />
           <div className="central-caption">
-            <b>宣和天象</b>
-            <span>《瑞鹤图》 · 1112 · 宫门祥瑞</span>
+            <b>{galaxyTitle}</b>
+            <span>{galaxySubtitle}</span>
           </div>
           {domainOrder.map((key) => {
             const meta = domainMeta[key];
-            const x = Math.cos(meta.angle) * meta.radius * 82;
-            const y = -meta.y * 70;
-            const z = Math.sin(meta.angle) * meta.depth * 0.48;
+            const point = domainPoint(key);
             return (
               <div
                 key={`domain-halo-${key}`}
@@ -1208,9 +1736,9 @@ function FallbackConstellation({
                 style={{
                   "--orbit-w": `${key === "omen" ? 270 : 330}px`,
                   "--orbit-h": `${key === "omen" ? 150 : 190}px`,
-                  "--x": `${x}px`,
-                  "--y": `${y}px`,
-                  "--z": `${z}px`,
+                  "--x": `${point.x}px`,
+                  "--y": `${point.y}px`,
+                  "--z": `${point.z}px`,
                   "--tilt": `${meta.angle * 18}deg`,
                   "--accent": meta.color,
                 }}
@@ -1219,9 +1747,7 @@ function FallbackConstellation({
           })}
           {domainOrder.map((key) => {
             const meta = domainMeta[key];
-            const x = Math.cos(meta.angle) * meta.radius * 82;
-            const y = -meta.y * 70 - 58;
-            const z = Math.sin(meta.angle) * meta.depth * 0.34 + 76;
+            const point = domainPoint(key);
             const isMuted = activeCategory && activeCategory !== key;
             const isActive = activeCategory === key;
             return (
@@ -1233,9 +1759,9 @@ function FallbackConstellation({
                   isMuted ? "muted" : "",
                 ].filter(Boolean).join(" ")}
                 style={{
-                  "--x": `${x}px`,
-                  "--y": `${y}px`,
-                  "--z": `${z}px`,
+                  "--x": `${point.x}px`,
+                  "--y": `${point.y - 58}px`,
+                  "--z": `${point.z + 76}px`,
                   "--accent": meta.color,
                 }}
                 onPointerDown={(event) => event.stopPropagation()}
@@ -1250,45 +1776,194 @@ function FallbackConstellation({
               </button>
             );
           })}
-      {nodes.slice(0, denseMode ? 152 : 72).map((node) => {
-        const point = project(node.position);
-        const point3d = project3d(node);
+          {domainOrder.map((key) => {
+            const meta = domainMeta[key];
+            const point = domainPoint(key);
+            const isMuted = activeCategory && activeCategory !== key;
+            return (
+              <div
+                key={`domain-effect-${key}`}
+                className={[
+                  "domain-effect",
+                  `effect-${key}`,
+                  isMuted ? "muted" : "",
+                ].filter(Boolean).join(" ")}
+                style={{
+                  "--x": `${point.x}px`,
+                  "--y": `${point.y}px`,
+                  "--z": `${point.z + 18}px`,
+                  "--accent": meta.color,
+                }}
+                aria-hidden="true"
+              >
+                {Array.from({ length: key === "nature" ? 9 : key === "vessel" ? 6 : 5 }, (_, index) => (
+                  <i key={`${key}-effect-${index}`} style={effectVars(index)} />
+                ))}
+                {key === "nature" && (
+                  <>
+                    <span className="scene-branch branch-one" />
+                    <span className="scene-branch branch-two" />
+                    {Array.from({ length: 8 }, (_, index) => (
+                      <span key={`bird-${index}`} className="scene-bird" style={effectVars(index)} />
+                    ))}
+                    {Array.from({ length: 12 }, (_, index) => (
+                      <span key={`leaf-${index}`} className="scene-leaf" style={effectVars(index)} />
+                    ))}
+                  </>
+                )}
+                {key === "vessel" && (
+                  <>
+                    <span className="scene-shelf" />
+                    {Array.from({ length: 7 }, (_, index) => (
+                      <span key={`mist-${index}`} className="scene-mist" style={effectVars(index)} />
+                    ))}
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <span key={`glaze-${index}`} className="scene-glaze" style={effectVars(index)} />
+                    ))}
+                  </>
+                )}
+                {key === "inscription" && Array.from({ length: 9 }, (_, index) => (
+                  <span key={`ink-${index}`} className="scene-ink" style={effectVars(index)} />
+                ))}
+                {key === "omen" && Array.from({ length: 6 }, (_, index) => (
+                  <span key={`cloud-${index}`} className="scene-cloud" style={effectVars(index)} />
+                ))}
+                {key === "collection" && Array.from({ length: 6 }, (_, index) => (
+                  <span key={`archive-${index}`} className="scene-archive" style={effectVars(index)} />
+                ))}
+              </div>
+            );
+          })}
+      {projectedNodes.map(({ node, point3d }) => {
         const isFeatured = featured?.id === node.id;
         if (isFeatured) return null;
+        const openingLayout = openingMode ? referenceOpeningLayout.get(node.id) : null;
+        if (openingMode && openingLayout && !openingLayout.visible) return null;
         const isDimmed = featured && !isRelatedToFeatured(node);
         const storyPathIndex = storyPath.findIndex((work) => work.id === node.id);
         const isStoryPathNode = storyPathIndex >= 0;
         const isStoryActiveNode = activeStoryNode?.id === node.id;
         const isStorySeenNode = storyPathIndex >= 0 && storyBeat >= storyPathIndex;
+        const isSystemAnchor = Boolean(node.systemCenter);
+        const isOpeningBackdrop = openingMode && !isSystemAnchor && !node.core && !node.showcase && !isStoryPathNode;
+        const isOpeningSecondary = openingMode && (node.core || node.showcase) && !isSystemAnchor && !isStoryPathNode;
+        const isSpotlight = openingMode && node.id === spotlightId;
+        const isStageSpotlight = openingMode && isSpotlight;
+        if (isStageSpotlight) return null;
+        const isHovered = hovered?.id === node.id;
+        const frontness = clamp((point3d.z + 320) / 760, 0, 1);
+        const prominence = clamp((frontness - 0.5) / 0.5, 0, 1);
+        const depthBase = ((denseMode ? 0.75 : 0.82) + (point3d.z + 260) / 2400) * point3d.depthScale;
+        const depthBoost = isDimmed
+          ? 1
+          : isSpotlight
+            ? 1.62
+          : openingMode
+            ? isSystemAnchor
+              ? 0.9 + prominence * 0.12
+              : isOpeningBackdrop
+                ? 0.78 + prominence * 0.52
+              : isOpeningSecondary
+                ? 0.9 + prominence * 0.4
+              : 1 + prominence * 0.24
+            : 1 + prominence * 0.28;
+        const depthScaleValue = isDimmed
+          ? 0.62
+          : openingLayout
+            ? openingLayout.scale
+          : clamp(
+              depthBase * depthBoost,
+              isOpeningBackdrop ? 0.42 : denseMode ? 0.5 : 0.6,
+              isSpotlight ? 1.72 : isOpeningBackdrop ? 1.2 : isOpeningSecondary ? 1.28 : isSystemAnchor ? 1.16 : denseMode ? 1.18 : 1.28,
+            );
+        const depthAlpha = isDimmed
+          ? 0.13
+          : openingLayout
+            ? openingLayout.alpha
+          : isSpotlight
+            ? 1
+          : isOpeningBackdrop
+            ? clamp(0.46 + prominence * 0.38, 0.46, 0.84)
+          : isOpeningSecondary
+            ? clamp(0.62 + prominence * 0.3, 0.62, 0.92)
+          : clamp((denseMode ? 0.36 : 0.58) + prominence * 0.28, denseMode ? 0.3 : 0.52, 0.88);
+        const depthBlur = isDimmed
+          ? 1.15
+          : openingLayout
+            ? 0
+          : isSpotlight
+            ? 0
+          : isOpeningBackdrop
+            ? clamp(0.22 - prominence * 0.14, 0, 0.22)
+          : point3d.z < -360 ? 0.7 : point3d.z < -140 ? 0.28 : 0;
         const style = {
           left: "50%",
           top: "51%",
-          width: node.central
+          "--node-width": openingLayout?.width ?? (node.central
               ? denseMode ? "clamp(160px, 18vw, 260px)" : "clamp(140px, 16vw, 230px)"
+              : isSpotlight
+                ? "clamp(190px, 18vw, 340px)"
+              : openingMode && isSystemAnchor
+                ? "clamp(42px, 4.4vw, 78px)"
+              : isSystemAnchor
+                ? denseMode ? "clamp(54px, 5.8vw, 92px)" : "clamp(58px, 6.4vw, 108px)"
+              : isOpeningBackdrop
+                ? "clamp(18px, 1.8vw, 34px)"
+              : isOpeningSecondary
+                ? "clamp(20px, 2.4vw, 46px)"
               : node.core
                 ? denseMode ? "clamp(24px, 3vw, 54px)" : "clamp(26px, 3.7vw, 58px)"
-                : denseMode ? "clamp(10px, 1.35vw, 26px)" : "clamp(13px, 1.8vw, 34px)",
-          borderColor: node.central ? "#e1bf79" : node.meta.color,
-          boxShadow: node.central
+                : denseMode ? "clamp(10px, 1.35vw, 26px)" : "clamp(13px, 1.8vw, 34px)"),
+          "--node-border": node.central || isSystemAnchor ? "#e1bf79" : node.meta.color,
+          "--node-shadow": isSpotlight
+              ? "0 0 0 8px rgba(5, 4, 3, .58), 0 0 34px rgba(232, 194, 116, .36)"
+              : node.central
               ? "0 0 24px rgba(229, 189, 112, .32)"
-              : `0 0 14px ${node.meta.color}42`,
-          "--x": `${point3d.x}px`,
-          "--y": `${point3d.y}px`,
-          "--z": `${isDimmed ? point3d.z - 220 : point3d.z}px`,
-          "--d": `${isDimmed ? 0.62 : clamp((denseMode ? 0.75 : 0.82) + (point3d.z + 260) / 2400, denseMode ? 0.58 : 0.68, denseMode ? 1.04 : 1.08)}`,
-          "--blur": `${isDimmed ? 1.15 : point3d.z < -360 ? 0.7 : point3d.z < -140 ? 0.28 : 0}px`,
-          "--alpha": `${isDimmed ? 0.13 : clamp((denseMode ? 0.36 : 0.58) + (point3d.z + 340) / 1500, denseMode ? 0.26 : 0.5, denseMode ? 0.82 : 0.9)}`,
+              : isSystemAnchor
+                ? `0 0 18px ${node.meta.color}4f`
+              : isOpeningBackdrop
+                ? "none"
+              : isOpeningSecondary
+                ? `0 0 8px ${node.meta.color}2f`
+              : `0 0 12px ${node.meta.color}36`,
+          "--x": openingLayout ? openingLayout.x : `${isStageSpotlight ? 0 : point3d.x}px`,
+          "--y": openingLayout ? openingLayout.y : `${isStageSpotlight ? -12 : point3d.y}px`,
+          "--z": openingLayout ? `${openingLayout.z}px` : `${(isDimmed ? point3d.z - 220 : isStageSpotlight ? 520 : point3d.z) * 0.18}px`,
+          "--d": `${isStageSpotlight ? 1 : depthScaleValue}`,
+          "--frontness": `${prominence}`,
+          "--spotlight": `${isSpotlight ? 1 : 0}`,
+          "--blur": `${depthBlur}px`,
+          "--alpha": `${depthAlpha}`,
+          "--hover-scale": openingLayout
+            ? openingLayout.tier === "anchor"
+              ? 1.38
+              : openingLayout.tier === "feature"
+                ? 1.58
+                : openingLayout.tier === "major"
+                  ? 1.92
+                  : openingLayout.tier === "mid"
+                    ? 2.35
+                    : 2.75
+            : 1.08,
+          zIndex: isHovered ? 1800 : openingLayout?.zIndex ?? Math.round((isSpotlight ? 1200 : 500) + point3d.z + prominence * 180),
         };
         return (
-          <button
+          <div
             key={`fallback-${node.id}`}
             className={
               [
-                "fallback-node-button",
+                "fallback-node-shell",
                 selected?.id === node.id ? "selected" : "",
                 isDimmed ? "dimmed" : "",
                 node.central ? "central-core" : "",
+                isHovered ? "hovered" : "",
+                node.systemCenter ? "system-center" : "",
+                isSpotlight ? "spotlight-node" : "",
+                node.globalCenter ? "global-center" : "",
                 node.core && !node.central ? "core" : "",
+                isOpeningBackdrop ? "opening-backdrop-node" : "",
+                isOpeningSecondary ? "opening-secondary-node" : "",
+                openingLayout ? `opening-tier-${openingLayout.tier}` : "",
                 isStoryPathNode ? "story-path-node" : "",
                 isStorySeenNode ? "story-seen-node" : "",
                 isStoryActiveNode ? "story-active-node" : "",
@@ -1296,21 +1971,45 @@ function FallbackConstellation({
                 `cat-${node.category}`,
               ].filter(Boolean).join(" ")
             }
-            data-testid="artifact-node"
-            aria-label={node.title}
             style={style}
-            onPointerDown={(event) => event.stopPropagation()}
-            onMouseEnter={() => setHovered(node)}
-            onMouseLeave={() => setHovered(null)}
-            onClick={() => setSelected(node)}
-            title={node.title}
           >
-            <img
-              src={node.local_thumb ?? node.image_thumb ?? node.image_url}
-              alt=""
-              loading={node.central || node.core ? "eager" : "lazy"}
-            />
-          </button>
+            <button
+              className={
+                [
+                  "fallback-node-button",
+                  selected?.id === node.id ? "selected" : "",
+                  isDimmed ? "dimmed" : "",
+                  node.central ? "central-core" : "",
+                  isHovered ? "hovered" : "",
+                  node.systemCenter ? "system-center" : "",
+                  isSpotlight ? "spotlight-node" : "",
+                  node.globalCenter ? "global-center" : "",
+                  node.core && !node.central ? "core" : "",
+                  isOpeningBackdrop ? "opening-backdrop-node" : "",
+                  isOpeningSecondary ? "opening-secondary-node" : "",
+                  openingLayout ? `opening-tier-${openingLayout.tier}` : "",
+                  isStoryPathNode ? "story-path-node" : "",
+                  isStorySeenNode ? "story-seen-node" : "",
+                  `domain-${node.domain}`,
+                  `cat-${node.category}`,
+                ].filter(Boolean).join(" ")
+              }
+              data-testid="artifact-node"
+              aria-label={node.title}
+              onPointerDown={(event) => event.stopPropagation()}
+              onMouseEnter={() => setHovered(node)}
+              onMouseLeave={() => setHovered(null)}
+              onClick={() => setSelected(node)}
+              title={node.title}
+            >
+              <img
+                src={node.local_thumb ?? node.image_thumb ?? node.image_url}
+                alt=""
+                loading={openingMode || node.central || node.systemCenter || node.core || node.showcase ? "eager" : "lazy"}
+                decoding="async"
+              />
+            </button>
+          </div>
         );
       })}
         </div>
@@ -1511,7 +2210,7 @@ function ViewStatus({ activeCategory, timeMode }) {
   return (
     <section className="view-status">
       <p>{category} · {time.label}</p>
-      <strong>{activeCategory ? domainMeta[activeCategory]?.note : "以《瑞鹤图》为中心，展开徽宗的画院、题跋、收藏与器用系统"}</strong>
+      <strong>{activeCategory ? domainMeta[activeCategory]?.note : "五个星系各自成环：天象、花鸟、题跋、收藏与器用共同构成宋代审美银河"}</strong>
     </section>
   );
 }
@@ -1589,35 +2288,37 @@ function LegendStrip({ nodes, allDomainCounts }) {
 
 function TimelineControl({ timeMode, setTimeMode, setSelected }) {
   const items = [
-    ["early", "960", "北宋"],
-    ["xuanhe", "1127", "宣和"],
-    ["southern", "1279", "南宋"],
+    ["pre", "907-979", "五代十国", "all"],
+    ["early", "960-1127", "北宋", "early"],
+    ["southern", "1127-1279", "南宋", "southern"],
+    ["yuan", "1271-1368", "元", "all"],
+    ["ming", "1368-1644", "明", "all"],
+    ["qing", "1644-1911", "清", "all"],
+    ["modern", "1912-至今", "近现代", "all"],
   ];
   return (
     <div className="timeline" role="group" aria-label="时间筛选">
-      <button className={timeMode === "early" ? "active" : ""} onClick={() => {
-        setTimeMode(timeMode === "early" ? "all" : "early");
+      <button className="timeline-play" onClick={() => {
+        setTimeMode("all");
         setSelected(null);
-      }}>
-        <span>960</span>
-        <small>北宋</small>
+      }} aria-label="播放时间流">
+        ▶
       </button>
-      <i />
-      <button className={timeMode === "xuanhe" ? "active crisis" : "crisis"} onClick={() => {
-        setTimeMode(timeMode === "xuanhe" ? "all" : "xuanhe");
-        setSelected(null);
-      }}>
-        <span>1127</span>
-        <small>宣和</small>
-      </button>
-      <i />
-      <button className={timeMode === "southern" ? "active" : ""} onClick={() => {
-        setTimeMode(timeMode === "southern" ? "all" : "southern");
-        setSelected(null);
-      }}>
-        <span>1279</span>
-        <small>南宋</small>
-      </button>
+      {items.map(([key, years, label, mode], index) => (
+        <React.Fragment key={key}>
+          {index > 0 && <i />}
+          <button className={[
+            timeMode === mode && (mode !== "all" || key === "pre") ? "active" : "",
+            key === "early" ? "crisis" : "",
+          ].filter(Boolean).join(" ")} onClick={() => {
+            setTimeMode(timeMode === mode && mode !== "all" ? "all" : mode);
+            setSelected(null);
+          }}>
+            <span>{label}</span>
+            <small>{years}</small>
+          </button>
+        </React.Fragment>
+      ))}
       <button className={timeMode === "all" ? "timeline-reset active" : "timeline-reset"} onClick={() => {
         setTimeMode("all");
         setSelected(null);
@@ -1633,7 +2334,6 @@ function App() {
   const [selected, setSelected] = useState(null);
   const [viewingItem, setViewingItem] = useState(null);
   const [hovered, setHovered] = useState(null);
-  const didAutoFocus = useRef(false);
   const [storyIndex, setStoryIndex] = useState(0);
   const [activeCategory, setActiveCategory] = useState(null);
   const [timeMode, setTimeMode] = useState("all");
@@ -1651,7 +2351,9 @@ function App() {
     [artifacts, timeMode],
   );
   const activeLabel = activeCategory ? domainMeta[activeCategory]?.label : "五域";
+  const pageTitle = activeCategory ? `${domainMeta[activeCategory]?.short ?? "审美"}星系` : "宋代审美银河";
   const timeLabel = timeModes[timeMode].label;
+  const totalArtifacts = artifacts.length;
   const activeChapter = storyChapters[storyIndex] ?? storyChapters[0];
   const activeStoryWorks = useMemo(
     () => getStoryWorks(activeChapter, visibleNodes, selected),
@@ -1659,12 +2361,10 @@ function App() {
   );
 
   React.useEffect(() => {
-    if (didAutoFocus.current || selected || !visibleNodes.length) return;
-    const centralNode = visibleNodes.find((node) => node.central);
-    if (!centralNode) return;
-    didAutoFocus.current = true;
-    setSelected(centralNode);
-  }, [selected, visibleNodes]);
+    if (!activeCategory || selected || !visibleNodes.length) return;
+    const systemNode = visibleNodes.find((node) => node.central || node.systemCenter);
+    if (systemNode) setSelected(systemNode);
+  }, [activeCategory, selected, visibleNodes]);
 
   React.useEffect(() => {
     if (!storyRun) return undefined;
@@ -1699,12 +2399,13 @@ function App() {
     <main className={selected ? "story-layout has-focus" : "story-layout"}>
       <Sidebar activeCategory={activeCategory} setActiveCategory={setActiveCategory} setSelected={setSelected} />
       <header className="title-block">
-        <h1>宣和观象图</h1>
-        <span>宋代审美 · {timeLabel} · {activeLabel} · {visibleNodes.length} 个节点</span>
+        <h1>{pageTitle}</h1>
+        <span>宋代审美 · {timeLabel} · {activeLabel} · {totalArtifacts} 件素材 / {visibleNodes.length} 件入场</span>
       </header>
       <div className="stats">
-        <strong>{visibleNodes.length}</strong>
-        <span>artifacts</span>
+        <strong>{totalArtifacts}</strong>
+        <span>archive</span>
+        <em>{visibleNodes.length} in view</em>
       </div>
       <ViewStatus activeCategory={activeCategory} timeMode={timeMode} />
       <ControlPanel
@@ -1730,6 +2431,7 @@ function App() {
       <FallbackConstellation
         nodes={visibleNodes}
         selected={selected}
+        hovered={hovered}
         setSelected={setSelected}
         setHovered={setHovered}
         openViewingRoom={(item) => {
