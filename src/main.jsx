@@ -152,6 +152,53 @@ const relationLabels = {
   related_style: "宋代审美参照",
 };
 
+const calibratedArtworkTitles = {
+  "commons-327620": "腊梅山禽图",
+  "commons-327628": "芙蓉锦鸡图",
+  "commons-327629": "瑞鹤图卷",
+  "commons-327631": "祥龙石图",
+  "commons-327633": "听琴图",
+  "commons-7855330": "闰中秋月诗帖",
+  "commons-2351657": "草书千字文",
+  "commons-2351664": "小楷千字文",
+  "commons-57372621": "竹禽图",
+  "met-39936": "竹禽图",
+};
+
+const calibratedArtworkDomains = {
+  "commons-327620": "nature",
+  "commons-327628": "nature",
+  "commons-327629": "nature",
+  "commons-327631": "collection",
+  "commons-327633": "collection",
+  "commons-7855330": "inscription",
+  "commons-2351657": "inscription",
+  "commons-2351664": "inscription",
+  "commons-57372621": "nature",
+  "met-39936": "nature",
+};
+
+const calibratedArtworkMediums = {
+  "commons-12038531": "纸本墨笔",
+  "commons-7855330": "纸本墨笔",
+  "commons-2351657": "纸本墨笔",
+  "commons-2351664": "纸本墨笔",
+};
+
+const calibratedArtworkDates = {
+  "commons-327620": "北宋",
+  "commons-327628": "北宋",
+  "commons-327629": "1112",
+  "commons-327631": "1112",
+  "commons-327633": "北宋",
+  "commons-7855330": "1102",
+  "commons-12038531": "约1100-1126",
+  "commons-2351657": "约1100-1126",
+  "commons-2351664": "约1104",
+  "commons-57372621": "12世纪初",
+  "met-39936": "12世纪初",
+};
+
 /* ---------- 2. 数据 / 数据派生 ---------- */
 
 function useArtifacts() {
@@ -194,8 +241,16 @@ function formatDate(value) {
   return text || "宋代";
 }
 
+function displayArtworkDate(item) {
+  if (!item) return "宋代";
+  if (calibratedArtworkDates[item.id]) return calibratedArtworkDates[item.id];
+  return formatDate(item.year || item.date || item.period || item.dynasty);
+}
+
 function inferDomain(item) {
   if (!item) return "collection";
+  const calibratedDomain = calibratedArtworkDomains[item.id];
+  if (calibratedDomain) return calibratedDomain;
   const text = [
     item.title,
     item.artist,
@@ -212,6 +267,11 @@ function inferDomain(item) {
     /auspicious|crane|瑞|鶴|鹤|parakeet|five-colored|五色|祥瑞|端门/.test(text)
   )
     return "nature"; // 把瑞鹤图相关也归在 nature 旁，但是 isCrane 单独标
+  if (
+    /scepter|gui|jade|玉|圭/.test(text) &&
+    /scepter|gui|tao qian|miscellaneous poems|jade|玉|圭/.test(text)
+  )
+    return "vessel";
   if (
     item.category === "calligraphy" ||
     /calligraphy|poem|瘦金|诗|書|书|题跋|inscription|楷书|千字文|赵佶等法书/.test(
@@ -257,6 +317,8 @@ function artworkImage(item, mode = "thumb") {
 
 function displayArtworkTitle(item, fallback = "未命名作品") {
   if (!item) return fallback;
+  const calibratedTitle = calibratedArtworkTitles[item.id];
+  if (calibratedTitle) return calibratedTitle;
   const title = cleanText(item.title, fallback);
   const aliases = [
     // —— 徽宗核心
@@ -264,19 +326,18 @@ function displayArtworkTitle(item, fallback = "未命名作品") {
     [/瑞[鶴鹤][圖图]/, "瑞鹤图"],
     [/Copy.*Cranes|Cranes.*Copy/i, "瑞鹤图（摹本）"],
     [/Five-colou?red parakeet/i, "五色鹦鹉图"],
-    [/Finches and bamboo|竹禽/i, "竹禽图"],
+    [/Finches[_\s-]+and[_\s-]+bamboo|竹禽圖|竹禽图/i, "竹禽图"],
     [/赵佶芙蓉锦鸡|芙蓉锦鸡|芙蓉錦雞|Songhuizong4$/i, "芙蓉锦鸡图"],
-    [/^Songhuizong3$/i, "枇杷山鸟图"],
-    [/^Songhuizong5$/i, "梅花绣眼图"],
-    [/^Songhuizong6$/i, "腊梅山禽图"],
+    [/^Songhuizong3$/i, "腊梅山禽图"],
+    [/^Songhuizong5$/i, "瑞鹤图卷"],
+    [/^Songhuizong6$/i, "祥龙石图"],
     [/^Songhuizong7$/i, "桃鸠图"],
-    [/^Songhuizong8$/i, "写生珍禽图"],
-    [/^Songhuizong9$/i, "池塘秋晚图"],
-    [/^Songhuizong10$/i, "竹禽图"],
-    [/^Songhuizong11$/i, "祥龙石图"],
+    [/^Songhuizong8$/i, "听琴图"],
+    [/^Songhuizong9$/i, "草书千字文"],
+    [/^Songhuizong10$/i, "小楷千字文"],
+    [/^Songhuizong11$/i, "宋徽宗花鸟册"],
     [/^Songhuizong12$/i, "听琴图"],
     [/^Songhuizong13$/i, "文会图"],
-    [/Songhuizong\d+/i, "徽宗花鸟册"],
     [/^Songhuizong$/i, "徽宗书画"],
     [/Sketching of Rare Birds|写生珍禽/i, "写生珍禽图"],
     [/Ink Bamboo|墨竹/i, "墨竹图"],
@@ -470,8 +531,15 @@ function findGalaxyHero(records, galaxy) {
       if (la !== 0) return -la;
       return tourScore(b) - tourScore(a);
     });
+  const displayCandidates =
+    galaxy === "inscription"
+      ? candidates.filter((x) => {
+          const ratio = artworkRatio(x);
+          return !Number.isFinite(ratio) || (ratio >= 0.48 && ratio <= 2.2);
+        })
+      : candidates;
   for (const re of priority) {
-    const m = candidates.find((x) =>
+    const m = displayCandidates.find((x) =>
       re.test(
         [x.title, x.artist, x.tags?.join(" "), x.medium, x.period].filter(Boolean).join(" "),
       ),
@@ -530,8 +598,8 @@ function detailTags(item) {
   return out.slice(0, 4);
 }
 
-function localizeMedium(med) {
-  if (!med) return "绢本设色";
+function localizeMedium(med, domain = "") {
+  if (!med) return domain === "inscription" ? "纸本墨笔" : "绢本设色";
   const t = String(med).toLowerCase();
   if (/silk.*color|color.*silk|绢本设色/i.test(t)) return "绢本设色";
   if (/silk.*ink|ink.*silk/i.test(t)) return "绢本水墨";
@@ -557,6 +625,11 @@ function localizeMedium(med) {
   return cleanText(med, "绢本设色").slice(0, 24);
 }
 
+function displayArtworkMedium(item) {
+  if (!item) return "绢本设色";
+  return calibratedArtworkMediums[item.id] || localizeMedium(item.medium, inferDomain(item));
+}
+
 function localizeCategory(cat) {
   return ({
     flower_bird: "花鸟画",
@@ -567,6 +640,17 @@ function localizeCategory(cat) {
     landscape: "山水画",
     figure: "人物雅集",
   }[cat] ?? "宋代审美");
+}
+
+function displayArtworkCategory(item) {
+  const domain = inferDomain(item);
+  const aliases = {
+    nature: "花鸟画",
+    inscription: "书法 · 题跋",
+    collection: "宣和典藏",
+    vessel: "宋代器物",
+  };
+  return aliases[domain] || localizeCategory(item?.category);
 }
 
 function localizeSource(src) {
@@ -596,10 +680,28 @@ function metaPairs(item) {
   return [
     ["收藏机构", localizeSource(item.source)],
     ["尺寸", item.width && item.height ? `${item.width} × ${item.height}` : "未注录"],
-    ["材质", cleanText(item.medium, "绢本设色")],
-    ["分类", localizeCategory(item.category)],
+    ["材质", displayArtworkMedium(item)],
+    ["分类", displayArtworkCategory(item)],
     ["来源", item.public_domain ? "公共领域 · Public Domain" : cleanText(item.license, "馆藏授权")],
   ];
+}
+
+function artworkRatio(item) {
+  const width = Number(item?.width);
+  const height = Number(item?.height);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return null;
+  const ratio = width / height;
+  if (ratio < 0.08 || ratio > 30) return null;
+  return ratio;
+}
+
+function artworkFormatClass(ratio) {
+  if (!Number.isFinite(ratio) || ratio <= 0) return "format-unknown";
+  if (ratio >= 4) return "format-scroll";
+  if (ratio >= 1.45) return "format-wide";
+  if (ratio <= 0.45) return "format-vertical-scroll";
+  if (ratio <= 0.78) return "format-tall";
+  return "format-balanced";
 }
 
 /* ---------- 3. UI 局部组件 ---------- */
@@ -679,52 +781,23 @@ function TitleBlock({ title, subtitle }) {
   );
 }
 
-/* ---------- 飞鹤 SVG silhouette（宋代写意） ---------- */
-function CraneSvg({ className, style }) {
-  return (
-    <svg
-      className={className}
-      style={style}
-      viewBox="0 0 100 32"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      {/* 身体（细长流线型） */}
-      <path d="M 6 16 Q 12 14 22 14 Q 38 13 56 14 L 78 14 Q 88 14 92 15 L 96 15 L 96 17 L 92 17 Q 86 18 76 18 L 56 18 Q 38 19 22 18 Q 12 18 6 16 Z" />
-      {/* 头 + 喙 */}
-      <circle cx="97.5" cy="16" r="1.6" />
-      <path d="M 99 15.5 L 100 16 L 99 16.5 Z" />
-      {/* 上翅 */}
-      <path d="M 30 14 Q 36 6 46 4 Q 56 3 62 6 Q 68 9 70 14 L 62 14 Q 56 11 48 11 Q 40 12 34 14 Z" />
-      {/* 下翅 */}
-      <path
-        d="M 34 18 Q 42 22 52 23 Q 60 23 66 21 L 64 19 Q 58 20 52 20 Q 44 19 38 18 Z"
-        opacity="0.7"
-      />
-      {/* 拖腿 */}
-      <line x1="12" y1="18" x2="2" y2="24" stroke="currentColor" strokeWidth="0.7" strokeLinecap="round" />
-      <line x1="14" y1="18" x2="4" y2="25" stroke="currentColor" strokeWidth="0.7" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/* ---------- FlyingCranes：5-6 只独立飞鹤层 ---------- */
+/* ---------- FlyingCranes：多景深飞鹤 / 从画中飞出的空间意象 ---------- */
 function FlyingCranes() {
   const cranes = [
-    { id: 1, left: "9%",   top: "62%",   width: 124, opacity: 0.58, rotate: -10, flip: false, delay: -2,  duration: 14 },
-    { id: 2, right: "13%", top: "16%",   width: 92,  opacity: 0.46, rotate: 6,   flip: true,  delay: -5,  duration: 16 },
-    { id: 3, left: "44%",  bottom: "8%", width: 76,  opacity: 0.34, rotate: 4,   flip: false, delay: -8,  duration: 11 },
-    { id: 4, right: "8%",  top: "52%",   width: 96,  opacity: 0.5,  rotate: -8,  flip: true,  delay: -3,  duration: 13 },
-    { id: 5, left: "16%",  top: "26%",   width: 64,  opacity: 0.32, rotate: 3,   flip: false, delay: -10, duration: 12 },
-    { id: 6, left: "70%",  top: "8%",    width: 52,  opacity: 0.26, rotate: -4,  flip: false, delay: -6,  duration: 18 },
+    { id: 1, left: "10%", top: "58%", width: 138, opacity: 0.42, rotate: -8, flip: false, delay: -2, duration: 18, depth: "near" },
+    { id: 2, right: "16%", top: "18%", width: 98, opacity: 0.34, rotate: 7, flip: true, delay: -5, duration: 22, depth: "mid" },
+    { id: 3, left: "47%", bottom: "10%", width: 76, opacity: 0.24, rotate: 4, flip: false, delay: -9, duration: 20, depth: "far" },
+    { id: 4, right: "8%", top: "48%", width: 106, opacity: 0.33, rotate: -9, flip: true, delay: -3, duration: 19, depth: "mid" },
+    { id: 5, left: "18%", top: "25%", width: 70, opacity: 0.2, rotate: 4, flip: false, delay: -11, duration: 24, depth: "far" },
+    { id: 6, left: "69%", top: "12%", width: 62, opacity: 0.18, rotate: -5, flip: false, delay: -7, duration: 26, depth: "far" },
+    { id: 7, left: "55%", top: "18%", width: 116, opacity: 0.38, rotate: -4, flip: false, delay: -14, duration: 21, depth: "near" },
   ];
   return (
     <div className="flying-cranes" aria-hidden="true">
       {cranes.map((c) => (
-        <CraneSvg
+        <span
           key={c.id}
-          className={`crane crane-${c.id} ${c.flip ? "flip" : ""}`}
+          className={`crane-flight flight-${c.id} depth-${c.depth} ${c.flip ? "flip" : ""}`}
           style={{
             left: c.left,
             right: c.right,
@@ -736,7 +809,75 @@ function FlyingCranes() {
             "--delay": `${c.delay}s`,
             "--dur": `${c.duration}s`,
           }}
-        />
+        >
+          <span className="crane-trail" />
+          <img src="/scene-assets/crane.svg" alt="" />
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function VesselStillLife({ works }) {
+  const vesselSlots = [
+    { shape: "bowl", match: /Tea Bowl|Teabowl|Bowl|茶|盏|碗|盞/i },
+    { shape: "vase", match: /Meiping|Vase|瓶|梅瓶|Jar|罐|尊|Bottle/i, reject: /Lady Holding/i },
+    { shape: "ewer", match: /Ewer|壶|壺|Phoenix-Headed|spouted/i },
+    { shape: "washer", match: /Brush Washer|Basin|洗|盆/i },
+    { shape: "dish", match: /Dish|Plate|Saucer|盘|碟|盏托|Stand/i },
+    { shape: "accent", match: /Incense Burner|Censer|Covered Box|Box|Pillow|Brush Rest|炉|爐|香|盒|枕|笔架/i },
+  ];
+  const vesselForm = /Tea Bowl|Teabowl|Bowl|Meiping|Vase|Jar|Bottle|Ewer|Brush Washer|Basin|Dish|Plate|Saucer|Cup and Stand|Incense Burner|Censer|Covered Box|Box|Pillow|Brush Rest|茶|盏|盞|碗|瓶|梅瓶|罐|尊|壶|壺|洗|盆|盘|碟|炉|爐|香|盒|枕|笔架/i;
+  const pool = works
+    .filter((work) => {
+      if (inferDomain(work) !== "vessel" || !artworkImage(work)) return false;
+      const text = [work.title, displayArtworkTitle(work), work.medium, work.category]
+        .filter(Boolean)
+        .join(" ");
+      return vesselForm.test(text) && !/Lady Holding|Guanyin|Scepter|Figure|Figurine|Seated|Standing/i.test(text);
+    })
+    .sort((a, b) => {
+      const ia = Number(Boolean(artworkImage(a))) - Number(Boolean(artworkImage(b)));
+      if (ia !== 0) return -ia;
+      return tourScore(b) - tourScore(a);
+    });
+  const used = new Set();
+  const vessels = vesselSlots
+    .map((slot) => {
+      const work = pool.find((item) => {
+        if (used.has(item.id)) return false;
+        const text = [
+          item.title,
+          displayArtworkTitle(item),
+          item.medium,
+          item.category,
+          item.tags?.join(" "),
+        ]
+          .filter(Boolean)
+          .join(" ");
+        if (slot.reject?.test(text)) return false;
+        return slot.match.test(text);
+      });
+      if (work) used.add(work.id);
+      return work ? { work, shape: slot.shape } : null;
+    })
+    .filter(Boolean);
+  for (const work of pool) {
+    if (vessels.length >= 6) break;
+    if (!used.has(work.id)) {
+      vessels.push({ work, shape: "object" });
+      used.add(work.id);
+    }
+  }
+  return (
+    <div className="vessel-still-life" aria-hidden="true">
+      <span className="vessel-orbit vo-1" />
+      <span className="vessel-orbit vo-2" />
+      <span className="vessel-plinth" />
+      {vessels.map(({ work, shape }, i) => (
+        <span key={work.id} className={`vessel-piece vp-${i} shape-${shape}`}>
+          <img src={artworkImage(work)} alt="" loading="lazy" decoding="async" />
+        </span>
       ))}
     </div>
   );
@@ -887,6 +1028,33 @@ function SongGalaxyAtmosphere({ rotation = 0 }) {
   );
 }
 
+function RoyalDecorLayer() {
+  const decor = [
+    { src: "/scene-assets/decor/gold-armillary.png", className: "decor-armillary decor-armillary-top" },
+    { src: "/scene-assets/decor/gold-cloud.png", className: "decor-cloud decor-cloud-top" },
+    { src: "/scene-assets/decor/gold-cloud.png", className: "decor-cloud decor-cloud-low" },
+    { src: "/scene-assets/decor/gold-crane-line.png", className: "decor-crane decor-crane-line" },
+    { src: "/scene-assets/decor/gold-crane-real.png", className: "decor-crane decor-crane-real" },
+    { src: "/scene-assets/decor/gold-crane-line.png", className: "decor-crane decor-crane-feature-left" },
+    { src: "/scene-assets/decor/gold-crane-real.png", className: "decor-crane decor-crane-feature-right" },
+  ];
+
+  return (
+    <div className="royal-decor-layer" aria-hidden="true">
+      {decor.map((item) => (
+        <img
+          key={item.className}
+          src={item.src}
+          alt=""
+          className={`royal-decor ${item.className}`}
+          loading="lazy"
+          decoding="async"
+        />
+      ))}
+    </div>
+  );
+}
+
 function StarBackdrop() {
   // 兼容其他视图（galaxy/list/detail）继续使用
   return (
@@ -902,13 +1070,12 @@ function StarBackdrop() {
 function BottomFocusCard({ artwork, dim, onOpen }) {
   if (!artwork) return null;
   const title = displayArtworkTitle(artwork, "宋代审美");
-  const date = formatDate(artwork.date || artwork.period || artwork.dynasty);
-  const author = localizeArtist(artwork.artist);
-  const medium = cleanText(artwork.medium, "绢本设色");
-  const tags = detailTags(artwork);
+  const date = displayArtworkDate(artwork);
+  const author = localizeArtist(artwork.artist).replace(/\s+/g, "");
+  const medium = displayArtworkMedium(artwork);
   const line = shortLineOf(artwork);
   return (
-    <aside className={`focus-card ${dim ? "dim" : ""}`}>
+    <aside className={`focus-card focus-card-caption ${dim ? "dim" : ""}`}>
       <div className="focus-thumb">
         <img src={artworkImage(artwork)} alt={title} />
       </div>
@@ -920,11 +1087,6 @@ function BottomFocusCard({ artwork, dim, onOpen }) {
         <p className="focus-meta">
           {author} · {date} · {medium}
         </p>
-        <div className="focus-tags">
-          {tags.map((t) => (
-            <span key={t}>{t}</span>
-          ))}
-        </div>
         <p className="focus-line">{line}</p>
       </div>
       <button type="button" className="focus-cta" onClick={() => onOpen(artwork)}>
@@ -1027,7 +1189,7 @@ function OverviewStage({
       id,
       cfg: galaxyConfig[id],
       hero: findGalaxyHero(artifacts, id),
-      cards: getGalaxyShowcase(artifacts, id, 5),
+      cards: getGalaxyShowcase(artifacts, id, 6),
     }));
   }, [artifacts]);
 
@@ -1083,6 +1245,18 @@ function OverviewStage({
     >
       {/* 氛围层（背景层 / 黑金宋代星图 / 飞鹤）—— 不参与 stage-3d 旋转 */}
       <SongGalaxyAtmosphere rotation={rotation} />
+      <RoyalDecorLayer />
+
+      <div className="royal-depth-field" aria-hidden="true">
+        <span className="depth-veil veil-left" />
+        <span className="depth-veil veil-right" />
+        <span className="depth-orbit orbit-near" />
+        <span className="depth-orbit orbit-mid" />
+        <span className="depth-orbit orbit-far" />
+        <span className="depth-star s-1" />
+        <span className="depth-star s-2" />
+        <span className="depth-star s-3" />
+      </div>
 
       <div className="stage-3d">
         {/* C 位永远是瑞鹤图 + 三层光场 + 系列卫星 */}
@@ -1094,6 +1268,21 @@ function OverviewStage({
               <span className="hero-pedestal" />
               <span className="hero-rotline" />
               <span className="hero-rotline outer" />
+            </div>
+            <div className="imperial-orbit-shell" aria-hidden="true">
+              <span className="imperial-ring ir-1" />
+              <span className="imperial-ring ir-2" />
+              <span className="imperial-ring ir-3" />
+              <span className="imperial-glint ig-1" />
+              <span className="imperial-glint ig-2" />
+              <span className="imperial-glint ig-3" />
+            </div>
+            <div className="hero-screen-stack" aria-hidden="true">
+              {craneSeries.slice(0, 3).map((screen, i) => (
+                <span key={screen.id} className={`hero-screen screen-${i}`}>
+                  <img src={artworkImage(screen)} alt="" loading="lazy" />
+                </span>
+              ))}
             </div>
             {/* 瑞鹤图系列卫星 — 围绕 C 位 4 个小卡 */}
             {craneSeries.map((sat, i) => (
@@ -1143,6 +1332,10 @@ function OverviewStage({
                   <small>传宋徽宗赵佶 · 天命 · 祥瑞</small>
                 </div>
               </div>
+              <span className="crane-core-cta">
+                <Search size={13} />
+                探索核心展品
+              </span>
             </button>
           </div>
         )}
@@ -1153,6 +1346,7 @@ function OverviewStage({
             type="button"
             key={isle.id}
             className={`galaxy-island slot-${isle.cfg.slot}`}
+            data-galaxy={isle.id}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseEnter={() => isle.hero && setHovered(isle.hero)}
             onMouseLeave={() => setHovered(null)}
@@ -1163,24 +1357,29 @@ function OverviewStage({
             style={{ "--accent": isle.cfg.color }}
             aria-label={`进入 ${isle.cfg.label}`}
           >
-            <div className="island-cluster">
-              {isle.cards.slice(0, 5).map((card, i) => (
-                <span
-                  key={card?.id || i}
-                  className={`island-thumb thumb-${i}`}
-                  style={{ "--ti": i }}
-                >
-                  {card && (
-                    <img
-                      src={artworkImage(card)}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  )}
-                </span>
-              ))}
-            </div>
+            <span className="island-orbit-line" aria-hidden="true" />
+            {isle.id === "vessel" ? (
+              <VesselStillLife works={artifacts} />
+            ) : (
+              <div className="island-cluster">
+                {isle.cards.slice(0, 6).map((card, i) => (
+                  <span
+                    key={card?.id || i}
+                    className={`island-thumb thumb-${i}`}
+                    style={{ "--ti": i }}
+                  >
+                    {card && (
+                      <img
+                        src={artworkImage(card)}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="island-label">
               <isle.cfg.icon size={13} />
               <strong>{isle.cfg.label}</strong>
@@ -1214,12 +1413,49 @@ function GalaxyOrbitView({
   mode,
 }) {
   const cfg = galaxyConfig[galaxy];
-  const works = useMemo(() => getGalaxyShowcase(artifacts, galaxy, 9), [artifacts, galaxy]);
+  const filters = listFiltersByGalaxy[galaxy] || listFiltersByGalaxy.nature;
+  const [filter, setFilter] = useState("all");
+  const allWorks = useMemo(() => getGalaxyAll(artifacts, galaxy), [artifacts, galaxy]);
+  const filteredWorks = useMemo(() => {
+    if (filter === "all") return allWorks;
+    const f = filters.find((x) => x.id === filter);
+    if (!f?.match) return allWorks;
+    return allWorks.filter((x) =>
+      f.match.test(
+        [x.title, x.tags?.join(" "), x.medium, x.period].filter(Boolean).join(" "),
+      ),
+    );
+  }, [allWorks, filter, filters]);
+  const works = useMemo(() => {
+    if (filter === "all") return getGalaxyShowcase(artifacts, galaxy, 9);
+    return filteredWorks.slice(0, 9);
+  }, [artifacts, galaxy, filter, filteredWorks]);
   const hero = works[0];
   const ring = works.slice(1, 9);
+  const orbitCards = ring.map((work, i) => {
+    const orbitSlots = [
+      { x: 24, y: 43, depth: -0.08, scale: 0.86, tilt: 5, tier: "mid" },
+      { x: 36, y: 22, depth: -0.36, scale: 0.72, tilt: 3, tier: "far" },
+      { x: 55, y: 15, depth: -0.24, scale: 0.78, tilt: -2, tier: "far" },
+      { x: 76, y: 28, depth: -0.18, scale: 0.8, tilt: -5, tier: "mid" },
+      { x: 82, y: 56, depth: 0.08, scale: 0.84, tilt: -4, tier: "near" },
+      { x: 66, y: 75, depth: 0.14, scale: 0.8, tilt: -2, tier: "near" },
+      { x: 46, y: 83, depth: 0.12, scale: 0.78, tilt: 2, tier: "near" },
+      { x: 24, y: 68, depth: -0.02, scale: 0.82, tilt: 5, tier: "mid" },
+    ];
+    const slot = orbitSlots[i % orbitSlots.length];
+    const x = slot.x;
+    const y = slot.y;
+    const depth = slot.depth;
+    const scale = slot.scale;
+    const tier = slot.tier;
+    const opacity = tier === "far" ? 0.72 : tier === "mid" ? 0.86 : 0.94;
+    const tilt = slot.tilt;
+    return { work, i, x, y, depth, scale, opacity, tilt, tier };
+  });
 
   return (
-    <section className="galaxy-stage">
+    <section className={`galaxy-stage galaxy-${galaxy}`} data-galaxy={galaxy}>
       <StarBackdrop />
       <div className="orbital-rings galaxy-rings" aria-hidden="true">
         <span className="ring r1" />
@@ -1227,20 +1463,43 @@ function GalaxyOrbitView({
         <span className="ring r3" />
       </div>
 
-      <div className="galaxy-info">
-        <button type="button" className="g-back" onClick={onBack}>
-          <ChevronLeft size={14} /> 返回银河
-        </button>
-        <h1 className="g-title">{cfg.introTitle}</h1>
-        <p className="g-sub">{cfg.introSub}</p>
+      <div className="galaxy-info g-curator-panel">
+        <div className="g-curator-head">
+          <span className="g-curator-symbol">
+            <Layers size={15} />
+          </span>
+          <div>
+            <h2>{cfg.label}</h2>
+            <small>
+              {cfg.count}件 · {cfg.short}
+            </small>
+          </div>
+        </div>
         <p className="g-blurb">{cfg.introBody}</p>
-        <button
-          type="button"
-          className="g-explore"
-          onClick={() => onSwitchMode("list")}
-        >
-          探索此星系 <ChevronRight size={14} />
-        </button>
+        <div className="g-filter-rule" />
+        <div className="g-filter-title">
+          <span>筛选浏览</span>
+          <Feather size={14} />
+        </div>
+        <div className="g-filter-grid" role="group" aria-label={`${cfg.label}筛选`}>
+          {filters.map((f) => (
+            <button
+              type="button"
+              key={f.id}
+              className={filter === f.id ? "on" : ""}
+              onClick={() => setFilter(f.id)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        <div className="g-filter-foot">
+          <button type="button" onClick={() => setFilter("all")}>
+            <RotateCw size={12} />
+            清空筛选
+          </button>
+          <span>共 {filteredWorks.length} 件</span>
+        </div>
       </div>
 
       <div className="galaxy-toggle">
@@ -1260,10 +1519,24 @@ function GalaxyOrbitView({
           <List size={13} />
           列表览图
         </button>
+        <button type="button" onClick={() => onSwitchMode("list")}>
+          <CircleDot size={13} />
+          时间轴
+        </button>
       </div>
 
       <div className="galaxy-orbit galaxy-orbit-3d">
-        {/* 椭圆透视轨道线 + 金色展台 */}
+        <div className="g-space-field" aria-hidden="true">
+          <span className="g-nebula-core" />
+          <span className="g-dust-field dust-a" />
+          <span className="g-dust-field dust-b" />
+          <span className="g-orbit-flow flow-a" />
+          <span className="g-orbit-flow flow-b" />
+          <span className="g-star-point sp-1" />
+          <span className="g-star-point sp-2" />
+          <span className="g-star-point sp-3" />
+          <span className="g-star-point sp-4" />
+        </div>
         <div className="g-pedestal" aria-hidden="true">
           <span className="g-pedestal-halo" />
           <span className="g-pedestal-disc" />
@@ -1272,18 +1545,33 @@ function GalaxyOrbitView({
           <span className="g-orbit-ring r3" />
         </div>
 
+        <svg className="g-relation-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          {orbitCards.map(({ work, x, y, depth, tier }) => (
+            <line
+              key={work.id}
+              className={`${hovered?.id === work.id ? "active" : ""} tier-${tier}`}
+              x1="50"
+              y1="50"
+              x2={x}
+              y2={y}
+              style={{ "--line-depth": depth }}
+            />
+          ))}
+        </svg>
+
         {hero && (
           <button
             type="button"
-            className="g-hero"
+            className={`g-hero ${artworkFormatClass(artworkRatio(hero))}`}
             onMouseEnter={() => setHovered(hero)}
             onMouseLeave={() => setHovered(null)}
             onClick={() => onOpenArtwork(hero)}
             style={{ "--accent": cfg.color }}
             title={displayArtworkTitle(hero)}
           >
+            <span className="hero-orbit-pulse" aria-hidden="true" />
             <div className="g-hero-frame">
-              <img src={artworkImage(hero, "full")} alt={displayArtworkTitle(hero)} />
+              <img src={artworkImage(hero)} alt={displayArtworkTitle(hero)} />
               <span className="frame-glow" />
               <span className="frame-corner tl" />
               <span className="frame-corner tr" />
@@ -1300,24 +1588,13 @@ function GalaxyOrbitView({
           </button>
         )}
 
-        {ring.map((work, i) => {
-          const total = Math.max(ring.length, 1);
-          const angle = (i / total) * Math.PI * 2 - Math.PI / 2 + 0.22;
-          // 透视轨道：x 大、y 小（椭圆扁平），加深度因子 z 模拟前后
-          const rx = 38;
-          const ry = 18; // 比之前更扁——透视感更强
-          const x = 50 + Math.cos(angle) * rx;
-          const y = 50 + Math.sin(angle) * ry;
-          // sin(angle) > 0 -> 卡在前方（更大 / 更亮）；< 0 -> 后方（缩小 / 暗）
-          const depth = Math.sin(angle); // -1..1
-          const scale = 0.82 + (depth + 1) / 2 * 0.36; // 0.82..1.18
-          const opacity = 0.62 + (depth + 1) / 2 * 0.38; // 0.62..1
-          const tilt = Math.cos(angle) * -8; // 左右翻转 rotateY
+        {orbitCards.map(({ work, i, x, y, depth, scale, opacity, tilt, tier }) => {
+          const formatClass = artworkFormatClass(artworkRatio(work));
           return (
             <button
               type="button"
               key={work.id}
-              className="g-orbit-card"
+              className={`g-orbit-card node-${i} tier-${tier} ${formatClass} ${hovered?.id === work.id ? "active" : ""}`}
               style={{
                 "--gx": `${x}%`,
                 "--gy": `${y}%`,
@@ -1325,6 +1602,7 @@ function GalaxyOrbitView({
                 "--gscale": scale,
                 "--gopacity": opacity,
                 "--gtilt": `${tilt}deg`,
+                "--gdepth": depth,
                 zIndex: Math.round((depth + 1) * 50) + 10,
               }}
               onMouseEnter={() => setHovered(work)}
@@ -1332,10 +1610,16 @@ function GalaxyOrbitView({
               onClick={() => onOpenArtwork(work)}
               title={displayArtworkTitle(work)}
             >
+              <span className="node-orbit-halo" aria-hidden="true" />
               <div className="g-thumb">
                 <img src={artworkImage(work)} alt="" />
               </div>
-              <span className="g-tag">{displayArtworkTitle(work)}</span>
+              <span className="g-tag">
+                <strong>{displayArtworkTitle(work)}</strong>
+                <small>
+                  {localizeArtist(work.artist)} · {displayArtworkDate(work)}
+                </small>
+              </span>
             </button>
           );
         })}
@@ -1379,6 +1663,9 @@ function GalleryListView({
         </button>
         <div className="hall-title-row">
           <div className="hall-title-block">
+            <p className="hall-collection-count">
+              收录宋代{cfg.short}作品 <b>{all.length}</b> 件
+            </p>
             <h1 className="hall-title">{cfg.introTitle}</h1>
             <p className="hall-sub">{cfg.introSub}</p>
             <p className="hall-blurb">{cfg.introBody}</p>
@@ -1413,16 +1700,19 @@ function GalleryListView({
             </button>
           ))}
         </div>
+        <button type="button" className="hall-sort" aria-label="排序方式">
+          默认排序 <span aria-hidden="true">⌄</span>
+        </button>
       </header>
 
       {/* 卷轴陈列网格 */}
       <div className="scroll-grid">
         {filtered.map((work) => {
           const t = displayArtworkTitle(work);
-          const d = formatDate(work.date || work.period || work.dynasty);
+          const d = displayArtworkDate(work);
           const a = localizeArtist(work.artist);
           const m = inferDomain(work);
-          const medium = localizeMedium(work.medium);
+          const medium = displayArtworkMedium(work);
           const tagLabel = ({
             inscription: "书法",
             collection: "收藏",
@@ -1495,19 +1785,37 @@ function GalleryListView({
 function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
   const [zoom, setZoom] = useState(1);
   const [activeThumb, setActiveThumb] = useState(0);
+  const [loadedRatio, setLoadedRatio] = useState(null);
 
   const related = useMemo(() => getRelated(artifacts, artwork, 6), [artifacts, artwork]);
   const tags = detailTags(artwork);
   const meta = metaPairs(artwork);
 
   if (!artwork) return null;
+  const domain = inferDomain(artwork);
+  const domainCfg = galaxyConfig[domain];
   const title = displayArtworkTitle(artwork);
   const author = localizeArtist(artwork.artist);
-  const date = formatDate(artwork.date || artwork.period || artwork.dynasty);
-  const medium = cleanText(artwork.medium, "绢本设色");
+  const date = displayArtworkDate(artwork);
+  const medium = displayArtworkMedium(artwork);
   const blurb = shortLineOf(artwork);
 
   const thumbStrip = [artwork, ...related.slice(0, 3)].filter(Boolean);
+  const imageArtwork = thumbStrip[activeThumb] ?? artwork;
+  const imageSrc = artworkImage(imageArtwork, "full");
+  const imageRatio = artworkRatio(imageArtwork) ?? loadedRatio ?? 1;
+  const imageFormat = artworkFormatClass(imageRatio);
+
+  useEffect(() => {
+    setZoom(1);
+    setActiveThumb(0);
+    setLoadedRatio(null);
+  }, [artwork?.id]);
+
+  useEffect(() => {
+    setZoom(1);
+    setLoadedRatio(null);
+  }, [imageSrc]);
 
   // Esc 退出
   useEffect(() => {
@@ -1525,6 +1833,11 @@ function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
   return (
     <section className="detail-stage">
       <StarBackdrop />
+      <div className="d-gallery-light" aria-hidden="true">
+        <span className="d-wall-glow" />
+        <span className="d-wall-rail top" />
+        <span className="d-wall-rail bottom" />
+      </div>
       <button type="button" className="d-close" onClick={onBack} aria-label="关闭">
         <X size={18} />
       </button>
@@ -1532,13 +1845,30 @@ function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
       <button type="button" className="d-back" onClick={onBack}>
         <ChevronLeft size={14} /> 返回银河
       </button>
+      <nav className="d-breadcrumb" aria-label="作品路径">
+        <span>首页</span>
+        <ChevronRight size={12} />
+        <span>{domainCfg?.label ?? "宋代审美银河"}</span>
+        <ChevronRight size={12} />
+        <span>{title}</span>
+      </nav>
 
       <div className="d-shell">
-        <div className="d-image-area">
-          <div className="d-image-stage" style={{ "--z": zoom }}>
+        <div className={`d-image-area ${imageFormat}`}>
+          <div
+            className={`d-image-stage ${imageFormat}`}
+            style={{ "--z": zoom, "--art-ratio": imageRatio }}
+          >
             <img
-              src={artworkImage(thumbStrip[activeThumb] ?? artwork, "full")}
+              className="d-artwork-img"
+              src={imageSrc}
               alt={title}
+              onLoad={(e) => {
+                const { naturalWidth, naturalHeight } = e.currentTarget;
+                if (naturalWidth > 0 && naturalHeight > 0) {
+                  setLoadedRatio(naturalWidth / naturalHeight);
+                }
+              }}
             />
           </div>
 
@@ -1549,8 +1879,14 @@ function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
                 type="button"
                 key={`${it.id}-${i}`}
                 className={i === activeThumb ? "on" : ""}
-                onClick={() => setActiveThumb(i)}
-                aria-label={`细节 ${i + 1}`}
+                onClick={() => {
+                  if (i === 0) {
+                    setActiveThumb(0);
+                  } else {
+                    onOpenArtwork(it);
+                  }
+                }}
+                aria-label={i === 0 ? "当前作品" : `打开 ${displayArtworkTitle(it)}`}
               >
                 <img src={artworkImage(it)} alt="" />
               </button>
@@ -1575,7 +1911,7 @@ function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
           {/* 角落 mini-map（仅 zoom > 1.05 时出现） */}
           {zoom > 1.05 && (
             <div className="d-minimap" aria-hidden="true">
-              <img src={artworkImage(thumbStrip[activeThumb] ?? artwork)} alt="" />
+              <img src={artworkImage(imageArtwork)} alt="" />
               <span className="vp" style={{ "--zv": zoom }} />
             </div>
           )}
@@ -1584,14 +1920,14 @@ function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
         <aside className="d-info">
           <div className="d-info-head">
             <div className="d-title-row">
-              <span className="d-stamp">{galaxyConfig[inferDomain(artwork)]?.seal ?? "宋"}</span>
+              <span className="d-stamp">{domainCfg?.seal ?? "宋"}</span>
               <div>
                 <h1>{title}</h1>
                 <p className="d-author">{author}</p>
               </div>
             </div>
             <p className="d-meta">
-              {date} · {localizeMedium(artwork.medium)}
+              {date} · {displayArtworkMedium(artwork)}
             </p>
             <div className="d-tags">
               {tags.map((t) => (
@@ -1641,9 +1977,9 @@ function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
           )}
         </aside>
 
-        {/* 相关作品 */}
+        {/* 相关星点 */}
         <aside className="d-related">
-          <small>相关作品</small>
+          <small>相关星点</small>
           <div className="d-related-list">
             {related.slice(0, 4).map((it) => (
               <button
@@ -1671,7 +2007,7 @@ function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
             ))}
           </div>
           <button type="button" className="d-related-more" onClick={onBack}>
-            查看全部相关作品 <ChevronRight size={14} />
+            回到星系脉络 <ChevronRight size={14} />
           </button>
         </aside>
       </div>
@@ -1683,12 +2019,12 @@ function ArtworkDetailView({ artwork, artifacts, onBack, onOpenArtwork }) {
 
 const DEMO_SCRIPT = [
   { t: 0, action: "overview" },
-  { t: 4000, action: "rotate", value: 28 },
-  { t: 7000, action: "rotate", value: 0 },
-  { t: 8000, action: "enter_galaxy", value: "nature" },
+  { t: 3000, action: "rotate", value: 24 },
+  { t: 5800, action: "rotate", value: 0 },
+  { t: 6900, action: "enter_galaxy", value: "nature" },
   { t: 13000, action: "switch_list" },
   { t: 17000, action: "open_hero" },
-  { t: 22000, action: "back_overview" },
+  { t: 21500, action: "back_overview" },
 ];
 
 function useDemoMode({
@@ -1704,56 +2040,54 @@ function useDemoMode({
   useEffect(() => {
     if (!isDemo || !artifacts.length) return undefined;
     setSpeed(1);
-    const timers = DEMO_SCRIPT.map((step) =>
-      window.setTimeout(() => {
-        switch (step.action) {
-          case "overview":
-            setView("overview");
-            setActiveArtwork(null);
-            setActiveGalaxy(null);
-            setRotation(0);
-            break;
-          case "rotate":
-            setRotation(step.value);
-            break;
-          case "enter_galaxy":
-            setView("galaxy");
-            setActiveGalaxy(step.value);
-            setListMode("galaxy");
-            break;
-          case "switch_list":
-            setListMode("list");
-            break;
-          case "open_hero": {
-            const hero = findGalaxyHero(artifacts, "nature");
-            if (hero) {
-              setActiveArtwork(hero);
-              setView("detail");
+    const timers = new Set();
+    const playScript = () => {
+      DEMO_SCRIPT.forEach((step) => {
+        const timer = window.setTimeout(() => {
+          switch (step.action) {
+            case "overview":
+              setView("overview");
+              setActiveArtwork(null);
+              setActiveGalaxy(null);
+              setRotation(0);
+              break;
+            case "rotate":
+              setRotation(step.value);
+              break;
+            case "enter_galaxy":
+              setView("galaxy");
+              setActiveGalaxy(step.value);
+              setListMode("galaxy");
+              break;
+            case "switch_list":
+              setListMode("list");
+              setView("list");
+              break;
+            case "open_hero": {
+              const hero = findGalaxyHero(artifacts, "nature");
+              if (hero) {
+                setActiveArtwork(hero);
+                setView("detail");
+              }
+              break;
             }
-            break;
+            case "back_overview":
+              setActiveArtwork(null);
+              setView("overview");
+              setActiveGalaxy(null);
+              setRotation(0);
+              break;
+            default:
+              break;
           }
-          case "back_overview":
-            setActiveArtwork(null);
-            setView("overview");
-            setActiveGalaxy(null);
-            setRotation(0);
-            break;
-          default:
-            break;
-        }
-      }, step.t),
-    );
-    // 循环
-    const loopT = window.setTimeout(() => {
-      // 触发再播一次：通过设置状态使依赖变化（简化：reload 第一帧）
-      setView("overview");
-      setActiveGalaxy(null);
-      setActiveArtwork(null);
-      setRotation(0);
-    }, 26000);
+          timers.delete(timer);
+        }, step.t);
+        timers.add(timer);
+      });
+    };
+    playScript();
     return () => {
       timers.forEach(window.clearTimeout);
-      window.clearTimeout(loopT);
     };
   }, [isDemo, artifacts, setView, setActiveGalaxy, setActiveArtwork, setRotation, setListMode, setSpeed]);
 }
@@ -1779,13 +2113,19 @@ function App() {
   const [hovered, setHovered] = useState(null);
 
   // demo 模式
-  const isDemo = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    return new URLSearchParams(window.location.search).get("demo") === "1";
+  const demoParams = useMemo(() => {
+    if (typeof window === "undefined") return { visual: false, play: false };
+    const params = new URLSearchParams(window.location.search);
+    return {
+      visual: params.get("demo") === "1",
+      play: params.get("demo") === "1" && params.get("play") === "1",
+    };
   }, []);
+  const isDemo = Boolean(demoParams.visual);
+  const isDemoPlaying = Boolean(demoParams.play);
 
   useDemoMode({
-    isDemo,
+    isDemo: isDemoPlaying,
     setView,
     setActiveGalaxy,
     setActiveArtwork,
@@ -1797,7 +2137,7 @@ function App() {
 
   // 自动导览（非 demo 模式下，每隔几秒切换星系）
   useEffect(() => {
-    if (!autoplay || isDemo) return undefined;
+    if (!autoplay || isDemoPlaying) return undefined;
     if (view !== "overview") return undefined;
     const interval = window.setInterval(() => {
       setRotation((r) => {
@@ -1806,7 +2146,7 @@ function App() {
       });
     }, 1200 / speed);
     return () => window.clearInterval(interval);
-  }, [autoplay, speed, view, isDemo]);
+  }, [autoplay, speed, view, isDemoPlaying]);
 
   // 焦点 artwork（用于底部 focus card）
   const crane = useMemo(() => findCraneRecord(artifacts), [artifacts]);
@@ -1878,7 +2218,9 @@ function App() {
     view === "detail" || (view === "list" && hovered) ? false : false;
 
   return (
-    <main className={`app-shell view-${view} ${isDemo ? "demo-mode" : ""}`}>
+    <main
+      className={`app-shell view-${view} galaxy-${activeGalaxy || "overview"} ${isDemo ? "demo-mode" : ""} ${isDemoPlaying ? "demo-playing" : ""}`}
+    >
       <Sidebar
         activeView={view}
         activeGalaxy={activeGalaxy}
@@ -1886,20 +2228,18 @@ function App() {
         onPickGalaxy={enterGalaxy}
       />
 
-      {view !== "detail" && (
-        <TitleBlock
-          title={
-            view === "overview"
-              ? SITE_TITLE
-              : galaxyConfig[activeGalaxy]?.introTitle ?? SITE_TITLE
-          }
-          subtitle={
-            view === "overview"
-              ? SITE_SUBTITLE
-              : galaxyConfig[activeGalaxy]?.introSub ?? SITE_SUBTITLE
-          }
-        />
-      )}
+      <TitleBlock
+        title={
+          view === "overview" || view === "detail"
+            ? SITE_TITLE
+            : galaxyConfig[activeGalaxy]?.introTitle ?? SITE_TITLE
+        }
+        subtitle={
+          view === "overview" || view === "detail"
+            ? SITE_SUBTITLE
+            : galaxyConfig[activeGalaxy]?.introSub ?? SITE_SUBTITLE
+        }
+      />
 
       <TopCapsule
         scope={capsule.scope}
@@ -1958,7 +2298,11 @@ function App() {
       )}
 
       {view !== "detail" && view !== "list" && (
-        <BottomFocusCard artwork={focusArtwork} dim={dim} onOpen={openArtwork} />
+        <BottomFocusCard
+          artwork={view === "overview" ? centerHero || crane : focusArtwork}
+          dim={dim}
+          onOpen={openArtwork}
+        />
       )}
 
       {view === "overview" && (
@@ -1968,7 +2312,7 @@ function App() {
           speed={speed}
           onChangeSpeed={setSpeed}
           onLocate={() => setRotation(0)}
-          hint={isDemo ? "Demo 自动播放中" : null}
+          hint={isDemoPlaying ? "Demo 自动播放中" : null}
         />
       )}
     </main>

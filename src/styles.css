@@ -3067,10 +3067,10 @@ img { pointer-events: none; }  /* 父按钮处理点击；图片自身不接事�
 /* ================================================================
  * Demo mode tweaks
  * ================================================================ */
-.demo-mode .drag-hint { opacity: 0; }
-.demo-mode .bottom-controls { opacity: 0.4; pointer-events: none; }
-.demo-mode .top-actions button { opacity: 0.6; }
-.demo-mode .lhs-rail { opacity: 0.7; }
+.demo-playing .drag-hint { opacity: 0; }
+.demo-playing .bottom-controls { opacity: 0.4; pointer-events: none; }
+.demo-playing .top-actions button { opacity: 0.6; }
+.demo-playing .lhs-rail { opacity: 0.7; }
 /* demo 模式下星尘和光点更明显（仍克制） */
 .demo-mode .dust-near { opacity: 0.62; }
 .demo-mode .dust-mid { opacity: 0.7; }
@@ -3096,4 +3096,5690 @@ img { pointer-events: none; }  /* 父按钮处理点击；图片自身不接事�
   .galaxy-island.slot-tr { right: 4%; top: 6%; }
   .galaxy-island.slot-bl { left: 4%; bottom: 14%; }
   .galaxy-island.slot-br { right: 4%; bottom: 14%; }
+}
+
+/* ================================================================
+ * Director Pass  ——  皇家审美宇宙 / 数字策展最终视觉层
+ * ================================================================ */
+
+.app-shell {
+  background:
+    radial-gradient(ellipse 48% 38% at 50% 47%, rgba(224, 176, 86, 0.22), transparent 62%),
+    radial-gradient(ellipse 70% 72% at 50% 52%, rgba(88, 58, 20, 0.22), transparent 68%),
+    radial-gradient(ellipse 42% 60% at 12% 78%, rgba(118, 30, 18, 0.08), transparent 72%),
+    radial-gradient(ellipse 38% 52% at 88% 18%, rgba(196, 165, 104, 0.07), transparent 72%),
+    linear-gradient(180deg, #080603 0%, #030201 100%);
+}
+
+.app-shell::after {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, transparent 16%, transparent 78%, rgba(0, 0, 0, 0.42) 100%),
+    radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.62) 100%);
+}
+
+.lhs-rail {
+  background:
+    linear-gradient(180deg, rgba(8, 6, 3, 0.78), rgba(3, 2, 1, 0.9)),
+    repeating-linear-gradient(0deg, rgba(232, 196, 119, 0.025) 0 1px, transparent 1px 8px);
+  border-right-color: rgba(216, 178, 102, 0.16);
+  box-shadow: 12px 0 36px rgba(0, 0, 0, 0.36);
+}
+
+.top-bar {
+  top: 28px;
+  right: 38px;
+}
+
+.top-capsule,
+.top-actions button,
+.top-emperor {
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, rgba(24, 16, 8, 0.62), rgba(6, 4, 2, 0.72)),
+    repeating-linear-gradient(90deg, rgba(232, 196, 119, 0.018) 0 1px, transparent 1px 7px);
+  border-color: rgba(216, 178, 102, 0.26);
+  box-shadow: inset 0 0 18px rgba(89, 64, 28, 0.16), 0 12px 30px rgba(0, 0, 0, 0.36);
+}
+
+.top-actions button {
+  color: rgba(232, 196, 119, 0.58);
+}
+
+.hero-title {
+  left: 116px;
+  top: 34px;
+  max-width: 560px;
+}
+
+.hero-title h1 {
+  font-size: clamp(38px, 4.2vw, 70px);
+  letter-spacing: 5px;
+  line-height: 1.04;
+  text-shadow:
+    0 0 18px rgba(245, 215, 150, 0.42),
+    0 0 54px rgba(216, 161, 70, 0.2),
+    0 2px 0 rgba(0, 0, 0, 0.9);
+}
+
+.hero-title h1::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -14px;
+  width: min(420px, 72%);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(245, 215, 150, 0.72), rgba(216, 178, 102, 0.18), transparent);
+  -webkit-text-fill-color: initial;
+}
+
+.hero-title h1::after {
+  right: -44px;
+  top: 4px;
+  width: 32px;
+  height: 32px;
+  font-size: 17px;
+  background:
+    linear-gradient(180deg, rgba(138, 36, 21, 0.28), rgba(72, 16, 10, 0.18));
+  box-shadow: 0 0 18px rgba(138, 36, 21, 0.32);
+}
+
+.hero-title p {
+  margin-top: 24px;
+  font-size: 14.5px;
+  letter-spacing: 3px;
+  color: rgba(245, 220, 160, 0.86);
+  text-shadow: 0 0 14px rgba(232, 196, 119, 0.18);
+}
+
+/* 首页：前景 / 中景 / 后景分层 */
+.overview-stage {
+  inset: 106px 40px 124px 112px;
+  perspective: 1800px;
+  perspective-origin: 50% 42%;
+}
+
+.stage-3d {
+  z-index: 12;
+}
+
+.royal-depth-field {
+  position: absolute;
+  inset: -8% -4%;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.depth-veil {
+  position: absolute;
+  top: 12%;
+  bottom: 0;
+  width: 30%;
+  opacity: 0.22;
+  filter: blur(1px);
+  background:
+    linear-gradient(90deg, rgba(216, 178, 102, 0.1), transparent),
+    repeating-linear-gradient(90deg, rgba(232, 196, 119, 0.025) 0 1px, transparent 1px 10px);
+}
+.depth-veil.veil-left { left: -6%; transform: rotateY(30deg) translateZ(120px); }
+.depth-veil.veil-right { right: -6%; transform: rotateY(-30deg) translateZ(80px) scaleX(-1); }
+
+.depth-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 178, 102, 0.13);
+  transform: translate(-50%, -50%) rotateX(68deg);
+  box-shadow: inset 0 0 20px rgba(216, 178, 102, 0.03);
+}
+.depth-orbit.orbit-near { width: 78vw; height: 78vw; border-style: dashed; animation: directorOrbit 92s linear infinite; }
+.depth-orbit.orbit-mid { width: 56vw; height: 56vw; border-color: rgba(216, 178, 102, 0.18); animation: directorOrbit 76s linear infinite reverse; }
+.depth-orbit.orbit-far { width: 94vw; height: 94vw; border-color: rgba(216, 178, 102, 0.08); animation: directorOrbit 124s linear infinite; }
+
+@keyframes directorOrbit {
+  from { transform: translate(-50%, -50%) rotateX(68deg) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotateX(68deg) rotate(360deg); }
+}
+
+.depth-star {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f5d796 0%, rgba(232, 196, 119, 0.52) 42%, transparent 72%);
+  box-shadow: 0 0 14px rgba(232, 196, 119, 0.48);
+  animation: depthStarFloat 10s ease-in-out infinite;
+}
+.depth-star.s-1 { left: 28%; top: 26%; opacity: 0.62; animation-delay: -2s; }
+.depth-star.s-2 { right: 24%; top: 62%; opacity: 0.42; animation-delay: -6s; }
+.depth-star.s-3 { left: 58%; bottom: 13%; opacity: 0.5; animation-delay: -4s; }
+
+@keyframes depthStarFloat {
+  0%, 100% { transform: translate3d(0, 0, 80px) scale(0.82); opacity: 0.38; }
+  50% { transform: translate3d(18px, -12px, 150px) scale(1); opacity: 0.72; }
+}
+
+/* C 位皇家主展品 */
+.hero-cluster {
+  top: 48%;
+  transform: translate(-50%, -50%) translateZ(180px);
+}
+
+.hero-halo {
+  left: -430px;
+  top: -410px;
+  width: 860px;
+  height: 820px;
+  background:
+    radial-gradient(circle, rgba(245, 215, 150, 0.34) 0%, rgba(216, 161, 70, 0.14) 28%, rgba(88, 58, 20, 0.06) 48%, transparent 70%);
+  filter: blur(34px);
+}
+
+.hero-pedestal {
+  left: -330px;
+  top: 166px;
+  width: 660px;
+  height: 116px;
+  background:
+    radial-gradient(ellipse, rgba(245, 215, 150, 0.55) 0%, rgba(216, 161, 70, 0.2) 34%, rgba(95, 66, 24, 0.1) 54%, transparent 78%);
+  filter: blur(11px);
+}
+
+.hero-rotline {
+  left: -260px;
+  top: -238px;
+  width: 520px;
+  height: 430px;
+  border-color: rgba(245, 215, 150, 0.28);
+  transform: rotateX(64deg);
+}
+.hero-rotline.outer {
+  left: -335px;
+  top: -300px;
+  width: 670px;
+  height: 540px;
+  border-color: rgba(216, 178, 102, 0.16);
+}
+
+.imperial-orbit-shell {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 20;
+  transform-style: preserve-3d;
+}
+.imperial-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 178, 102, 0.18);
+  transform: translate(-50%, -50%) rotateX(68deg);
+}
+.imperial-ring.ir-1 { width: 430px; height: 430px; border-style: dotted; animation: directorOrbit 52s linear infinite; }
+.imperial-ring.ir-2 { width: 570px; height: 570px; border-color: rgba(216, 178, 102, 0.12); animation: directorOrbit 74s linear infinite reverse; }
+.imperial-ring.ir-3 { width: 710px; height: 710px; border-color: rgba(216, 178, 102, 0.08); animation: directorOrbit 110s linear infinite; }
+.imperial-glint {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f5d796;
+  box-shadow: 0 0 14px rgba(245, 215, 150, 0.78);
+  animation: glintBreath 5.6s ease-in-out infinite;
+}
+.imperial-glint.ig-1 { left: -246px; top: -30px; }
+.imperial-glint.ig-2 { right: -286px; top: 54px; animation-delay: -2s; }
+.imperial-glint.ig-3 { left: 184px; top: -206px; animation-delay: -3.8s; }
+
+@keyframes glintBreath {
+  0%, 100% { opacity: 0.28; transform: scale(0.75); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+
+.hero-screen-stack {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 22;
+}
+.hero-screen {
+  position: absolute;
+  width: clamp(94px, 7vw, 132px);
+  aspect-ratio: 0.78 / 1;
+  padding: 3px;
+  border: 1px solid rgba(216, 178, 102, 0.18);
+  background: rgba(8, 6, 4, 0.72);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.64);
+  opacity: 0.34;
+  filter: blur(0.2px) brightness(0.82) sepia(0.08);
+}
+.hero-screen img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-screen.screen-0 { left: -246px; top: -154px; transform: rotateY(22deg) rotate(-7deg) translateZ(-36px); }
+.hero-screen.screen-1 { right: -250px; top: -142px; transform: rotateY(-22deg) rotate(7deg) translateZ(-42px); }
+.hero-screen.screen-2 { left: -64px; top: -236px; transform: scale(0.82) rotate(2deg) translateZ(-62px); opacity: 0.22; }
+
+.crane-hero {
+  animation: royalHeroBreath 7.8s ease-in-out infinite;
+  left: 0;
+  top: 0;
+}
+
+@keyframes royalHeroBreath {
+  0%, 100% { transform: translate(-50%, -50%) translateZ(60px) scale(1); }
+  50% { transform: translate(-50%, calc(-50% - 8px)) translateZ(90px) scale(1.018); }
+}
+
+.crane-hero:hover {
+  transform: translate(-50%, calc(-50% - 4px)) translateZ(110px) scale(1.035);
+}
+
+.crane-frame {
+  width: clamp(270px, 22vw, 376px);
+  padding: 12px;
+  border: 1px solid rgba(245, 215, 150, 0.72);
+  background:
+    linear-gradient(135deg, rgba(106, 72, 28, 0.42), rgba(12, 8, 4, 0.96) 28%, rgba(56, 36, 14, 0.62) 72%, rgba(7, 5, 2, 0.98)),
+    repeating-linear-gradient(90deg, rgba(232, 196, 119, 0.04) 0 1px, transparent 1px 8px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 225, 160, 0.2),
+    inset 0 0 0 8px rgba(6, 4, 2, 0.84),
+    inset 0 0 40px rgba(89, 64, 28, 0.4),
+    0 0 0 1px rgba(6, 4, 2, 0.9),
+    0 0 0 4px rgba(216, 178, 102, 0.08),
+    0 0 86px rgba(245, 215, 150, 0.32),
+    0 44px 130px rgba(0, 0, 0, 0.95);
+}
+
+.crane-frame::before {
+  inset: 7px;
+  border-color: rgba(245, 215, 150, 0.28);
+}
+
+.crane-frame::after {
+  inset: -16px;
+  opacity: 0.56;
+}
+
+.crane-frame img {
+  filter: brightness(1.08) contrast(1.08) saturate(1.05) sepia(0.08);
+  box-shadow:
+    inset 0 0 32px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(245, 215, 150, 0.12);
+}
+
+.frame-corner {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.frame-glow {
+  inset: -56px;
+  background:
+    radial-gradient(ellipse 56% 42% at 50% 50%, rgba(245, 215, 150, 0.34), transparent 72%);
+  filter: blur(18px);
+}
+
+.crane-plaque {
+  margin-top: 2px;
+  border-radius: 2px;
+  padding: 12px 26px 12px 16px;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  background:
+    linear-gradient(180deg, rgba(34, 22, 9, 0.88), rgba(6, 4, 2, 0.94)),
+    repeating-linear-gradient(90deg, rgba(232, 196, 119, 0.028) 0 1px, transparent 1px 8px);
+}
+
+.crane-plaque strong {
+  font-size: 20px;
+  letter-spacing: 5px;
+}
+
+/* 星系岛屿：扇形星云而不是入口卡片 */
+.galaxy-island {
+  gap: 14px;
+  filter: drop-shadow(0 24px 42px rgba(0, 0, 0, 0.56));
+}
+.galaxy-island.slot-tl { left: 5%; top: 9%; }
+.galaxy-island.slot-tr { right: 5%; top: 9%; }
+.galaxy-island.slot-bl { left: 6%; bottom: 10%; }
+.galaxy-island.slot-br { right: 6%; bottom: 10%; }
+
+.galaxy-island::before {
+  width: 128%;
+  height: 84%;
+  top: 58%;
+  background:
+    radial-gradient(ellipse, rgba(245, 215, 150, 0.16) 0%, rgba(216, 161, 70, 0.06) 42%, transparent 74%);
+}
+
+.galaxy-island::after {
+  top: 56%;
+  width: 118%;
+  height: 52%;
+  border-color: rgba(216, 178, 102, 0.2);
+  transform: translate(-50%, -50%) rotateX(68deg);
+}
+
+.island-orbit-line {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 92%;
+  height: 56%;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 178, 102, 0.14);
+  transform: translate(-50%, -50%) rotateX(64deg) rotate(-7deg);
+  pointer-events: none;
+  opacity: 0.72;
+  transition: border-color 420ms ease, box-shadow 420ms ease, transform 420ms ease;
+}
+.galaxy-island:hover .island-orbit-line {
+  border-color: rgba(245, 215, 150, 0.56);
+  box-shadow: 0 0 24px rgba(232, 196, 119, 0.26);
+  transform: translate(-50%, -50%) rotateX(64deg) rotate(8deg) scale(1.05);
+}
+
+.island-cluster {
+  display: block;
+  width: clamp(230px, 17vw, 310px);
+  height: clamp(166px, 12vw, 226px);
+  padding: 0;
+  perspective: 1000px;
+}
+
+.island-thumb {
+  position: absolute;
+  bottom: 18px;
+  width: 31%;
+  border-radius: 1px;
+  padding: 3px;
+  background:
+    linear-gradient(180deg, rgba(42, 27, 10, 0.8), rgba(5, 4, 2, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 196, 119, 0.08),
+    0 16px 34px rgba(0, 0, 0, 0.78);
+}
+.galaxy-island .island-thumb.thumb-0 {
+  left: 4%;
+  bottom: 20%;
+  transform: rotate(-22deg) rotateY(18deg) translateZ(-38px) scale(0.72) !important;
+}
+.galaxy-island .island-thumb.thumb-1 {
+  left: 22%;
+  bottom: 31%;
+  transform: rotate(-11deg) rotateY(8deg) translateZ(-10px) scale(0.9) !important;
+}
+.galaxy-island .island-thumb.thumb-2 {
+  left: 50%;
+  bottom: 37%;
+  transform: translateX(-50%) rotate(0deg) translateZ(34px) scale(1.18) !important;
+  border-color: var(--accent, var(--gold-1));
+}
+.galaxy-island .island-thumb.thumb-3 {
+  right: 22%;
+  bottom: 31%;
+  transform: rotate(11deg) rotateY(-8deg) translateZ(-10px) scale(0.9) !important;
+}
+.galaxy-island .island-thumb.thumb-4 {
+  right: 4%;
+  bottom: 20%;
+  transform: rotate(22deg) rotateY(-18deg) translateZ(-38px) scale(0.72) !important;
+}
+
+.island-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(140deg, rgba(245, 215, 150, 0.1), transparent 42%);
+  pointer-events: none;
+}
+
+.island-label {
+  border-radius: 2px;
+  padding: 10px 20px 10px 15px;
+  clip-path: polygon(9px 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
+  border-color: rgba(216, 178, 102, 0.44);
+}
+
+.island-label em {
+  display: none;
+}
+
+.galaxy-island:hover {
+  filter: drop-shadow(0 0 26px rgba(232, 196, 119, 0.2)) drop-shadow(0 28px 46px rgba(0, 0, 0, 0.64));
+}
+
+.flying-cranes .crane {
+  color: rgba(235, 204, 139, 0.58);
+  filter: drop-shadow(0 0 10px rgba(216, 181, 109, 0.18));
+  animation-name: craneFloatDirector;
+}
+.flying-cranes .crane-1 { opacity: 0.42 !important; filter: blur(0.1px) drop-shadow(0 0 8px rgba(216, 181, 109, 0.22)); }
+.flying-cranes .crane-2 { opacity: 0.28 !important; filter: blur(0.5px); }
+.flying-cranes .crane-3 { opacity: 0.2 !important; filter: blur(0.8px); }
+.flying-cranes .crane-4 { opacity: 0.34 !important; }
+.flying-cranes .crane-5,
+.flying-cranes .crane-6 { opacity: 0.18 !important; filter: blur(1px); }
+
+@keyframes craneFloatDirector {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 9px -7px; }
+}
+
+.bottom-controls {
+  left: 116px;
+  bottom: 30px;
+  border-radius: 2px;
+  padding: 12px 18px 12px 14px;
+  gap: 12px;
+  background:
+    linear-gradient(180deg, rgba(18, 12, 5, 0.56), rgba(5, 3, 1, 0.74)),
+    repeating-linear-gradient(90deg, rgba(232, 196, 119, 0.02) 0 1px, transparent 1px 8px);
+  border-color: rgba(216, 178, 102, 0.22);
+  box-shadow: inset 0 0 18px rgba(89, 64, 28, 0.12), 0 18px 36px rgba(0, 0, 0, 0.42);
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+.bc-play,
+.bc-locate {
+  border-radius: 2px;
+}
+
+.focus-card {
+  right: 38px;
+  bottom: 32px;
+  width: clamp(360px, 31vw, 500px);
+  grid-template-columns: 96px 1fr auto;
+  border-radius: 2px;
+  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  background:
+    linear-gradient(180deg, rgba(22, 14, 6, 0.68), rgba(5, 3, 1, 0.84)),
+    repeating-linear-gradient(90deg, rgba(232, 196, 119, 0.022) 0 1px, transparent 1px 8px);
+  border-color: rgba(216, 178, 102, 0.3);
+}
+
+.focus-thumb {
+  width: 96px;
+  height: 124px;
+}
+
+.focus-cta {
+  border-radius: 2px;
+  border-color: rgba(216, 178, 102, 0.3);
+  background: rgba(18, 12, 6, 0.42);
+}
+
+/* 星系页：进入艺术星云 */
+.galaxy-stage {
+  inset: 104px 38px 124px 112px;
+  background:
+    radial-gradient(ellipse 56% 52% at 54% 50%, rgba(216, 161, 70, 0.13), transparent 68%),
+    radial-gradient(ellipse 70% 62% at 70% 56%, rgba(20, 14, 8, 0.46), transparent 72%);
+}
+
+.galaxy-stage::before {
+  content: "";
+  position: absolute;
+  inset: 6% 8% 2% 26%;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 178, 102, 0.1);
+  transform: rotateX(68deg);
+  pointer-events: none;
+}
+
+.galaxy-info {
+  top: 6px;
+  left: 4px;
+  max-width: 390px;
+  padding-left: 22px;
+}
+
+.galaxy-info::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 52px;
+  bottom: 10px;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(245, 215, 150, 0.65), rgba(216, 178, 102, 0.16), transparent);
+}
+
+.g-back,
+.g-explore,
+.galaxy-toggle {
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, rgba(24, 16, 8, 0.56), rgba(5, 3, 1, 0.74));
+}
+
+.g-title {
+  font-size: clamp(34px, 3.5vw, 58px);
+  letter-spacing: 5px;
+  line-height: 1.08;
+}
+
+.g-sub {
+  font-size: 14px;
+  color: rgba(245, 220, 160, 0.86);
+}
+
+.g-blurb {
+  max-width: 350px;
+  font-size: 13px;
+  line-height: 2;
+}
+
+.g-explore {
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  border-color: rgba(216, 178, 102, 0.38);
+}
+
+.galaxy-orbit {
+  inset: 0 0 -18px 12%;
+}
+
+.g-pedestal {
+  top: 53%;
+}
+
+.g-pedestal-halo {
+  left: -460px;
+  top: -270px;
+  width: 920px;
+  height: 560px;
+  opacity: 0.88;
+}
+
+.g-pedestal-disc {
+  left: -360px;
+  top: 136px;
+  width: 720px;
+  height: 110px;
+}
+
+.g-orbit-ring.r1 { width: 36vw; height: 36vw; }
+.g-orbit-ring.r2 { width: 54vw; height: 54vw; }
+.g-orbit-ring.r3 { width: 70vw; height: 70vw; }
+
+.g-relation-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 8;
+  pointer-events: none;
+}
+.g-relation-lines line {
+  stroke: rgba(216, 178, 102, 0.2);
+  stroke-width: 0.08;
+  stroke-dasharray: 1.8 2.8;
+  opacity: calc(0.13 + (var(--line-depth, 0) + 1) * 0.06);
+  transition: stroke 260ms ease, stroke-width 260ms ease, opacity 260ms ease;
+}
+.g-relation-lines line.active {
+  stroke: rgba(245, 215, 150, 0.7);
+  stroke-width: 0.16;
+  opacity: 0.82;
+}
+
+.g-hero {
+  top: 52%;
+}
+
+.g-hero-frame {
+  width: clamp(226px, 17vw, 300px);
+  padding: 8px;
+  border-color: rgba(245, 215, 150, 0.76);
+  background:
+    linear-gradient(135deg, rgba(86, 58, 22, 0.46), rgba(7, 5, 2, 0.94) 34%, rgba(46, 30, 12, 0.52));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.16),
+    inset 0 0 0 5px rgba(4, 3, 1, 0.82),
+    0 0 0 1px rgba(6, 4, 2, 0.9),
+    0 0 78px rgba(245, 215, 150, 0.28),
+    0 34px 84px rgba(0, 0, 0, 0.9);
+}
+
+.g-hero-cap {
+  border-radius: 2px;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+.g-orbit-card {
+  z-index: 18;
+}
+
+.g-thumb {
+  width: clamp(96px, 7.8vw, 146px);
+  border-radius: 1px;
+  padding: 4px;
+  background:
+    linear-gradient(180deg, rgba(38, 24, 9, 0.78), rgba(5, 3, 1, 0.96));
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.78);
+}
+
+.g-orbit-card::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 8px);
+  width: 72%;
+  height: 18px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(216, 178, 102, 0.2), transparent 72%);
+  filter: blur(5px);
+  opacity: calc(0.22 + (var(--gdepth, 0) + 1) * 0.08);
+  pointer-events: none;
+}
+
+.g-orbit-card.active .g-thumb,
+.g-orbit-card:hover .g-thumb {
+  border-color: rgba(245, 215, 150, 0.82);
+  box-shadow: 0 0 30px rgba(245, 215, 150, 0.34), 0 20px 42px rgba(0, 0, 0, 0.86);
+}
+
+.g-tag {
+  border-radius: 2px;
+  background: rgba(5, 3, 1, 0.74);
+  border-color: rgba(216, 178, 102, 0.24);
+}
+
+/* 卷轴陈列馆：展柜长廊 */
+.scroll-hall {
+  inset: 88px 38px 20px 112px;
+  padding: 0 18px 36px 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.32), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.18)),
+    radial-gradient(ellipse 70% 42% at 50% 18%, rgba(216, 161, 70, 0.08), transparent 70%);
+}
+
+.hall-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 10px 0 26px;
+  margin-bottom: 38px;
+  backdrop-filter: blur(8px);
+  background:
+    linear-gradient(180deg, rgba(5, 3, 1, 0.94), rgba(5, 3, 1, 0.68) 78%, transparent),
+    radial-gradient(ellipse 70% 100% at 0% 55%, rgba(216, 161, 70, 0.08), transparent 72%);
+}
+
+.hall-title {
+  font-size: clamp(36px, 4vw, 64px);
+  letter-spacing: 5px;
+}
+
+.hall-sub {
+  font-size: 14px;
+  letter-spacing: 3px;
+}
+
+.hall-meta,
+.hall-toggle,
+.ct-chip {
+  border-radius: 2px;
+}
+
+.ct-chip {
+  padding: 9px 20px 9px 13px;
+  background:
+    linear-gradient(180deg, rgba(28, 18, 8, 0.62), rgba(8, 5, 2, 0.78)),
+    repeating-linear-gradient(90deg, rgba(232, 196, 119, 0.018) 0 1px, transparent 1px 8px);
+  border-color: rgba(216, 178, 102, 0.24);
+}
+
+.ct-chip.on {
+  color: #080603;
+  text-shadow: none;
+  box-shadow: 0 0 22px rgba(245, 215, 150, 0.34), inset 0 0 0 1px rgba(255, 235, 170, 0.28);
+}
+
+.scroll-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 44px 42px;
+  max-width: 1500px;
+  padding: 4px 0 54px;
+  perspective: 1200px;
+}
+
+.scroll-card {
+  min-height: 232px;
+  grid-template-columns: 30px 1fr 30px;
+  filter: drop-shadow(0 28px 44px rgba(0, 0, 0, 0.52));
+  scroll-margin-top: 320px;
+}
+
+.scroll-card:nth-child(even) {
+  margin-top: 34px;
+}
+
+.scroll-card::before {
+  content: "";
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  bottom: -18px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(216, 178, 102, 0.14), transparent 72%);
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.scroll-card:hover {
+  transform: translateY(-6px) rotateX(1.5deg);
+}
+
+.scroll-rod {
+  width: 30px;
+  grid-template-rows: 18px 1fr 18px;
+}
+
+.rod-cap {
+  border-radius: 15px / 8px;
+  background:
+    radial-gradient(ellipse at 50% 45%, #f6d98f 0%, #c28a43 32%, #69481f 70%, #130a04 100%);
+}
+
+.rod-body {
+  background:
+    linear-gradient(90deg, #130904 0%, #5a3516 20%, #c58b42 48%, #7a4a20 72%, #170b04 100%);
+}
+
+.scroll-body {
+  grid-template-columns: minmax(240px, 0.96fr) minmax(0, 1fr);
+  gap: 24px;
+  padding: 20px 28px 20px 24px;
+  background:
+    radial-gradient(ellipse 90% 80% at 34% 50%, rgba(245, 220, 160, 0.075), transparent 68%),
+    repeating-linear-gradient(6deg, rgba(232, 196, 119, 0.03) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(232, 196, 119, 0.018) 0 1px, transparent 1px 9px),
+    linear-gradient(180deg, #1c1308 0%, #0a0703 100%);
+  border-top-color: rgba(245, 215, 150, 0.42);
+  border-bottom-color: rgba(95, 67, 28, 0.56);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.08),
+    inset 0 18px 42px rgba(245, 215, 150, 0.035),
+    inset 0 -20px 36px rgba(0, 0, 0, 0.68);
+}
+
+.scroll-body::before {
+  top: 7px;
+  background: linear-gradient(90deg, transparent, rgba(245, 215, 150, 0.52), transparent);
+}
+
+.scroll-body::after {
+  bottom: 7px;
+  background: linear-gradient(90deg, transparent, rgba(216, 178, 102, 0.28), transparent);
+}
+
+.scroll-image {
+  aspect-ratio: 1.28 / 1;
+  border-color: rgba(245, 215, 150, 0.36);
+  padding: 5px;
+  background: #060402;
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.08),
+    0 10px 26px rgba(0, 0, 0, 0.62);
+}
+
+.scroll-info {
+  align-content: center;
+  gap: 9px;
+  padding-right: 22px;
+}
+
+.scroll-title {
+  font-size: clamp(18px, 1.35vw, 24px);
+  line-height: 1.24;
+  letter-spacing: 3px;
+}
+
+.scroll-author,
+.scroll-date {
+  color: rgba(232, 196, 119, 0.62);
+}
+
+.scroll-tags i {
+  border-radius: 1px;
+  background: rgba(8, 6, 4, 0.34);
+}
+
+.scroll-seal {
+  right: 18px;
+  bottom: 18px;
+  height: 30px;
+  min-width: 38px;
+  background: rgba(138, 36, 21, 0.2);
+}
+
+.hall-timeline {
+  margin: 34px 4% 0;
+  padding-bottom: 30px;
+}
+
+/* 详情页：打开一幅帝王画卷 */
+.detail-stage {
+  background:
+    radial-gradient(ellipse 62% 54% at 40% 50%, rgba(216, 161, 70, 0.15), transparent 70%),
+    linear-gradient(90deg, #040302 0%, #0b0804 42%, #050302 100%);
+}
+
+.d-gallery-light {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.d-wall-glow {
+  position: absolute;
+  left: 8%;
+  top: 8%;
+  width: 62%;
+  height: 82%;
+  background: radial-gradient(ellipse, rgba(245, 215, 150, 0.14), rgba(216, 161, 70, 0.05) 42%, transparent 72%);
+  filter: blur(30px);
+}
+
+.d-wall-rail {
+  position: absolute;
+  left: 110px;
+  right: 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(216, 178, 102, 0.28), transparent);
+}
+.d-wall-rail.top { top: 84px; }
+.d-wall-rail.bottom { bottom: 28px; }
+
+.d-shell {
+  z-index: 12;
+  inset: 96px 34px 36px 112px;
+  grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.78fr) minmax(230px, 0.5fr);
+  gap: 28px;
+}
+
+.d-image-area {
+  border-radius: 0;
+  border-color: rgba(216, 178, 102, 0.24);
+  background:
+    radial-gradient(ellipse 78% 78% at 50% 48%, rgba(245, 220, 160, 0.05), transparent 70%),
+    repeating-linear-gradient(7deg, rgba(232, 196, 119, 0.022) 0 1px, transparent 1px 8px),
+    linear-gradient(180deg, rgba(22, 14, 6, 0.68), rgba(5, 3, 1, 0.88));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.06),
+    inset 0 0 90px rgba(0, 0, 0, 0.5),
+    0 30px 80px rgba(0, 0, 0, 0.74);
+}
+
+.d-image-area::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(216, 178, 102, 0.14);
+  background:
+    linear-gradient(90deg, rgba(245, 220, 160, 0.026), transparent 28%, transparent 72%, rgba(245, 220, 160, 0.018)),
+    repeating-linear-gradient(0deg, rgba(232, 196, 119, 0.018) 0 1px, transparent 1px 6px);
+  pointer-events: none;
+}
+
+.d-image-stage {
+  inset: 42px 42px 112px;
+}
+
+.d-image-stage::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border: 1px solid rgba(216, 178, 102, 0.16);
+  box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.36);
+}
+
+.d-image-stage img {
+  max-width: 92%;
+  max-height: 92%;
+  padding: 8px;
+  border: 1px solid rgba(245, 215, 150, 0.34);
+  background:
+    linear-gradient(180deg, rgba(30, 20, 9, 0.82), rgba(5, 3, 1, 0.92));
+  filter: brightness(1.03) contrast(1.05) sepia(0.04);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.08),
+    0 0 46px rgba(245, 215, 150, 0.16),
+    0 28px 70px rgba(0, 0, 0, 0.78);
+}
+
+.d-thumb-strip {
+  left: 42px;
+  right: 230px;
+  bottom: 32px;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(216, 178, 102, 0.14);
+}
+
+.d-thumb-strip button {
+  width: 68px;
+  height: 52px;
+  border-radius: 1px;
+  background: rgba(8, 6, 4, 0.72);
+}
+
+.d-zoom {
+  right: 38px;
+  bottom: 32px;
+  border-radius: 2px;
+  background: rgba(5, 3, 1, 0.74);
+  border-color: rgba(216, 178, 102, 0.22);
+}
+
+.d-minimap {
+  border-radius: 1px;
+  background: rgba(5, 3, 1, 0.78);
+}
+
+.d-info {
+  border-radius: 0;
+  border: 0;
+  border-left: 1px solid rgba(216, 178, 102, 0.28);
+  padding: 20px 6px 20px 24px;
+  background:
+    linear-gradient(90deg, rgba(216, 161, 70, 0.055), transparent 56%);
+  box-shadow: none;
+}
+
+.d-info-head {
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(216, 178, 102, 0.16);
+}
+
+.d-stamp {
+  border-radius: 0;
+  width: 42px;
+  height: 42px;
+  font-size: 19px;
+}
+
+.d-info-head h1 {
+  font-size: clamp(34px, 3vw, 48px);
+  line-height: 1.12;
+  letter-spacing: 5px;
+}
+
+.d-author {
+  font-size: 15px;
+  color: rgba(245, 220, 160, 0.86);
+}
+
+.d-meta {
+  font-size: 13px;
+  color: rgba(232, 196, 119, 0.7);
+}
+
+.d-tags span {
+  border-radius: 1px;
+  background: rgba(8, 6, 4, 0.36);
+}
+
+.d-curator {
+  border-color: rgba(216, 178, 102, 0.18);
+  background:
+    radial-gradient(ellipse 92% 120% at 0% 50%, rgba(216, 161, 70, 0.08), transparent 78%),
+    rgba(5, 3, 1, 0.28);
+}
+
+.d-curator-label {
+  border-radius: 0;
+  background: #090603;
+}
+
+.d-blurb {
+  font-size: 15px;
+  line-height: 2.08;
+  color: rgba(245, 220, 160, 0.9);
+}
+
+.d-info-grid {
+  padding-top: 4px;
+  border-top: 1px solid rgba(216, 178, 102, 0.12);
+}
+
+.d-actions {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  opacity: 0.56;
+}
+
+.d-actions button {
+  border-radius: 1px;
+  padding: 8px 6px;
+  font-size: 10px;
+  background: rgba(8, 6, 4, 0.32);
+}
+
+.d-source {
+  border-radius: 2px;
+  background: rgba(18, 12, 6, 0.42);
+  border-color: rgba(216, 178, 102, 0.3);
+}
+
+.d-related {
+  border-radius: 0;
+  border-color: rgba(216, 178, 102, 0.18);
+  background:
+    linear-gradient(180deg, rgba(18, 12, 6, 0.42), rgba(5, 3, 1, 0.66));
+  box-shadow: inset 0 0 28px rgba(89, 64, 28, 0.1);
+}
+
+.d-related > small {
+  border-bottom: 0;
+  color: rgba(245, 220, 160, 0.78);
+}
+
+.d-related-list {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.d-related-list button {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 1px;
+  border-color: rgba(216, 178, 102, 0.12);
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 22%, rgba(216, 178, 102, 0.06), transparent 70%),
+    rgba(8, 6, 4, 0.38);
+}
+
+.d-related-list button:hover {
+  border-color: rgba(245, 215, 150, 0.42);
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 22%, rgba(245, 215, 150, 0.12), transparent 70%),
+    rgba(8, 6, 4, 0.48);
+}
+
+.r-thumb {
+  width: 100%;
+  height: 88px;
+  border-color: rgba(216, 178, 102, 0.22);
+}
+
+.r-info {
+  gap: 4px;
+}
+
+.r-info strong {
+  white-space: normal;
+  line-height: 1.3;
+}
+
+.d-related-more {
+  border-radius: 2px;
+  background: rgba(8, 6, 4, 0.34);
+}
+
+.demo-mode .crane-frame {
+  animation-duration: 7s;
+}
+
+.demo-playing .focus-card,
+.demo-playing .bottom-controls,
+.demo-playing .top-actions {
+  opacity: 0.52;
+}
+
+@media (max-width: 1280px) {
+  .hero-title h1 { font-size: clamp(32px, 3.4vw, 48px); }
+  .crane-frame { width: clamp(238px, 20vw, 310px); }
+  .island-cluster { width: clamp(190px, 18vw, 250px); height: clamp(138px, 13vw, 180px); }
+  .scroll-body { grid-template-columns: minmax(190px, 0.9fr) minmax(0, 1fr); padding: 16px 22px; }
+  .scroll-card { min-height: 202px; }
+  .d-shell { grid-template-columns: minmax(0, 1.36fr) minmax(300px, 0.86fr); }
+  .d-related { display: none; }
+}
+
+@media (max-width: 980px) {
+  .hero-title { left: 90px; top: 30px; }
+  .overview-stage,
+  .galaxy-stage,
+  .scroll-hall { left: 88px; right: 18px; }
+  .crane-frame { width: clamp(210px, 32vw, 286px); }
+  .galaxy-island.slot-tl,
+  .galaxy-island.slot-tr { top: 10%; }
+  .galaxy-island.slot-bl,
+  .galaxy-island.slot-br { bottom: 8%; }
+  .scroll-grid { grid-template-columns: 1fr; }
+  .scroll-card:nth-child(even) { margin-top: 0; }
+  .d-shell { grid-template-columns: 1fr; overflow: auto; }
+  .d-info { border-left: 0; border-top: 1px solid rgba(216, 178, 102, 0.22); }
+}
+
+/* ================================================================
+ * Reference Alignment Pass  ——  对齐目标图的镜头比例与展厅密度
+ * ================================================================ */
+
+.app-shell {
+  border: 1px solid rgba(216, 178, 102, 0.32);
+  border-radius: 8px;
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.035),
+    inset 0 0 120px rgba(0, 0, 0, 0.44),
+    0 0 0 1px rgba(0, 0, 0, 0.9);
+}
+
+.app-shell::before {
+  opacity: 0.9;
+}
+
+.top-capsule {
+  min-width: 320px;
+  justify-content: center;
+  border-radius: 999px;
+}
+
+.top-actions {
+  gap: 10px;
+}
+
+.top-actions button,
+.top-emperor {
+  min-height: 34px;
+}
+
+.overview-stage {
+  inset: 104px 38px 110px 108px;
+}
+
+.hero-title {
+  top: 44px;
+}
+
+.hero-title h1 {
+  font-size: clamp(34px, 3.55vw, 58px);
+  letter-spacing: 4px;
+}
+
+.hero-title p {
+  margin-top: 20px;
+}
+
+.hero-cluster {
+  top: 47%;
+}
+
+.crane-frame {
+  width: clamp(238px, 18.5vw, 318px);
+  padding: 9px;
+}
+
+.crane-plaque {
+  min-width: 270px;
+  transform: translateY(-4px);
+}
+
+.crane-plaque strong {
+  font-size: 18px;
+}
+
+.hero-pedestal {
+  top: 128px;
+  width: 580px;
+  left: -290px;
+}
+
+.hero-halo {
+  width: 760px;
+  height: 720px;
+  left: -380px;
+  top: -360px;
+}
+
+.hero-rotline {
+  width: 470px;
+  height: 390px;
+  left: -235px;
+  top: -215px;
+}
+
+.hero-rotline.outer {
+  width: 620px;
+  height: 500px;
+  left: -310px;
+  top: -278px;
+}
+
+.imperial-ring.ir-1 { width: 380px; height: 380px; }
+.imperial-ring.ir-2 { width: 520px; height: 520px; }
+.imperial-ring.ir-3 { width: 680px; height: 680px; }
+
+.hero-screen {
+  width: clamp(82px, 6.2vw, 112px);
+}
+
+.hero-screen.screen-0 { left: -205px; top: -120px; }
+.hero-screen.screen-1 { right: -210px; top: -112px; }
+.hero-screen.screen-2 { left: -46px; top: -204px; }
+
+.hero-satellite {
+  width: clamp(42px, 3.7vw, 62px);
+  opacity: 0.72;
+}
+.hero-satellite.sat-0 { left: -170px; top: -50px; }
+.hero-satellite.sat-1 { right: -170px; top: -50px; }
+.hero-satellite.sat-2 { left: -136px; top: 54px; }
+.hero-satellite.sat-3 { right: -136px; top: 54px; }
+
+.galaxy-island.slot-tl { left: 6.2%; top: 13.5%; }
+.galaxy-island.slot-tr { right: 6.4%; top: 13.5%; }
+.galaxy-island.slot-bl { left: 6.4%; bottom: 10.2%; }
+.galaxy-island.slot-br { right: 6.6%; bottom: 10.2%; }
+
+.island-cluster {
+  width: clamp(188px, 14.3vw, 252px);
+  height: clamp(132px, 10vw, 178px);
+}
+
+.galaxy-island .island-thumb.thumb-0 { bottom: 17%; }
+.galaxy-island .island-thumb.thumb-1 { bottom: 29%; }
+.galaxy-island .island-thumb.thumb-2 { bottom: 34%; }
+.galaxy-island .island-thumb.thumb-3 { bottom: 29%; }
+.galaxy-island .island-thumb.thumb-4 { bottom: 17%; }
+
+.island-label {
+  min-width: 150px;
+  justify-content: center;
+  gap: 8px;
+}
+
+.island-label em {
+  display: inline;
+  margin-left: 2px;
+}
+
+.focus-card {
+  width: clamp(330px, 29vw, 460px);
+  grid-template-columns: 82px 1fr auto;
+  gap: 14px;
+  padding: 14px 18px;
+}
+
+.focus-thumb {
+  width: 82px;
+  height: 104px;
+}
+
+.focus-head strong {
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.focus-meta,
+.focus-line {
+  font-size: 11.5px;
+}
+
+.focus-tags span {
+  padding: 2px 8px;
+}
+
+.focus-cta {
+  padding: 8px 11px;
+}
+
+.bottom-controls {
+  bottom: 26px;
+  min-width: 350px;
+}
+
+/* 星系 / 列表页使用内部展区标题，避免网页式重复标题 */
+.app-shell.view-galaxy .hero-title,
+.app-shell.view-list .hero-title {
+  display: none;
+}
+
+.app-shell.view-galaxy .focus-card {
+  left: 50%;
+  right: auto;
+  bottom: 26px;
+  width: clamp(350px, 34vw, 520px);
+  transform: translateX(-50%);
+  grid-template-columns: 1fr 92px;
+  padding: 18px 22px;
+}
+
+.app-shell.view-galaxy .focus-thumb {
+  grid-column: 2;
+  grid-row: 1 / span 5;
+  width: 92px;
+  height: 92px;
+}
+
+.app-shell.view-galaxy .focus-body {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.app-shell.view-galaxy .focus-cta {
+  display: none;
+}
+
+.app-shell.view-galaxy .focus-head {
+  display: grid;
+  gap: 4px;
+}
+
+.app-shell.view-galaxy .focus-pill {
+  width: max-content;
+}
+
+.galaxy-stage {
+  inset: 90px 38px 106px 108px;
+}
+
+.galaxy-info {
+  top: 8px;
+  max-width: 330px;
+}
+
+.g-title {
+  font-size: clamp(34px, 3.2vw, 52px);
+}
+
+.g-blurb {
+  max-width: 300px;
+}
+
+.galaxy-orbit {
+  inset: 0 1% 0 17%;
+}
+
+.g-hero {
+  top: 48%;
+}
+
+.g-hero-frame {
+  width: clamp(188px, 15vw, 258px);
+}
+
+.g-orbit-ring.r1 { width: 32vw; height: 32vw; }
+.g-orbit-ring.r2 { width: 48vw; height: 48vw; }
+.g-orbit-ring.r3 { width: 64vw; height: 64vw; }
+
+.g-thumb {
+  width: clamp(82px, 6.7vw, 122px);
+}
+
+.g-tag {
+  font-size: 10px;
+  padding: 3px 8px;
+}
+
+/* 卷轴陈列馆改为参考图的密集展柜长廊 */
+.scroll-hall {
+  inset: 72px 36px 18px 108px;
+  padding: 0 18px 28px 0;
+}
+
+.hall-head {
+  padding: 10px 0 18px;
+  margin-bottom: 24px;
+}
+
+.hall-title-row {
+  align-items: flex-end;
+}
+
+.hall-title {
+  font-size: clamp(30px, 3vw, 48px);
+  margin-top: 0;
+}
+
+.hall-sub {
+  font-size: 12.5px;
+}
+
+.hall-blurb {
+  max-width: 720px;
+  margin-top: 8px;
+  line-height: 1.75;
+}
+
+.hall-meta {
+  margin-top: 10px;
+  padding: 6px 12px;
+}
+
+.curator-tags {
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.ct-chip {
+  padding: 7px 16px 7px 11px;
+  font-size: 12px;
+}
+
+.scroll-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+  padding-bottom: 26px;
+}
+
+.scroll-card,
+.scroll-card:nth-child(even) {
+  min-height: 118px;
+  grid-template-columns: 18px 1fr 18px;
+  margin-top: 0;
+  scroll-margin-top: 260px;
+}
+
+.scroll-card:hover {
+  transform: translateY(-2px);
+}
+
+.scroll-rod {
+  width: 18px;
+  grid-template-rows: 10px 1fr 10px;
+}
+
+.scroll-body {
+  grid-template-columns: minmax(155px, 0.46fr) minmax(0, 1fr);
+  gap: 14px;
+  padding: 9px 16px 9px 12px;
+  min-width: 0;
+}
+
+.scroll-image {
+  aspect-ratio: 1.78 / 1;
+  padding: 3px;
+}
+
+.scroll-info {
+  gap: 4px;
+  padding-right: 28px;
+}
+
+.scroll-title {
+  font-size: 17px;
+  letter-spacing: 1.8px;
+}
+
+.scroll-author,
+.scroll-date {
+  font-size: 11px;
+}
+
+.scroll-tags {
+  margin-top: 2px;
+}
+
+.scroll-tags i {
+  font-size: 10px;
+  padding: 2px 7px;
+}
+
+.scroll-seal {
+  right: 11px;
+  bottom: 10px;
+  height: 24px;
+  min-width: 30px;
+}
+
+.hall-timeline {
+  margin-top: 12px;
+  padding-top: 16px;
+}
+
+/* 详情页更接近目标图的双栏数字展墙 */
+.d-shell {
+  inset: 88px 34px 30px 108px;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.68fr) minmax(210px, 0.42fr);
+  gap: 24px;
+}
+
+.d-image-stage {
+  inset: 38px 38px 96px;
+}
+
+.d-image-stage img {
+  max-width: 94%;
+  max-height: 94%;
+}
+
+.d-info {
+  padding-left: 22px;
+}
+
+.d-info-head h1 {
+  font-size: clamp(30px, 2.55vw, 44px);
+}
+
+.d-blurb {
+  font-size: 14px;
+}
+
+.d-actions {
+  opacity: 0.62;
+}
+
+.d-related-list {
+  gap: 10px;
+}
+
+.r-thumb {
+  height: 76px;
+}
+
+@media (max-width: 1280px) {
+  .crane-frame { width: clamp(220px, 17vw, 280px); }
+  .island-cluster { width: clamp(168px, 14vw, 220px); height: clamp(118px, 9.8vw, 160px); }
+  .scroll-body { grid-template-columns: minmax(135px, 0.48fr) minmax(0, 1fr); }
+  .scroll-title { font-size: 15px; }
+  .d-shell { grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.74fr); }
+}
+
+/* ================================================================
+ * Asset Pass  ——  器物组合 / 飞鹤素材 / 统一画幅
+ * ================================================================ */
+
+.crane-frame,
+.g-hero-frame,
+.g-thumb,
+.island-thumb,
+.hero-screen,
+.hero-satellite,
+.scroll-image,
+.r-thumb {
+  border-color: rgba(232, 196, 119, 0.34);
+  background:
+    linear-gradient(180deg, rgba(44, 28, 10, 0.84), rgba(6, 4, 2, 0.96)),
+    repeating-linear-gradient(90deg, rgba(245, 215, 150, 0.026) 0 1px, transparent 1px 8px);
+}
+
+.g-thumb::before,
+.island-thumb::before,
+.hero-screen::before,
+.hero-satellite::before,
+.scroll-image::before,
+.r-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(245, 215, 150, 0.14);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.g-thumb::after,
+.island-thumb::after,
+.hero-screen::after,
+.hero-satellite::after,
+.scroll-image::after,
+.r-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(245, 215, 150, 0.12), transparent 34%),
+    radial-gradient(ellipse 70% 110% at 50% 48%, transparent 58%, rgba(0, 0, 0, 0.26) 100%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.g-thumb,
+.island-thumb,
+.hero-screen,
+.hero-satellite,
+.scroll-image,
+.r-thumb {
+  position: relative;
+}
+
+.g-thumb img,
+.island-thumb img,
+.hero-screen img,
+.hero-satellite img,
+.scroll-image img,
+.r-thumb img {
+  filter: brightness(1.03) contrast(1.06) saturate(0.96) sepia(0.08);
+}
+
+/* 飞鹤素材：真实资产 + 远近景深 + 轻拖尾 */
+.flying-cranes {
+  z-index: 5;
+}
+
+.crane-flight {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  transform: rotate(var(--rot, 0deg));
+  transform-origin: center;
+  animation: craneAssetFloat var(--dur, 20s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform;
+}
+
+.crane-flight.flip {
+  transform: scaleX(-1) rotate(var(--rot, 0deg));
+}
+
+.crane-flight img {
+  width: 100%;
+  height: auto;
+  display: block;
+  opacity: 0.78;
+  filter:
+    sepia(0.12)
+    saturate(0.92)
+    drop-shadow(0 0 8px rgba(232, 196, 119, 0.24));
+}
+
+.crane-flight.depth-near img {
+  opacity: 0.86;
+  filter:
+    sepia(0.08)
+    saturate(1.02)
+    drop-shadow(0 0 12px rgba(245, 215, 150, 0.34));
+}
+
+.crane-flight.depth-mid img {
+  opacity: 0.7;
+  filter:
+    sepia(0.12)
+    saturate(0.9)
+    blur(0.25px)
+    drop-shadow(0 0 8px rgba(232, 196, 119, 0.2));
+}
+
+.crane-flight.depth-far img {
+  opacity: 0.52;
+  filter:
+    sepia(0.14)
+    saturate(0.72)
+    blur(0.8px)
+    drop-shadow(0 0 5px rgba(232, 196, 119, 0.16));
+}
+
+.crane-trail {
+  position: absolute;
+  left: 8%;
+  top: 52%;
+  width: 76%;
+  height: 1px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, transparent, rgba(245, 215, 150, 0.22), transparent);
+  filter: blur(1px);
+  opacity: 0.34;
+}
+
+.crane-flight.flip .crane-trail {
+  left: 16%;
+}
+
+@keyframes craneAssetFloat {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 12px -9px;
+  }
+}
+
+/* 器物组合：替换器物星系的画幅扇形，形成清供展台 */
+.galaxy-island[data-galaxy="vessel"] {
+  transform-style: preserve-3d;
+}
+
+.galaxy-island[data-galaxy="vessel"] .island-orbit-line {
+  width: 112%;
+  height: 58%;
+  top: 62%;
+}
+
+.vessel-still-life {
+  position: relative;
+  width: clamp(206px, 15vw, 282px);
+  height: clamp(142px, 10.8vw, 198px);
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.vessel-plinth {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  bottom: 14%;
+  height: 32%;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse, rgba(245, 215, 150, 0.28) 0%, rgba(216, 161, 70, 0.12) 42%, transparent 76%);
+  filter: blur(8px);
+  transform: rotateX(64deg);
+}
+
+.vessel-orbit {
+  position: absolute;
+  left: 50%;
+  bottom: 15%;
+  border-radius: 50%;
+  border: 1px dashed rgba(245, 215, 150, 0.22);
+  transform: translateX(-50%) rotateX(66deg);
+}
+.vessel-orbit.vo-1 { width: 104%; height: 44%; animation: directorOrbit 58s linear infinite; }
+.vessel-orbit.vo-2 { width: 78%; height: 32%; border-color: rgba(245, 215, 150, 0.15); animation: directorOrbit 42s linear infinite reverse; }
+
+.vessel-piece {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  padding: 3px;
+  border: 1px solid rgba(232, 196, 119, 0.32);
+  border-radius: 2px;
+  background:
+    radial-gradient(ellipse 86% 76% at 50% 42%, rgba(245, 220, 160, 0.13), transparent 66%),
+    linear-gradient(180deg, rgba(42, 28, 12, 0.92), rgba(5, 3, 1, 0.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 220, 160, 0.07),
+    inset 0 0 22px rgba(0, 0, 0, 0.42),
+    0 14px 28px rgba(0, 0, 0, 0.58);
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.66));
+  transform-origin: bottom center;
+  transition: transform 380ms ease, filter 380ms ease;
+}
+
+.vessel-piece::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(245, 215, 150, 0.13);
+  background:
+    linear-gradient(135deg, rgba(245, 215, 150, 0.1), transparent 38%),
+    radial-gradient(ellipse 82% 120% at 50% 50%, transparent 54%, rgba(0, 0, 0, 0.22) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.vessel-piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  mix-blend-mode: normal;
+  filter: brightness(1.04) contrast(1.08) saturate(0.92) sepia(0.08);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.vessel-piece.shape-vase img,
+.vessel-piece.shape-ewer img,
+.vessel-piece.shape-accent img {
+  object-fit: cover;
+}
+
+.vessel-piece.shape-bowl img,
+.vessel-piece.shape-washer img,
+.vessel-piece.shape-dish img {
+  object-fit: cover;
+  object-position: center 54%;
+}
+
+.vessel-piece::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -18%;
+  height: 26%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.58), transparent 72%);
+  filter: blur(3px);
+  z-index: -1;
+}
+
+.vessel-piece.vp-0 {
+  left: 4%;
+  bottom: 21%;
+  width: 34%;
+  height: 42%;
+  transform: rotate(-9deg) translateZ(-18px);
+}
+.vessel-piece.vp-1 {
+  left: 31%;
+  bottom: 27%;
+  width: 31%;
+  height: 66%;
+  transform: translateZ(28px);
+  z-index: 4;
+}
+.vessel-piece.vp-2 {
+  left: 56%;
+  bottom: 19%;
+  width: 40%;
+  height: 53%;
+  transform: rotate(8deg) translateZ(6px);
+  z-index: 3;
+}
+.vessel-piece.vp-3 {
+  left: 17%;
+  bottom: 12%;
+  width: 38%;
+  height: 34%;
+  transform: rotate(-3deg) translateZ(42px);
+  z-index: 5;
+}
+.vessel-piece.vp-4 {
+  right: 4%;
+  bottom: 12%;
+  width: 30%;
+  height: 38%;
+  transform: rotate(11deg) translateZ(-14px);
+  z-index: 2;
+}
+.vessel-piece.vp-5 {
+  left: 43%;
+  bottom: 8%;
+  width: 32%;
+  height: 30%;
+  transform: translateZ(52px);
+  z-index: 6;
+}
+
+.galaxy-island[data-galaxy="vessel"]:hover .vessel-piece {
+  filter:
+    drop-shadow(0 20px 26px rgba(0, 0, 0, 0.72))
+    drop-shadow(0 0 16px rgba(245, 215, 150, 0.18));
+}
+
+.galaxy-island[data-galaxy="vessel"]:hover .vessel-piece.vp-1 {
+  transform: translateY(-4px) translateZ(36px);
+}
+
+@media (max-width: 1280px) {
+  .vessel-still-life {
+    width: clamp(170px, 14vw, 224px);
+    height: clamp(118px, 9.8vw, 154px);
+  }
+}
+
+/* ================================================================
+ * Balance Pass  ——  首页 C 位比例回收，避免主展品压过星系空间
+ * ================================================================ */
+
+.app-shell.view-overview .hero-cluster {
+  top: 46.5%;
+  transform: translate(-50%, -50%) translateZ(104px);
+}
+
+.app-shell.view-overview .crane-frame {
+  width: clamp(206px, 15.8vw, 268px);
+  padding: 8px;
+  box-shadow:
+    inset 0 0 0 1px rgba(8, 6, 4, 0.44),
+    inset 0 0 24px rgba(89, 64, 28, 0.28),
+    0 0 0 2px rgba(8, 6, 4, 0.62),
+    0 0 46px rgba(232, 196, 119, 0.24),
+    0 0 82px rgba(220, 175, 95, 0.16),
+    0 26px 84px rgba(0, 0, 0, 0.92);
+}
+
+.app-shell.view-overview .frame-glow {
+  inset: -28px;
+  opacity: 0.72;
+}
+
+.app-shell.view-overview .crane-plaque {
+  min-width: 232px;
+  padding: 9px 18px 9px 12px;
+  transform: translateY(-8px) scale(0.96);
+}
+
+.app-shell.view-overview .plaque-stamp {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+}
+
+.app-shell.view-overview .crane-plaque strong {
+  font-size: 15.5px;
+  letter-spacing: 2.4px;
+}
+
+.app-shell.view-overview .crane-plaque small {
+  font-size: 9.5px;
+  letter-spacing: 1.4px;
+}
+
+.app-shell.view-overview .hero-pedestal {
+  top: 108px;
+  left: -230px;
+  width: 460px;
+  height: 76px;
+  opacity: 0.8;
+}
+
+.app-shell.view-overview .hero-halo {
+  width: 610px;
+  height: 590px;
+  left: -305px;
+  top: -300px;
+  opacity: 0.78;
+}
+
+.app-shell.view-overview .hero-rotline {
+  width: 392px;
+  height: 324px;
+  left: -196px;
+  top: -182px;
+}
+
+.app-shell.view-overview .hero-rotline.outer {
+  width: 520px;
+  height: 418px;
+  left: -260px;
+  top: -236px;
+}
+
+.app-shell.view-overview .imperial-ring.ir-1 { width: 318px; height: 318px; }
+.app-shell.view-overview .imperial-ring.ir-2 { width: 438px; height: 438px; }
+.app-shell.view-overview .imperial-ring.ir-3 { width: 570px; height: 570px; }
+
+.app-shell.view-overview .hero-screen {
+  width: clamp(70px, 5.2vw, 94px);
+  opacity: 0.28;
+}
+
+.app-shell.view-overview .hero-screen.screen-0 { left: -184px; top: -108px; }
+.app-shell.view-overview .hero-screen.screen-1 { right: -188px; top: -102px; }
+.app-shell.view-overview .hero-screen.screen-2 { left: -40px; top: -186px; }
+
+.app-shell.view-overview .hero-satellite {
+  width: clamp(36px, 3.1vw, 52px);
+  opacity: 0.62;
+}
+
+.app-shell.view-overview .hero-satellite.sat-0 { left: -148px; top: -42px; }
+.app-shell.view-overview .hero-satellite.sat-1 { right: -148px; top: -42px; }
+.app-shell.view-overview .hero-satellite.sat-2 { left: -118px; top: 48px; }
+.app-shell.view-overview .hero-satellite.sat-3 { right: -118px; top: 48px; }
+
+@media (max-width: 1280px) {
+  .app-shell.view-overview .crane-frame {
+    width: clamp(190px, 15vw, 238px);
+  }
+
+  .app-shell.view-overview .hero-halo {
+    width: 540px;
+    height: 520px;
+    left: -270px;
+    top: -268px;
+  }
+}
+
+/* ================================================================
+ * Occlusion Pass  ——  右下 HUD 避让花鸟星系
+ * ================================================================ */
+
+.app-shell.view-overview .galaxy-island.slot-br {
+  right: 5.6%;
+  bottom: 21.5%;
+}
+
+.app-shell.view-overview .focus-card {
+  right: 38px;
+  bottom: 26px;
+  width: clamp(292px, 24vw, 352px);
+  min-height: 0;
+  grid-template-columns: 64px minmax(0, 1fr) 36px;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(28, 18, 8, 0.84), rgba(8, 5, 2, 0.9));
+  box-shadow:
+    0 0 0 1px rgba(232, 196, 119, 0.07),
+    inset 0 0 24px rgba(89, 64, 28, 0.14),
+    0 18px 42px rgba(0, 0, 0, 0.62);
+}
+
+.app-shell.view-overview .focus-thumb {
+  width: 64px;
+  height: 80px;
+  padding: 2px;
+}
+
+.app-shell.view-overview .focus-body {
+  gap: 4px;
+}
+
+.app-shell.view-overview .focus-head {
+  gap: 8px;
+}
+
+.app-shell.view-overview .focus-head strong {
+  font-size: 16px;
+  letter-spacing: 1.7px;
+}
+
+.app-shell.view-overview .focus-pill {
+  padding: 2px 7px;
+  font-size: 9px;
+}
+
+.app-shell.view-overview .focus-meta,
+.app-shell.view-overview .focus-line {
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.app-shell.view-overview .focus-line {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.app-shell.view-overview .focus-tags {
+  display: none;
+}
+
+.app-shell.view-overview .focus-cta {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-self: end center;
+  justify-content: center;
+  font-size: 0;
+  border-radius: 2px;
+}
+
+.app-shell.view-overview .focus-cta svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 1280px) {
+  .app-shell.view-overview .galaxy-island.slot-br {
+    bottom: 23%;
+  }
+
+  .app-shell.view-overview .focus-card {
+    width: clamp(270px, 25vw, 318px);
+  }
+}
+
+/* ================================================================
+ * Painted Background Pass  ——  使用黑金山水星图作为首页底景
+ * ================================================================ */
+
+.app-shell.view-overview {
+  background-color: #030201;
+  background-image:
+    radial-gradient(ellipse 42% 38% at 50% 48%, rgba(232, 196, 119, 0.13), transparent 68%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.42) 0%, transparent 18%, transparent 80%, rgba(0, 0, 0, 0.36) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.38)),
+    url("/scene-assets/song-imperial-galaxy-bg.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%, 100% 100%, 100% 100%, cover;
+}
+
+.app-shell.view-overview::before {
+  background:
+    radial-gradient(ellipse 46% 42% at 50% 48%, rgba(232, 196, 119, 0.08), transparent 66%),
+    repeating-linear-gradient(67deg, rgba(232, 196, 119, 0.008) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(-23deg, rgba(232, 196, 119, 0.007) 0 1px, transparent 1px 7px);
+  opacity: 0.34;
+}
+
+.app-shell.view-overview::after {
+  background:
+    radial-gradient(ellipse at center, transparent 46%, rgba(0, 0, 0, 0.45) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.68) 0%, transparent 13%, transparent 84%, rgba(0, 0, 0, 0.48) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, transparent 30%, rgba(0, 0, 0, 0.22) 100%);
+}
+
+.app-shell.view-overview .atmos-fog {
+  opacity: 0.16;
+}
+
+.app-shell.view-overview .atmos-stars {
+  opacity: 0.26;
+}
+
+.app-shell.view-overview .atmos-svg {
+  opacity: 0.22;
+  mix-blend-mode: screen;
+}
+
+.app-shell.view-overview .royal-depth-field {
+  opacity: 0.34;
+}
+
+.app-shell.view-overview .depth-veil {
+  opacity: 0.08;
+}
+
+.app-shell.view-overview .depth-orbit {
+  opacity: 0.45;
+}
+
+.app-shell.view-overview .flying-cranes {
+  opacity: 0.42;
+}
+
+/* ================================================================
+ * Reference 12:31 Pass  ——  对齐目标稿首页比例与展岛构图
+ * ================================================================ */
+
+.app-shell.view-overview .hero-title {
+  left: 124px;
+  top: 42px;
+  max-width: 560px;
+}
+
+.app-shell.view-overview .hero-title h1 {
+  font-size: clamp(48px, 4.1vw, 72px);
+  letter-spacing: 6px;
+  line-height: 1.05;
+}
+
+.app-shell.view-overview .hero-title p {
+  margin-top: 18px;
+  font-size: 16px;
+  letter-spacing: 4px;
+}
+
+.app-shell.view-overview .top-bar {
+  top: 30px;
+  right: 34px;
+}
+
+.app-shell.view-overview .top-capsule {
+  min-width: 372px;
+  min-height: 44px;
+}
+
+.app-shell.view-overview .top-actions button,
+.app-shell.view-overview .top-emperor {
+  min-height: 40px;
+  padding-inline: 18px;
+  border-radius: 999px;
+}
+
+.app-shell.view-overview .overview-stage {
+  inset: 116px 36px 134px 104px;
+}
+
+.app-shell.view-overview .hero-cluster {
+  top: 48.5%;
+  transform: translate(-50%, -50%) translateZ(112px);
+}
+
+.app-shell.view-overview .crane-frame {
+  width: clamp(246px, 17.2vw, 292px);
+  padding: 8px;
+  border-color: rgba(245, 215, 150, 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(8, 6, 4, 0.44),
+    inset 0 0 26px rgba(89, 64, 28, 0.3),
+    0 0 0 2px rgba(8, 6, 4, 0.62),
+    0 0 54px rgba(232, 196, 119, 0.3),
+    0 0 96px rgba(220, 175, 95, 0.18),
+    0 30px 92px rgba(0, 0, 0, 0.92);
+}
+
+.app-shell.view-overview .hero-pedestal {
+  top: 166px;
+  left: -300px;
+  width: 600px;
+  height: 104px;
+  opacity: 0.95;
+}
+
+.app-shell.view-overview .hero-halo {
+  width: 640px;
+  height: 610px;
+  left: -320px;
+  top: -306px;
+  opacity: 0.66;
+}
+
+.app-shell.view-overview .hero-rotline {
+  width: 450px;
+  height: 334px;
+  left: -225px;
+  top: -128px;
+  border-color: rgba(245, 215, 150, 0.34);
+}
+
+.app-shell.view-overview .hero-rotline.outer {
+  width: 620px;
+  height: 462px;
+  left: -310px;
+  top: -190px;
+  border-color: rgba(245, 215, 150, 0.18);
+}
+
+.app-shell.view-overview .imperial-ring.ir-1 { width: 386px; height: 386px; }
+.app-shell.view-overview .imperial-ring.ir-2 { width: 540px; height: 540px; }
+.app-shell.view-overview .imperial-ring.ir-3 { width: 706px; height: 706px; }
+
+.app-shell.view-overview .hero-screen,
+.app-shell.view-overview .hero-satellite {
+  opacity: 0.18;
+}
+
+.app-shell.view-overview .crane-plaque {
+  min-width: 0;
+  padding: 10px 0 0;
+  gap: 10px;
+  transform: translateY(-4px);
+  border: 0;
+  clip-path: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell.view-overview .crane-plaque::before,
+.app-shell.view-overview .crane-plaque::after {
+  display: none;
+}
+
+.app-shell.view-overview .plaque-stamp {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+}
+
+.app-shell.view-overview .crane-plaque strong {
+  font-size: 28px;
+  letter-spacing: 5px;
+  color: rgba(245, 220, 160, 0.98);
+}
+
+.app-shell.view-overview .crane-plaque small {
+  font-size: 11px;
+  letter-spacing: 2.6px;
+  color: rgba(245, 220, 160, 0.76);
+}
+
+.crane-core-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: -2px;
+  padding: 9px 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(216, 178, 102, 0.36);
+  background: rgba(13, 9, 4, 0.58);
+  color: rgba(245, 220, 160, 0.86);
+  font-size: 12px;
+  letter-spacing: 2px;
+  box-shadow:
+    inset 0 0 18px rgba(216, 161, 70, 0.08),
+    0 12px 30px rgba(0, 0, 0, 0.42);
+}
+
+.crane-core-cta svg {
+  color: rgba(245, 215, 150, 0.86);
+}
+
+.app-shell.view-overview .galaxy-island {
+  gap: 8px;
+  z-index: 26;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl {
+  left: 8.4%;
+  top: 14.2%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tr {
+  right: 8.2%;
+  top: 15.1%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-bl {
+  left: 9.6%;
+  bottom: 15.1%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br {
+  right: 9%;
+  bottom: 17.7%;
+}
+
+.app-shell.view-overview .island-cluster {
+  width: clamp(278px, 19.7vw, 340px);
+  height: clamp(206px, 14.6vw, 248px);
+}
+
+.app-shell.view-overview .island-orbit-line {
+  width: 112%;
+  height: 58%;
+  top: 60%;
+  opacity: 0.9;
+  border-color: rgba(216, 178, 102, 0.24);
+  box-shadow: inset 0 0 18px rgba(216, 178, 102, 0.05);
+}
+
+.app-shell.view-overview .galaxy-island::before {
+  width: 122%;
+  height: 62%;
+  top: 62%;
+  opacity: 0.62;
+}
+
+.app-shell.view-overview .galaxy-island::after {
+  width: 118%;
+  height: 54%;
+  top: 60%;
+  border-color: rgba(216, 178, 102, 0.26);
+}
+
+.app-shell.view-overview .island-thumb {
+  width: 29%;
+  bottom: 18%;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-0 {
+  left: 2%;
+  bottom: 20%;
+  transform: rotate(-24deg) rotateY(22deg) translateZ(-42px) scale(0.74) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-1 {
+  left: 20%;
+  bottom: 32%;
+  transform: rotate(-13deg) rotateY(10deg) translateZ(-12px) scale(0.92) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-2 {
+  left: 50%;
+  bottom: 39%;
+  transform: translateX(-50%) rotate(0deg) translateZ(42px) scale(1.22) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-3 {
+  right: 20%;
+  bottom: 32%;
+  transform: rotate(13deg) rotateY(-10deg) translateZ(-12px) scale(0.92) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-4 {
+  right: 2%;
+  bottom: 20%;
+  transform: rotate(24deg) rotateY(-22deg) translateZ(-42px) scale(0.74) !important;
+}
+
+.app-shell.view-overview .island-label {
+  min-width: 218px;
+  min-height: 50px;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 18px;
+  font-size: 17px;
+  letter-spacing: 2px;
+  background:
+    linear-gradient(180deg, rgba(29, 18, 8, 0.9), rgba(7, 5, 2, 0.94));
+  border-color: rgba(216, 178, 102, 0.5);
+}
+
+.app-shell.view-overview .island-label svg {
+  width: 22px;
+  height: 22px;
+}
+
+.app-shell.view-overview .island-label strong {
+  font-size: 18px;
+  letter-spacing: 2.4px;
+}
+
+.app-shell.view-overview .island-label em {
+  display: inline;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  color: rgba(232, 196, 119, 0.58);
+}
+
+.app-shell.view-overview .vessel-still-life {
+  width: clamp(300px, 21vw, 360px);
+  height: clamp(210px, 15vw, 254px);
+}
+
+.app-shell.view-overview .vessel-piece {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  filter:
+    drop-shadow(0 20px 24px rgba(0, 0, 0, 0.76))
+    drop-shadow(0 0 12px rgba(245, 215, 150, 0.08));
+}
+
+.app-shell.view-overview .vessel-piece::before {
+  display: none;
+}
+
+.app-shell.view-overview .vessel-piece img {
+  object-fit: contain;
+  filter: brightness(1.07) contrast(1.08) saturate(0.92) sepia(0.04);
+}
+
+.app-shell.view-overview .vessel-piece.vp-0 {
+  left: 4%;
+  bottom: 16%;
+  width: 42%;
+  height: 36%;
+  transform: rotate(-6deg) translateZ(36px);
+  z-index: 5;
+}
+
+.app-shell.view-overview .vessel-piece.vp-1 {
+  left: 36%;
+  bottom: 18%;
+  width: 27%;
+  height: 72%;
+  transform: translateZ(56px);
+  z-index: 6;
+}
+
+.app-shell.view-overview .vessel-piece.vp-2 {
+  left: 61%;
+  bottom: 15%;
+  width: 33%;
+  height: 58%;
+  transform: rotate(5deg) translateZ(34px);
+  z-index: 5;
+}
+
+.app-shell.view-overview .vessel-piece.vp-3 {
+  left: 12%;
+  bottom: 28%;
+  width: 28%;
+  height: 58%;
+  transform: rotate(-8deg) translateZ(-8px);
+  z-index: 2;
+}
+
+.app-shell.view-overview .vessel-piece.vp-4 {
+  right: 7%;
+  bottom: 28%;
+  width: 30%;
+  height: 52%;
+  transform: rotate(8deg) translateZ(-6px);
+  z-index: 2;
+}
+
+.app-shell.view-overview .vessel-piece.vp-5 {
+  left: 48%;
+  bottom: 10%;
+  width: 30%;
+  height: 34%;
+  transform: translateZ(70px);
+  z-index: 7;
+}
+
+.app-shell.view-overview .bottom-controls {
+  left: 116px;
+  bottom: 42px;
+  min-width: 536px;
+  padding: 13px 18px;
+  gap: 20px;
+  border-radius: 4px;
+}
+
+.app-shell.view-overview .focus-card {
+  right: 40px;
+  bottom: 48px;
+  width: clamp(420px, 27.6vw, 470px);
+  grid-template-columns: 96px minmax(0, 1fr) 50px;
+  gap: 18px;
+  padding: 14px 18px;
+  border-radius: 3px;
+}
+
+.app-shell.view-overview .focus-thumb {
+  width: 96px;
+  height: 118px;
+}
+
+.app-shell.view-overview .focus-head strong {
+  font-size: 25px;
+  letter-spacing: 3px;
+}
+
+.app-shell.view-overview .focus-pill {
+  font-size: 10px;
+  padding: 4px 10px;
+}
+
+.app-shell.view-overview .focus-meta {
+  font-size: 12px;
+  letter-spacing: 1.6px;
+}
+
+.app-shell.view-overview .focus-line {
+  font-size: 13px;
+  line-height: 1.72;
+  letter-spacing: 1.4px;
+}
+
+.app-shell.view-overview .focus-cta {
+  width: 50px;
+  height: 50px;
+  align-self: center;
+  justify-self: center;
+  border-radius: 50%;
+}
+
+@media (max-width: 1280px) {
+  .app-shell.view-overview .hero-title h1 {
+    font-size: clamp(42px, 4vw, 58px);
+  }
+
+  .app-shell.view-overview .crane-frame {
+    width: clamp(224px, 17vw, 260px);
+  }
+
+  .app-shell.view-overview .island-cluster,
+  .app-shell.view-overview .vessel-still-life {
+    width: clamp(240px, 18vw, 292px);
+    height: clamp(176px, 13vw, 214px);
+  }
+
+  .app-shell.view-overview .focus-card {
+    width: clamp(360px, 29vw, 420px);
+  }
+}
+
+/* ================================================================
+ * Reference 12:31 Correction  ——  回收过大的标题与器物层
+ * ================================================================ */
+
+.app-shell.view-overview .hero-title h1 {
+  font-size: clamp(42px, 3.5vw, 60px);
+  letter-spacing: 5px;
+}
+
+.app-shell.view-overview .hero-title p {
+  font-size: 14.5px;
+  letter-spacing: 3px;
+}
+
+.app-shell.view-overview .crane-frame {
+  width: clamp(220px, 14.8vw, 252px);
+}
+
+.app-shell.view-overview .hero-cluster {
+  top: 49.7%;
+}
+
+.app-shell.view-overview .hero-pedestal {
+  top: 136px;
+  width: 520px;
+  left: -260px;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl {
+  left: 8.2%;
+  top: 15.4%;
+  z-index: 34;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tr {
+  right: 8.5%;
+  top: 15.8%;
+  z-index: 34;
+}
+
+.app-shell.view-overview .galaxy-island.slot-bl {
+  left: 8.6%;
+  bottom: 22%;
+  z-index: 30;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br {
+  right: 8.6%;
+  bottom: 26%;
+  z-index: 31;
+}
+
+.app-shell.view-overview .island-cluster {
+  width: clamp(250px, 18vw, 312px);
+  height: clamp(184px, 13.2vw, 224px);
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-cluster,
+.app-shell.view-overview .galaxy-island.slot-tr .island-cluster {
+  height: clamp(178px, 12.7vw, 214px);
+}
+
+.app-shell.view-overview .island-thumb {
+  width: 27%;
+}
+
+.app-shell.view-overview .island-label {
+  min-width: 204px;
+  min-height: 46px;
+  padding: 9px 16px;
+  position: relative;
+  z-index: 40;
+}
+
+.app-shell.view-overview .island-label strong {
+  font-size: 16px;
+}
+
+.app-shell.view-overview .island-label svg {
+  width: 19px;
+  height: 19px;
+}
+
+.app-shell.view-overview .vessel-still-life {
+  width: clamp(250px, 18vw, 306px);
+  height: clamp(178px, 13vw, 220px);
+}
+
+.app-shell.view-overview .vessel-piece.vp-0 {
+  left: 3%;
+  bottom: 16%;
+  width: 35%;
+  height: 30%;
+}
+
+.app-shell.view-overview .vessel-piece.vp-1 {
+  left: 36%;
+  bottom: 17%;
+  width: 22%;
+  height: 65%;
+}
+
+.app-shell.view-overview .vessel-piece.vp-2 {
+  left: 61%;
+  bottom: 16%;
+  width: 27%;
+  height: 50%;
+}
+
+.app-shell.view-overview .vessel-piece.vp-3 {
+  left: 9%;
+  bottom: 31%;
+  width: 24%;
+  height: 50%;
+}
+
+.app-shell.view-overview .vessel-piece.vp-4 {
+  right: 7%;
+  bottom: 29%;
+  width: 25%;
+  height: 47%;
+}
+
+.app-shell.view-overview .vessel-piece.vp-5 {
+  left: 50%;
+  bottom: 11%;
+  width: 24%;
+  height: 30%;
+}
+
+.app-shell.view-overview .bottom-controls {
+  bottom: 42px;
+}
+
+.app-shell.view-overview .focus-card {
+  bottom: 48px;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-label,
+.app-shell.view-overview .galaxy-island.slot-tr .island-label {
+  margin-top: -58px;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-0,
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-4 {
+  bottom: 34%;
+  transform: rotate(18deg) rotateY(-16deg) translateZ(-34px) scale(0.68) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-0 {
+  transform: rotate(-18deg) rotateY(16deg) translateZ(-34px) scale(0.68) !important;
+}
+
+.app-shell.view-overview .vessel-piece.vp-5 {
+  display: none;
+}
+
+.app-shell.view-overview .drag-hint {
+  display: none;
+}
+
+.app-shell.view-overview .bottom-controls {
+  bottom: 46px;
+  padding: 14px 20px;
+}
+
+/* ================================================================
+ * Homepage Density Pass  ——  每个星系增加后排作品，展陈更饱满
+ * ================================================================ */
+
+.app-shell.view-overview .island-cluster {
+  width: clamp(276px, 19.8vw, 342px);
+  height: clamp(196px, 13.8vw, 236px);
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-cluster,
+.app-shell.view-overview .galaxy-island.slot-tr .island-cluster {
+  height: clamp(190px, 13.4vw, 226px);
+}
+
+.app-shell.view-overview .island-thumb {
+  position: absolute;
+  width: 24%;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-0 {
+  left: 0;
+  bottom: 30%;
+  z-index: 1;
+  transform: rotate(-30deg) rotateY(24deg) translateZ(-56px) scale(0.62) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-1 {
+  left: 12%;
+  bottom: 38%;
+  z-index: 2;
+  transform: rotate(-20deg) rotateY(18deg) translateZ(-34px) scale(0.76) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-2 {
+  left: 27%;
+  bottom: 42%;
+  z-index: 4;
+  transform: rotate(-9deg) rotateY(8deg) translateZ(-10px) scale(0.94) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-3 {
+  left: 50%;
+  bottom: 45%;
+  z-index: 7;
+  transform: translateX(-50%) rotate(0deg) translateZ(46px) scale(1.18) !important;
+  border-color: var(--accent, var(--gold-1));
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-4 {
+  right: 27%;
+  bottom: 42%;
+  z-index: 4;
+  transform: rotate(9deg) rotateY(-8deg) translateZ(-10px) scale(0.94) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-5 {
+  right: 12%;
+  bottom: 38%;
+  z-index: 2;
+  transform: rotate(20deg) rotateY(-18deg) translateZ(-34px) scale(0.76) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-6 {
+  right: 0;
+  bottom: 30%;
+  z-index: 1;
+  transform: rotate(30deg) rotateY(-24deg) translateZ(-56px) scale(0.62) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-0,
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-6 {
+  bottom: 42%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-5 {
+  bottom: 46%;
+}
+
+.app-shell.view-overview .vessel-piece.vp-5 {
+  display: block;
+  left: 53%;
+  bottom: 8%;
+  width: 20%;
+  height: 26%;
+  transform: translateZ(64px);
+  z-index: 7;
+}
+
+.app-shell.view-overview .vessel-piece.vp-6 {
+  left: 24%;
+  bottom: 8%;
+  width: 22%;
+  height: 24%;
+  transform: rotate(-4deg) translateZ(58px);
+  z-index: 6;
+}
+
+.app-shell.view-overview .galaxy-island.slot-bl .vessel-still-life,
+.app-shell.view-overview .galaxy-island.slot-br .island-cluster {
+  transform: scale(0.9);
+  transform-origin: center bottom;
+}
+
+.app-shell.view-overview .galaxy-island.slot-bl .island-label,
+.app-shell.view-overview .galaxy-island.slot-br .island-label {
+  margin-top: -28px;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb {
+  width: 22%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-0,
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-6 {
+  bottom: 50%;
+  transform: rotate(25deg) rotateY(-22deg) translateZ(-60px) scale(0.55) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-0 {
+  transform: rotate(-25deg) rotateY(22deg) translateZ(-60px) scale(0.55) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-1,
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-5 {
+  bottom: 48%;
+  transform: rotate(18deg) rotateY(-16deg) translateZ(-38px) scale(0.68) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-1 {
+  transform: rotate(-18deg) rotateY(16deg) translateZ(-38px) scale(0.68) !important;
+}
+
+/* 首页密度收口：6 件/组，比原先更丰富但不溢出 HUD */
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-0 {
+  left: 1%;
+  bottom: 40%;
+  z-index: 1;
+  transform: rotate(-28deg) rotateY(22deg) translateZ(-52px) scale(0.58) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-1 {
+  left: 15%;
+  bottom: 42%;
+  z-index: 2;
+  transform: rotate(-18deg) rotateY(16deg) translateZ(-32px) scale(0.72) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-2 {
+  left: 31%;
+  bottom: 44%;
+  z-index: 4;
+  transform: rotate(-8deg) rotateY(7deg) translateZ(-8px) scale(0.92) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-3 {
+  left: 50%;
+  bottom: 46%;
+  z-index: 7;
+  transform: translateX(-50%) rotate(0deg) translateZ(44px) scale(1.16) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-4 {
+  right: 22%;
+  bottom: 44%;
+  z-index: 4;
+  transform: rotate(10deg) rotateY(-8deg) translateZ(-8px) scale(0.9) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-5 {
+  right: 5%;
+  bottom: 41%;
+  z-index: 2;
+  transform: rotate(23deg) rotateY(-18deg) translateZ(-36px) scale(0.66) !important;
+}
+
+.app-shell.view-overview .galaxy-island .island-thumb.thumb-6,
+.app-shell.view-overview .vessel-piece.vp-6 {
+  display: none;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-0,
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-5 {
+  bottom: 50%;
+}
+
+.app-shell.view-overview .vessel-piece.vp-5 {
+  left: 47%;
+  bottom: 16%;
+  width: 18%;
+  height: 22%;
+  transform: translateZ(54px);
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-thumb.thumb-5 {
+  top: 8%;
+  right: 7%;
+  bottom: auto;
+  transform: rotate(18deg) scale(0.62) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tr .island-thumb.thumb-5 {
+  top: 8%;
+  left: 7%;
+  right: auto;
+  bottom: auto;
+  transform: rotate(-18deg) scale(0.62) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-5 {
+  top: 4%;
+  right: 2%;
+  bottom: auto;
+  transform: rotate(16deg) scale(0.58) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br {
+  bottom: 21%;
+}
+
+/* 右侧星系分层：避免典藏空间与花鸟世界互相盖住 */
+.app-shell.view-overview .galaxy-island.slot-tr {
+  top: 12.8%;
+  right: 7.6%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br {
+  right: 8%;
+  bottom: 13.2%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-cluster {
+  transform: scale(0.82);
+  transform-origin: center bottom;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-label {
+  margin-top: -18px;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-3 {
+  bottom: 52%;
+  transform: translateX(-50%) rotate(0deg) translateZ(34px) scale(1.04) !important;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br .island-thumb.thumb-4 {
+  bottom: 50%;
+  transform: rotate(10deg) rotateY(-8deg) translateZ(-8px) scale(0.8) !important;
+}
+
+/* ================================================================
+ * Detail Image Ratio Pass  ——  详情页按真实画幅装裱
+ * ================================================================ */
+
+.d-image-stage {
+  --art-max-w: 86%;
+  --art-max-h: 86%;
+}
+
+.d-image-stage.format-scroll {
+  --art-max-w: 96%;
+  --art-max-h: 48%;
+}
+
+.d-image-stage.format-wide {
+  --art-max-w: 94%;
+  --art-max-h: 74%;
+}
+
+.d-image-stage.format-balanced,
+.d-image-stage.format-unknown {
+  --art-max-w: min(82%, 820px);
+  --art-max-h: 86%;
+}
+
+.d-image-stage.format-tall {
+  --art-max-w: min(62%, 620px);
+  --art-max-h: 92%;
+}
+
+.d-image-stage.format-vertical-scroll {
+  --art-max-w: min(48%, 500px);
+  --art-max-h: 94%;
+}
+
+.d-image-stage img.d-artwork-img {
+  width: auto !important;
+  height: auto !important;
+  max-width: var(--art-max-w) !important;
+  max-height: var(--art-max-h) !important;
+  object-fit: contain !important;
+  object-position: center center;
+  aspect-ratio: auto;
+}
+
+.d-image-area.format-scroll .d-image-stage::before,
+.d-image-area.format-wide .d-image-stage::before {
+  inset: -10px -22px;
+}
+
+.d-image-area.format-tall .d-image-stage::before,
+.d-image-area.format-vertical-scroll .d-image-stage::before {
+  inset: -18px max(16%, 96px);
+}
+
+.d-image-area.format-scroll .d-thumb-strip {
+  right: 260px;
+}
+
+.d-thumb-strip button img,
+.d-minimap img {
+  object-fit: contain;
+  background:
+    radial-gradient(ellipse at center, rgba(245, 215, 150, 0.08), transparent 68%),
+    rgba(5, 3, 1, 0.72);
+}
+
+.d-thumb-strip button:not(.on) {
+  opacity: 0.72;
+}
+
+.d-thumb-strip button:not(.on):hover {
+  opacity: 1;
+  border-color: rgba(245, 215, 150, 0.55);
+}
+
+/* ================================================================
+ * Overview Fullscreen Balance Pass  ——  全屏构图、轨道、铭牌与宋画底景
+ * ================================================================ */
+
+.app-shell.view-overview {
+  background-color: #080603;
+  background-image:
+    radial-gradient(ellipse 48% 42% at 50% 50%, rgba(245, 215, 150, 0.18), transparent 66%),
+    radial-gradient(ellipse 34% 34% at 17% 70%, rgba(216, 161, 70, 0.13), transparent 72%),
+    radial-gradient(ellipse 34% 34% at 82% 32%, rgba(216, 161, 70, 0.1), transparent 72%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0%, transparent 20%, transparent 80%, rgba(0, 0, 0, 0.2) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.16)),
+    url("/scene-assets/song-imperial-galaxy-bg.png");
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, cover;
+  background-position: center center;
+}
+
+.app-shell.view-overview::before {
+  opacity: 0.5;
+  background:
+    radial-gradient(ellipse 52% 48% at 50% 50%, rgba(245, 220, 160, 0.12), transparent 68%),
+    repeating-linear-gradient(67deg, rgba(245, 215, 150, 0.012) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(-23deg, rgba(216, 178, 102, 0.01) 0 1px, transparent 1px 7px);
+}
+
+.app-shell.view-overview::after {
+  background:
+    radial-gradient(ellipse at center, transparent 54%, rgba(0, 0, 0, 0.32) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, transparent 12%, transparent 86%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, transparent 32%, rgba(0, 0, 0, 0.14) 100%);
+}
+
+.app-shell.view-overview .atmos-fog {
+  opacity: 0.2;
+}
+
+.app-shell.view-overview .atmos-stars {
+  opacity: 0.18;
+}
+
+.app-shell.view-overview .atmos-svg {
+  opacity: 0.08;
+}
+
+.app-shell.view-overview .royal-depth-field {
+  opacity: 0.22;
+}
+
+.app-shell.view-overview .depth-veil {
+  opacity: 0.04;
+}
+
+.app-shell.view-overview .depth-orbit {
+  border-style: solid;
+  border-color: rgba(216, 178, 102, 0.08);
+  box-shadow: none;
+  animation-duration: 150s;
+}
+
+.app-shell.view-overview .depth-orbit.orbit-near {
+  width: 72vw;
+  height: 48vw;
+  opacity: 0.24;
+  border-color: rgba(245, 215, 150, 0.12);
+}
+
+.app-shell.view-overview .depth-orbit.orbit-mid {
+  width: 56vw;
+  height: 38vw;
+  opacity: 0.14;
+  border-color: rgba(216, 178, 102, 0.08);
+}
+
+.app-shell.view-overview .depth-orbit.orbit-far {
+  opacity: 0.06;
+}
+
+.app-shell.view-overview .imperial-orbit-shell {
+  z-index: 6;
+  opacity: 0.44;
+}
+
+.app-shell.view-overview .imperial-ring {
+  box-shadow: none;
+  border-color: rgba(245, 215, 150, 0.1);
+}
+
+.app-shell.view-overview .imperial-ring.ir-1 {
+  width: 350px;
+  height: 350px;
+  opacity: 0.36;
+  border-style: solid;
+}
+
+.app-shell.view-overview .imperial-ring.ir-2 {
+  width: 505px;
+  height: 505px;
+  opacity: 0.2;
+}
+
+.app-shell.view-overview .imperial-ring.ir-3 {
+  opacity: 0.08;
+}
+
+.app-shell.view-overview .hero-rotline {
+  width: 420px;
+  height: 300px;
+  left: -210px;
+  top: -104px;
+  opacity: 0.34;
+  border-color: rgba(245, 215, 150, 0.16);
+}
+
+.app-shell.view-overview .hero-rotline.outer {
+  width: 555px;
+  height: 394px;
+  left: -278px;
+  top: -152px;
+  opacity: 0.16;
+  border-color: rgba(216, 178, 102, 0.1);
+}
+
+.app-shell.view-overview .hero-halo {
+  opacity: 0.78;
+}
+
+.app-shell.view-overview .hero-pedestal {
+  opacity: 1;
+}
+
+.app-shell.view-overview .galaxy-island {
+  z-index: 42;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl {
+  left: 8.8%;
+  top: 15.8%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tr {
+  right: 8.4%;
+  top: 14.8%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-bl {
+  left: 8.9%;
+  bottom: 19.4%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br {
+  right: 8.2%;
+  bottom: 17.4%;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-cluster,
+.app-shell.view-overview .galaxy-island.slot-tr .island-cluster,
+.app-shell.view-overview .galaxy-island.slot-bl .vessel-still-life,
+.app-shell.view-overview .galaxy-island.slot-br .island-cluster {
+  transform: scale(0.86);
+  transform-origin: center bottom;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-label,
+.app-shell.view-overview .galaxy-island.slot-tr .island-label,
+.app-shell.view-overview .galaxy-island.slot-bl .island-label,
+.app-shell.view-overview .galaxy-island.slot-br .island-label {
+  margin-top: -10px;
+}
+
+.app-shell.view-overview .island-label {
+  z-index: 140;
+  min-width: 214px;
+  background:
+    linear-gradient(180deg, rgba(30, 20, 9, 0.96), rgba(6, 4, 2, 0.98));
+  border-color: rgba(245, 215, 150, 0.42);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.06),
+    0 14px 28px rgba(0, 0, 0, 0.72),
+    0 0 20px rgba(216, 161, 70, 0.12);
+}
+
+.app-shell.view-overview .island-label strong {
+  color: rgba(245, 220, 160, 0.96);
+  text-shadow: 0 0 10px rgba(216, 178, 102, 0.28);
+}
+
+.app-shell.view-overview .island-label em {
+  color: rgba(232, 196, 119, 0.68);
+}
+
+/* ================================================================
+ * Overview Island Clearance Pass  ——  上下展岛硬隔离，铭牌完整露出
+ * ================================================================ */
+
+.app-shell.view-overview .galaxy-island.slot-tl {
+  left: 8.4%;
+  top: 12.6%;
+  z-index: 58;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tr {
+  right: 8%;
+  top: 11.8%;
+  z-index: 58;
+}
+
+.app-shell.view-overview .galaxy-island.slot-bl {
+  left: 8.4%;
+  bottom: 12.4%;
+  z-index: 44;
+}
+
+.app-shell.view-overview .galaxy-island.slot-br {
+  right: 8%;
+  bottom: 11.6%;
+  z-index: 44;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-label,
+.app-shell.view-overview .galaxy-island.slot-tr .island-label {
+  margin-top: -54px;
+  transform: translateY(-4px);
+}
+
+.app-shell.view-overview .galaxy-island.slot-bl .island-label,
+.app-shell.view-overview .galaxy-island.slot-br .island-label {
+  margin-top: -18px;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-cluster,
+.app-shell.view-overview .galaxy-island.slot-tr .island-cluster {
+  transform: scale(0.82);
+}
+
+.app-shell.view-overview .galaxy-island.slot-bl .vessel-still-life,
+.app-shell.view-overview .galaxy-island.slot-br .island-cluster {
+  transform: scale(0.8);
+}
+
+.app-shell.view-overview .galaxy-island:hover {
+  z-index: 70;
+}
+
+.app-shell.view-overview .galaxy-island.slot-tl .island-label,
+.app-shell.view-overview .galaxy-island.slot-tr .island-label,
+.app-shell.view-overview .galaxy-island.slot-bl .island-label,
+.app-shell.view-overview .galaxy-island.slot-br .island-label {
+  position: relative;
+  isolation: isolate;
+}
+
+/* ================================================================
+ * Royal Decor Asset Pass  ——  新素材去黑底后作为首页空间装饰
+ * ================================================================ */
+
+.app-shell.view-overview .overview-stage {
+  isolation: isolate;
+}
+
+.app-shell.view-overview .stage-3d {
+  z-index: 18;
+}
+
+.royal-decor-layer {
+  position: absolute;
+  inset: -7% -4% -4%;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.royal-decor {
+  position: absolute;
+  display: block;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  mix-blend-mode: screen;
+  opacity: var(--decor-opacity, 0.28);
+  filter:
+    saturate(0.9)
+    sepia(0.08)
+    drop-shadow(0 0 16px rgba(245, 215, 150, 0.18));
+  animation: decorFloat var(--decor-duration, 18s) ease-in-out infinite;
+  animation-delay: var(--decor-delay, 0s);
+}
+
+.decor-eave-left {
+  left: 3.7%;
+  bottom: 7.8%;
+  width: clamp(230px, 19.2vw, 382px);
+  --decor-opacity: 0.22;
+  --decor-duration: 24s;
+  transform: rotate(-1deg);
+}
+
+.decor-armillary-top {
+  left: 55.2%;
+  top: 3.4%;
+  width: clamp(112px, 8.6vw, 178px);
+  --decor-opacity: 0.14;
+  --decor-duration: 30s;
+  --decor-delay: -8s;
+  filter:
+    blur(0.2px)
+    saturate(0.84)
+    sepia(0.12)
+    drop-shadow(0 0 12px rgba(245, 215, 150, 0.14));
+}
+
+.decor-cloud-top {
+  right: 5.6%;
+  top: 8.4%;
+  width: clamp(150px, 12.8vw, 270px);
+  --decor-opacity: 0.15;
+  --decor-duration: 28s;
+  --decor-delay: -12s;
+  transform: rotate(-2deg);
+}
+
+.decor-cloud-low {
+  left: 9.2%;
+  bottom: 25.6%;
+  width: clamp(118px, 9.6vw, 204px);
+  --decor-opacity: 0.12;
+  --decor-duration: 26s;
+  --decor-delay: -5s;
+  transform: scaleX(-1) rotate(2deg);
+}
+
+.decor-crane-line {
+  right: 15.2%;
+  top: 38%;
+  width: clamp(122px, 11.4vw, 236px);
+  --decor-opacity: 0.13;
+  --decor-duration: 22s;
+  --decor-delay: -6s;
+  transform: rotate(-8deg);
+}
+
+.decor-crane-real {
+  left: 12.8%;
+  top: 38.6%;
+  width: clamp(130px, 12vw, 246px);
+  --decor-opacity: 0.1;
+  --decor-duration: 24s;
+  --decor-delay: -14s;
+  transform: rotate(4deg) scaleX(-1);
+}
+
+@keyframes decorFloat {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -10px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .decor-eave-left {
+    width: clamp(190px, 17vw, 280px);
+    --decor-opacity: 0.18;
+  }
+
+  .decor-armillary-top {
+    width: clamp(92px, 7.4vw, 132px);
+    --decor-opacity: 0.11;
+  }
+
+  .decor-crane-line,
+  .decor-crane-real {
+    --decor-opacity: 0.08;
+  }
+}
+
+/* ================================================================
+ * Final Visual Quieting Pass  ——  缩略图统一、HUD 弱化、背景降噪
+ * ================================================================ */
+
+.focus-card.focus-card-caption {
+  grid-template-columns: 86px minmax(0, 1fr) 46px;
+}
+
+.focus-card.focus-card-caption .focus-tags {
+  display: none;
+}
+
+.app-shell.view-overview::after {
+  background:
+    radial-gradient(ellipse 30% 48% at 50% 48%, rgba(7, 5, 2, 0.32) 0%, rgba(7, 5, 2, 0.12) 46%, transparent 70%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.42) 0%, transparent 21%, transparent 72%, rgba(0, 0, 0, 0.58) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, transparent 31%, rgba(0, 0, 0, 0.22) 100%);
+}
+
+.app-shell.view-overview .atmos-fog {
+  opacity: 0.14;
+}
+
+.app-shell.view-overview .atmos-stars {
+  opacity: 0.14;
+}
+
+.app-shell.view-overview .atmos-svg {
+  opacity: 0.055;
+}
+
+.app-shell.view-overview .atmos-svg ellipse:nth-of-type(5),
+.app-shell.view-overview .atmos-svg ellipse:nth-of-type(6),
+.app-shell.view-overview .atmos-svg ellipse:nth-of-type(7) {
+  opacity: 0.28;
+}
+
+.app-shell.view-overview .atmos-svg path {
+  opacity: 0.72;
+}
+
+.app-shell.view-overview .royal-depth-field {
+  opacity: 0.16;
+}
+
+.app-shell.view-overview .depth-orbit {
+  border-color: rgba(216, 178, 102, 0.055);
+}
+
+.app-shell.view-overview .depth-orbit.orbit-near {
+  opacity: 0.17;
+}
+
+.app-shell.view-overview .depth-orbit.orbit-mid {
+  opacity: 0.09;
+}
+
+.app-shell.view-overview .depth-orbit.orbit-far {
+  opacity: 0.035;
+}
+
+.app-shell.view-overview .imperial-orbit-shell {
+  opacity: 0.34;
+}
+
+.app-shell.view-overview .imperial-ring.ir-1 {
+  opacity: 0.26;
+}
+
+.app-shell.view-overview .imperial-ring.ir-2 {
+  opacity: 0.14;
+}
+
+.app-shell.view-overview .imperial-ring.ir-3 {
+  opacity: 0.045;
+}
+
+.app-shell.view-overview .hero-rotline {
+  opacity: 0.24;
+}
+
+.app-shell.view-overview .hero-rotline.outer {
+  opacity: 0.09;
+}
+
+.app-shell.view-overview .royal-decor {
+  filter:
+    saturate(0.82)
+    sepia(0.12)
+    drop-shadow(0 0 10px rgba(245, 215, 150, 0.11));
+}
+
+.app-shell.view-overview .decor-eave-left {
+  --decor-opacity: 0.14;
+}
+
+.app-shell.view-overview .decor-armillary-top {
+  --decor-opacity: 0.08;
+}
+
+.app-shell.view-overview .decor-cloud-top {
+  --decor-opacity: 0.075;
+}
+
+.app-shell.view-overview .decor-cloud-low {
+  --decor-opacity: 0.07;
+}
+
+.app-shell.view-overview .decor-crane-line {
+  --decor-opacity: 0.085;
+}
+
+.app-shell.view-overview .decor-crane-real {
+  --decor-opacity: 0.06;
+}
+
+.app-shell.view-overview .decor-crane-feature-left {
+  left: 25.8%;
+  top: 13.2%;
+  width: clamp(84px, 7.4vw, 148px);
+  --decor-opacity: 0.18;
+  --decor-duration: 23s;
+  --decor-delay: -9s;
+  transform: rotate(-7deg);
+  filter:
+    saturate(0.82)
+    sepia(0.12)
+    drop-shadow(0 0 12px rgba(245, 215, 150, 0.2));
+}
+
+.app-shell.view-overview .decor-crane-feature-right {
+  right: 23.5%;
+  top: 12.4%;
+  width: clamp(104px, 9.2vw, 186px);
+  --decor-opacity: 0.15;
+  --decor-duration: 25s;
+  --decor-delay: -17s;
+  transform: rotate(-8deg);
+  filter:
+    saturate(0.82)
+    sepia(0.1)
+    drop-shadow(0 0 14px rgba(245, 215, 150, 0.17));
+}
+
+@media (max-width: 1280px) {
+  .app-shell.view-overview .decor-crane-feature-left {
+    left: 26.5%;
+    top: 15%;
+    width: clamp(66px, 6vw, 108px);
+    --decor-opacity: 0.13;
+  }
+
+  .app-shell.view-overview .decor-crane-feature-right {
+    right: 20.5%;
+    top: 15.2%;
+    width: clamp(76px, 7.4vw, 132px);
+    --decor-opacity: 0.12;
+  }
+}
+
+.app-shell.view-overview .island-thumb,
+.app-shell.view-overview .hero-screen,
+.app-shell.view-overview .hero-satellite,
+.app-shell.view-galaxy .g-orbit-card,
+.app-shell.view-galaxy .g-thumb,
+.app-shell.view-list .scroll-image,
+.app-shell.view-detail .r-thumb,
+.app-shell.view-detail .d-thumb-strip button {
+  overflow: hidden;
+  border-radius: 2px;
+  border: 1px solid rgba(226, 187, 111, 0.34);
+  background:
+    radial-gradient(ellipse 88% 72% at 50% 40%, rgba(245, 215, 150, 0.11), transparent 66%),
+    linear-gradient(180deg, rgba(42, 28, 12, 0.92), rgba(5, 3, 1, 0.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.06),
+    inset 0 0 24px rgba(0, 0, 0, 0.52),
+    0 15px 30px rgba(0, 0, 0, 0.64);
+}
+
+.app-shell.view-overview .island-thumb::after,
+.app-shell.view-overview .hero-screen::after,
+.app-shell.view-overview .hero-satellite::after,
+.app-shell.view-galaxy .g-orbit-card::after,
+.app-shell.view-galaxy .g-thumb::after,
+.app-shell.view-list .scroll-image::after,
+.app-shell.view-detail .r-thumb::after,
+.app-shell.view-detail .d-thumb-strip button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(245, 215, 150, 0.1), transparent 34%),
+    radial-gradient(ellipse 82% 118% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.38) 100%),
+    linear-gradient(180deg, rgba(10, 6, 2, 0.06), rgba(10, 6, 2, 0.2));
+}
+
+.app-shell.view-overview .island-thumb img,
+.app-shell.view-overview .hero-screen img,
+.app-shell.view-overview .hero-satellite img,
+.app-shell.view-galaxy .g-orbit-card img,
+.app-shell.view-galaxy .g-thumb img,
+.app-shell.view-list .scroll-image img,
+.app-shell.view-detail .r-thumb img,
+.app-shell.view-detail .d-thumb-strip button img {
+  filter: brightness(0.78) contrast(1.12) saturate(0.72) sepia(0.26) hue-rotate(-5deg);
+  transition: filter 320ms ease, transform 320ms ease;
+}
+
+.app-shell.view-overview .galaxy-island:hover .island-thumb,
+.app-shell.view-galaxy .g-orbit-card:hover,
+.app-shell.view-galaxy .g-thumb:hover,
+.app-shell.view-list .scroll-card:hover .scroll-image,
+.app-shell.view-detail .r-card:hover .r-thumb,
+.app-shell.view-detail .d-thumb-strip button:hover {
+  border-color: rgba(245, 215, 150, 0.52);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.08),
+    inset 0 0 24px rgba(0, 0, 0, 0.5),
+    0 18px 34px rgba(0, 0, 0, 0.7),
+    0 0 18px rgba(216, 178, 102, 0.12);
+}
+
+.app-shell.view-overview .galaxy-island:hover .island-thumb img,
+.app-shell.view-galaxy .g-orbit-card:hover img,
+.app-shell.view-galaxy .g-thumb:hover img,
+.app-shell.view-list .scroll-card:hover .scroll-image img,
+.app-shell.view-detail .r-card:hover .r-thumb img,
+.app-shell.view-detail .d-thumb-strip button:hover img {
+  filter: brightness(0.88) contrast(1.13) saturate(0.78) sepia(0.22) hue-rotate(-4deg);
+}
+
+.app-shell.view-overview .vessel-piece {
+  isolation: isolate;
+  overflow: hidden;
+  padding: 4px;
+  border: 1px solid rgba(226, 187, 111, 0.34);
+  border-radius: 2px;
+  background:
+    radial-gradient(ellipse 74% 58% at 48% 42%, rgba(245, 215, 150, 0.18), transparent 64%),
+    linear-gradient(180deg, rgba(48, 31, 12, 0.96), rgba(4, 3, 1, 0.99));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.06),
+    inset 0 0 22px rgba(0, 0, 0, 0.58),
+    0 18px 28px rgba(0, 0, 0, 0.7);
+  filter:
+    drop-shadow(0 18px 22px rgba(0, 0, 0, 0.68))
+    drop-shadow(0 0 10px rgba(216, 178, 102, 0.08));
+}
+
+.app-shell.view-overview .vessel-piece::before {
+  display: block;
+  inset: 4px;
+  z-index: 3;
+  border: 1px solid rgba(245, 215, 150, 0.1);
+  background:
+    linear-gradient(135deg, rgba(245, 215, 150, 0.12), transparent 36%),
+    radial-gradient(ellipse 82% 112% at 50% 48%, transparent 44%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.app-shell.view-overview .vessel-piece::after {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: auto;
+  z-index: 4;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 70% 96% at 50% 48%, transparent 46%, rgba(0, 0, 0, 0.48) 100%),
+    linear-gradient(180deg, rgba(68, 40, 10, 0.06), rgba(0, 0, 0, 0.2));
+  filter: none;
+}
+
+.app-shell.view-overview .vessel-piece img {
+  object-fit: contain !important;
+  object-position: center center;
+  background:
+    radial-gradient(ellipse 70% 64% at 50% 46%, rgba(205, 172, 108, 0.26), transparent 70%),
+    rgba(12, 8, 3, 0.82);
+  mix-blend-mode: multiply;
+  opacity: 0.96;
+  filter: brightness(0.78) contrast(1.24) saturate(0.64) sepia(0.36) hue-rotate(-8deg);
+}
+
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"]:hover .vessel-piece {
+  border-color: rgba(245, 215, 150, 0.5);
+  filter:
+    drop-shadow(0 20px 26px rgba(0, 0, 0, 0.74))
+    drop-shadow(0 0 12px rgba(216, 178, 102, 0.1));
+}
+
+.app-shell.view-overview .focus-card {
+  right: 42px;
+  bottom: 52px;
+  width: clamp(390px, 27vw, 438px);
+  grid-template-columns: 86px minmax(0, 1fr) 46px;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(30, 20, 9, 0.5), rgba(7, 5, 2, 0.62));
+  border: 1px solid rgba(226, 187, 111, 0.26);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.035),
+    inset 0 0 22px rgba(89, 64, 28, 0.09),
+    0 18px 42px rgba(0, 0, 0, 0.46);
+  backdrop-filter: blur(5px);
+}
+
+.app-shell.view-overview .focus-thumb {
+  width: 86px;
+  height: 104px;
+  padding: 3px;
+  border-radius: 2px;
+  border-color: rgba(245, 215, 150, 0.38);
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 44%, rgba(245, 215, 150, 0.11), transparent 70%),
+    rgba(6, 4, 2, 0.92);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.06),
+    0 12px 22px rgba(0, 0, 0, 0.52);
+}
+
+.app-shell.view-overview .focus-thumb img {
+  object-fit: cover;
+  filter: brightness(0.86) contrast(1.12) saturate(0.76) sepia(0.24);
+}
+
+.app-shell.view-overview .focus-body {
+  gap: 4px;
+}
+
+.app-shell.view-overview .focus-head {
+  gap: 10px;
+}
+
+.app-shell.view-overview .focus-head strong {
+  font-size: 21px;
+  letter-spacing: 3px;
+}
+
+.app-shell.view-overview .focus-pill {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-color: rgba(186, 60, 38, 0.68);
+  color: rgba(232, 196, 119, 0.78);
+  background: rgba(100, 21, 12, 0.18);
+  font-size: 9px;
+}
+
+.app-shell.view-overview .focus-meta {
+  font-size: 11.5px;
+  letter-spacing: 1.3px;
+  color: rgba(232, 196, 119, 0.68);
+}
+
+.app-shell.view-overview .focus-line {
+  margin-top: 2px;
+  max-width: 26em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.62;
+  letter-spacing: 1.2px;
+  color: rgba(245, 220, 160, 0.68);
+}
+
+.app-shell.view-overview .focus-cta {
+  width: 46px;
+  height: 46px;
+  align-self: center;
+  justify-self: end;
+  justify-content: center;
+  gap: 0;
+  padding: 0;
+  border-radius: 50%;
+  border-color: rgba(245, 215, 150, 0.34);
+  background: rgba(28, 18, 8, 0.38);
+  box-shadow: none;
+  font-size: 0;
+  letter-spacing: 0;
+  color: rgba(245, 220, 160, 0.78);
+}
+
+.app-shell.view-overview .focus-cta svg {
+  width: 18px;
+  height: 18px;
+}
+
+.app-shell.view-overview .focus-cta:hover {
+  border-color: rgba(245, 215, 150, 0.58);
+  background: rgba(80, 52, 18, 0.38);
+  box-shadow: 0 0 12px rgba(216, 178, 102, 0.16);
+}
+
+@media (max-width: 1280px) {
+  .app-shell.view-overview .focus-card {
+    width: clamp(340px, 31vw, 390px);
+    grid-template-columns: 72px minmax(0, 1fr) 40px;
+    right: 34px;
+    bottom: 50px;
+    padding: 10px 12px;
+  }
+
+  .app-shell.view-overview .focus-thumb {
+    width: 72px;
+    height: 88px;
+  }
+
+  .app-shell.view-overview .focus-head strong {
+    font-size: 18px;
+  }
+
+  .app-shell.view-overview .focus-line {
+    -webkit-line-clamp: 1;
+  }
+}
+
+/* ================================================================
+ * Other Views Reference Calibration  ——  星系 / 详情 / 列表目标稿校准
+ * ================================================================ */
+
+.app-shell.view-galaxy .hero-title,
+.app-shell.view-list .hero-title {
+  display: block;
+  left: 168px;
+  top: 72px;
+  max-width: 520px;
+  z-index: 76;
+}
+
+.app-shell.view-galaxy .hero-title h1,
+.app-shell.view-list .hero-title h1 {
+  font-size: clamp(44px, 3.6vw, 62px);
+  letter-spacing: 8px;
+  line-height: 1;
+}
+
+.app-shell.view-galaxy .hero-title p,
+.app-shell.view-list .hero-title p {
+  margin-top: 22px;
+  font-size: 15px;
+  letter-spacing: 3.4px;
+  color: rgba(245, 220, 160, 0.86);
+}
+
+.app-shell.view-detail .hero-title {
+  left: 128px;
+  top: 30px;
+  max-width: 460px;
+  z-index: 72;
+}
+
+.app-shell.view-detail .hero-title h1 {
+  font-size: clamp(28px, 2.2vw, 38px);
+  letter-spacing: 3px;
+}
+
+.app-shell.view-detail .hero-title p {
+  margin-top: 10px;
+  font-size: 12.5px;
+  letter-spacing: 2.2px;
+}
+
+/* 星系页：目标图的左侧策展筛选卡 + 右侧轨道展陈 */
+.app-shell.view-galaxy .galaxy-stage {
+  inset: 132px 38px 34px 112px;
+  background:
+    radial-gradient(ellipse 60% 52% at 63% 48%, rgba(216, 161, 70, 0.12), transparent 70%),
+    radial-gradient(ellipse 46% 42% at 14% 92%, rgba(216, 161, 70, 0.08), transparent 72%);
+}
+
+.app-shell.view-galaxy .galaxy-stage::before {
+  inset: 9% 2% 7% 25%;
+  border-color: rgba(216, 178, 102, 0.08);
+  opacity: 0.58;
+}
+
+.app-shell.view-galaxy .g-curator-panel {
+  left: 48px;
+  top: 62px;
+  width: 292px;
+  max-width: 292px;
+  height: min(500px, calc(100% - 96px));
+  min-height: 0;
+  padding: 28px 30px 22px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid rgba(216, 178, 102, 0.27);
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse 72% 52% at 84% 8%, rgba(245, 215, 150, 0.08), transparent 68%),
+    linear-gradient(180deg, rgba(28, 20, 11, 0.76), rgba(6, 4, 2, 0.86));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.035),
+    inset 0 0 46px rgba(0, 0, 0, 0.32),
+    0 22px 56px rgba(0, 0, 0, 0.44);
+}
+
+.app-shell.view-galaxy .g-curator-panel::before {
+  display: none;
+}
+
+.app-shell.view-galaxy .g-curator-panel h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: rgba(245, 220, 160, 0.94);
+}
+
+.app-shell.view-galaxy .g-curator-panel > small {
+  margin-top: 8px;
+  display: block;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(232, 196, 119, 0.62);
+}
+
+.app-shell.view-galaxy .g-blurb {
+  margin-top: 26px;
+  max-width: none;
+  font-size: 13.2px;
+  line-height: 1.92;
+  letter-spacing: 1.8px;
+  color: rgba(245, 220, 160, 0.76);
+}
+
+.app-shell.view-galaxy .g-filter-rule {
+  height: 1px;
+  margin: 24px 0 18px;
+  background: linear-gradient(90deg, rgba(216, 178, 102, 0.24), transparent);
+}
+
+.app-shell.view-galaxy .g-filter-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: rgba(245, 220, 160, 0.82);
+}
+
+.app-shell.view-galaxy .g-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.app-shell.view-galaxy .g-filter-grid button {
+  min-height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(216, 178, 102, 0.24);
+  background: rgba(18, 12, 6, 0.42);
+  color: rgba(232, 196, 119, 0.68);
+  font-size: 12px;
+  letter-spacing: 1.4px;
+  cursor: pointer;
+  transition: all 220ms ease;
+}
+
+.app-shell.view-galaxy .g-filter-grid button.on,
+.app-shell.view-galaxy .g-filter-grid button:hover {
+  border-color: rgba(245, 215, 150, 0.54);
+  color: rgba(245, 220, 160, 0.94);
+  background: rgba(92, 62, 22, 0.26);
+}
+
+.app-shell.view-galaxy .g-filter-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(216, 178, 102, 0.13);
+  color: rgba(232, 196, 119, 0.72);
+  font-size: 12px;
+  letter-spacing: 1.4px;
+}
+
+.app-shell.view-galaxy .g-filter-foot button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: rgba(232, 196, 119, 0.72);
+  font-size: 12px;
+  letter-spacing: 1.4px;
+  cursor: pointer;
+}
+
+.app-shell.view-galaxy .galaxy-orbit {
+  inset: 10px clamp(300px, 18vw, 410px) 136px clamp(260px, 15vw, 330px);
+}
+
+.app-shell.view-galaxy .g-pedestal {
+  top: 47%;
+}
+
+.app-shell.view-galaxy .g-pedestal-halo {
+  opacity: 0.64;
+}
+
+.app-shell.view-galaxy .g-orbit-ring {
+  border-color: rgba(216, 178, 102, 0.18);
+}
+
+.app-shell.view-galaxy .g-orbit-ring.r1 {
+  width: min(31vw, 470px);
+  height: min(31vw, 470px);
+  opacity: 0.56;
+}
+
+.app-shell.view-galaxy .g-orbit-ring.r2 {
+  width: min(45vw, 680px);
+  height: min(45vw, 680px);
+  opacity: 0.34;
+}
+
+.app-shell.view-galaxy .g-orbit-ring.r3 {
+  width: min(57vw, 840px);
+  height: min(57vw, 840px);
+  opacity: 0.2;
+}
+
+.app-shell.view-galaxy .g-relation-lines line {
+  stroke-width: 0.07;
+  opacity: calc(0.08 + (var(--line-depth, 0) + 1) * 0.055);
+}
+
+.app-shell.view-galaxy .g-hero {
+  top: 47%;
+  z-index: 180;
+}
+
+.app-shell.view-galaxy .g-hero-frame {
+  width: clamp(136px, 9.6vw, 188px);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.12),
+    inset 0 0 0 5px rgba(4, 3, 1, 0.82),
+    0 0 0 1px rgba(6, 4, 2, 0.9),
+    0 0 52px rgba(245, 215, 150, 0.34),
+    0 30px 70px rgba(0, 0, 0, 0.86);
+}
+
+.app-shell.view-galaxy .g-hero-cap {
+  display: none;
+}
+
+.app-shell.view-galaxy .g-orbit-card {
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell.view-galaxy .g-orbit-card:hover {
+  z-index: 190 !important;
+}
+
+.app-shell.view-galaxy .g-orbit-card::after {
+  left: 50%;
+  top: calc(100% - 8px);
+  right: auto;
+  bottom: auto;
+  width: 68%;
+  height: 16px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(216, 178, 102, 0.18), transparent 72%);
+  filter: blur(5px);
+  opacity: calc(0.16 + (var(--gdepth, 0) + 1) * 0.05);
+}
+
+.app-shell.view-galaxy .g-thumb {
+  width: clamp(56px, 4.2vw, 82px);
+  padding: 3px;
+}
+
+.app-shell.view-galaxy .g-thumb img {
+  filter: brightness(0.9) contrast(1.08) saturate(0.82) sepia(0.18) hue-rotate(-4deg);
+}
+
+.app-shell.view-galaxy .g-orbit-card.format-wide .g-thumb {
+  width: clamp(76px, 5.8vw, 116px);
+  aspect-ratio: 1.24 / 1;
+}
+
+.app-shell.view-galaxy .g-orbit-card.format-scroll .g-thumb {
+  width: clamp(88px, 6.6vw, 132px);
+  aspect-ratio: 1.62 / 1;
+}
+
+.app-shell.view-galaxy .g-orbit-card.format-tall .g-thumb,
+.app-shell.view-galaxy .g-orbit-card.format-vertical-scroll .g-thumb {
+  width: clamp(50px, 3.8vw, 72px);
+  aspect-ratio: 0.68 / 1;
+}
+
+.app-shell.view-galaxy .g-tag {
+  display: grid;
+  gap: 3px;
+  justify-items: start;
+  max-width: 150px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(232, 196, 119, 0.8);
+  text-align: left;
+  opacity: 0.94;
+}
+
+.app-shell.view-galaxy .g-tag strong {
+  max-width: 132px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+  letter-spacing: 1.4px;
+  font-weight: 500;
+  color: rgba(245, 220, 160, 0.86);
+}
+
+.app-shell.view-galaxy .g-tag small {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(232, 196, 119, 0.56);
+}
+
+.app-shell.view-galaxy .galaxy-toggle {
+  top: auto;
+  right: auto;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  overflow: visible;
+  gap: 12px;
+  border: 0;
+  background: rgba(8, 6, 4, 0.28);
+}
+
+.app-shell.view-galaxy .galaxy-toggle button {
+  min-width: 118px;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 178, 102, 0.26);
+  background: rgba(18, 12, 6, 0.48);
+}
+
+.app-shell.view-galaxy .galaxy-toggle button.on {
+  border-color: rgba(245, 215, 150, 0.46);
+}
+
+.app-shell.view-galaxy .focus-card {
+  left: auto;
+  right: clamp(34px, 4vw, 72px);
+  bottom: 84px;
+  width: clamp(300px, 23vw, 382px);
+  transform: none;
+  grid-template-columns: 68px minmax(0, 1fr) 36px;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  clip-path: none;
+  background:
+    linear-gradient(180deg, rgba(28, 18, 8, 0.58), rgba(6, 4, 2, 0.72));
+  border: 1px solid rgba(216, 178, 102, 0.24);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.035),
+    0 18px 44px rgba(0, 0, 0, 0.48);
+  z-index: 92;
+}
+
+.app-shell.view-galaxy .focus-thumb {
+  grid-column: 1;
+  grid-row: 1;
+  width: 68px;
+  height: 82px;
+}
+
+.app-shell.view-galaxy .focus-body {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.app-shell.view-galaxy .focus-cta {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-self: center;
+  justify-self: end;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 0;
+}
+
+.app-shell.view-galaxy .focus-head strong {
+  font-size: 17px;
+  letter-spacing: 1.8px;
+}
+
+.app-shell.view-galaxy .focus-meta {
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.app-shell.view-galaxy .focus-line {
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.45;
+  -webkit-line-clamp: 1;
+}
+
+/* 列表页：目标图的密集双列展柜 */
+.app-shell.view-list .scroll-hall {
+  inset: 238px 70px 28px 168px;
+  padding: 0 0 28px;
+  overflow: auto;
+  background:
+    linear-gradient(180deg, rgba(18, 12, 6, 0.64), rgba(6, 4, 2, 0.74));
+  border: 1px solid rgba(216, 178, 102, 0.18);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.035),
+    0 24px 70px rgba(0, 0, 0, 0.36);
+}
+
+.app-shell.view-list .hall-back,
+.app-shell.view-list .hall-title,
+.app-shell.view-list .hall-sub,
+.app-shell.view-list .hall-blurb,
+.app-shell.view-list .hall-meta {
+  display: none;
+}
+
+.app-shell.view-list .hall-toggle {
+  position: static;
+  flex: 0 0 auto;
+  margin: 0 0 0 auto;
+  z-index: 2;
+  display: inline-flex;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.app-shell.view-list .hall-toggle button {
+  min-width: 112px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 178, 102, 0.26);
+  background: rgba(18, 12, 6, 0.58);
+  color: rgba(232, 196, 119, 0.72);
+}
+
+.app-shell.view-list .hall-toggle button.on {
+  border-color: rgba(245, 215, 150, 0.5);
+  color: rgba(245, 220, 160, 0.96);
+  background: rgba(96, 62, 22, 0.3);
+}
+
+.app-shell.view-list .hall-head {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+  padding: 14px 18px 16px;
+  margin: 0;
+  border-bottom: 1px solid rgba(216, 178, 102, 0.14);
+  background:
+    linear-gradient(180deg, rgba(12, 8, 4, 0.96), rgba(12, 8, 4, 0.82));
+  backdrop-filter: blur(8px);
+}
+
+.app-shell.view-list .hall-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 0;
+  margin: 0 0 12px;
+  padding-right: 154px;
+}
+
+.app-shell.view-list .hall-title-block {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: none;
+}
+
+.app-shell.view-list .hall-collection-count {
+  margin: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  max-width: 100%;
+  padding: 6px 13px;
+  border: 1px solid rgba(216, 178, 102, 0.22);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(52, 34, 14, 0.34), rgba(12, 8, 4, 0.42));
+  color: rgba(245, 220, 160, 0.7);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 1.4px;
+  white-space: nowrap;
+}
+
+.app-shell.view-list .hall-collection-count b {
+  margin: 0 2px;
+  color: rgba(245, 215, 150, 0.98);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.app-shell.view-list .curator-tags {
+  margin: 0;
+  padding-right: 154px;
+  gap: 12px;
+}
+
+.app-shell.view-list .hall-sort {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 2;
+  min-width: 126px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 178, 102, 0.28);
+  background: rgba(18, 12, 6, 0.54);
+  color: rgba(245, 220, 160, 0.76);
+  font-size: 12px;
+  letter-spacing: 1.4px;
+}
+
+.app-shell.view-list .ct-chip {
+  min-width: 72px;
+  justify-content: center;
+  padding: 8px 16px;
+  clip-path: none;
+  border-radius: 999px;
+  background: rgba(18, 12, 6, 0.56);
+}
+
+.app-shell.view-list .ct-chip::before,
+.app-shell.view-list .ct-chip::after,
+.app-shell.view-list .ct-mark {
+  display: none;
+}
+
+.app-shell.view-list .ct-chip.on {
+  color: rgba(245, 220, 160, 0.96);
+  text-shadow: 0 0 10px rgba(245, 215, 150, 0.34);
+  background: rgba(108, 72, 25, 0.34);
+}
+
+.app-shell.view-list .scroll-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+  padding: 18px;
+  max-width: none;
+}
+
+.app-shell.view-list .scroll-card,
+.app-shell.view-list .scroll-card:nth-child(even) {
+  min-height: 146px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  filter: none;
+}
+
+.app-shell.view-list .scroll-rod {
+  display: none;
+}
+
+.app-shell.view-list .scroll-body {
+  height: 100%;
+  min-height: 146px;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr) 46px;
+  gap: 26px;
+  align-items: center;
+  padding: 16px 18px 16px 16px;
+  border: 1px solid rgba(216, 178, 102, 0.2);
+  border-radius: 6px;
+  background:
+    radial-gradient(ellipse 72% 100% at 18% 50%, rgba(245, 215, 150, 0.06), transparent 70%),
+    linear-gradient(180deg, rgba(24, 16, 8, 0.76), rgba(7, 5, 2, 0.9));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.035),
+    0 16px 34px rgba(0, 0, 0, 0.24);
+}
+
+.app-shell.view-list .scroll-body::before,
+.app-shell.view-list .scroll-body::after {
+  display: none;
+}
+
+.app-shell.view-list .scroll-image {
+  width: 100%;
+  height: 106px;
+  aspect-ratio: auto;
+  padding: 3px;
+  border-color: rgba(245, 215, 150, 0.22);
+}
+
+.app-shell.view-list .scroll-image img {
+  object-fit: cover;
+}
+
+.app-shell.view-list .scroll-info {
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  padding: 0;
+}
+
+.app-shell.view-list .scroll-title {
+  font-size: 22px;
+  letter-spacing: 2.2px;
+}
+
+.app-shell.view-list .scroll-author,
+.app-shell.view-list .scroll-date {
+  display: inline;
+  font-size: 12px;
+  letter-spacing: 1.4px;
+}
+
+.app-shell.view-list .scroll-tags {
+  gap: 8px;
+}
+
+.app-shell.view-list .scroll-tags i {
+  padding: 4px 10px;
+  border-radius: 5px;
+}
+
+.app-shell.view-list .scroll-seal {
+  position: static;
+  justify-self: center;
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  font-size: 0;
+  background: transparent;
+  border: 1px solid rgba(245, 215, 150, 0.45);
+}
+
+.app-shell.view-list .scroll-seal::before {
+  content: "›";
+  font-size: 28px;
+  line-height: 1;
+  color: rgba(245, 215, 150, 0.86);
+}
+
+.app-shell.view-list .hall-timeline {
+  display: none;
+}
+
+/* 详情页：目标图的展墙布局，顶部全局导航保留 */
+.app-shell.view-detail .detail-stage {
+  z-index: 8;
+  background:
+    radial-gradient(ellipse 50% 50% at 34% 50%, rgba(216, 161, 70, 0.11), transparent 72%),
+    linear-gradient(90deg, #040302 0%, #090603 46%, #040302 100%);
+}
+
+.app-shell.view-detail .d-close,
+.app-shell.view-detail .d-back {
+  display: none;
+}
+
+.app-shell.view-detail .d-breadcrumb {
+  position: absolute;
+  left: 128px;
+  right: 36px;
+  top: 124px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 24px;
+  font-size: 12px;
+  letter-spacing: 1.6px;
+  color: rgba(232, 196, 119, 0.6);
+  border-top: 1px solid rgba(216, 178, 102, 0.12);
+  padding-top: 22px;
+}
+
+.app-shell.view-detail .d-breadcrumb span:last-child {
+  color: rgba(245, 220, 160, 0.78);
+}
+
+.app-shell.view-detail .d-shell {
+  inset: 164px 34px 52px 128px;
+  grid-template-columns: minmax(0, 1.02fr) minmax(430px, 0.78fr) 286px;
+  gap: 34px;
+}
+
+.app-shell.view-detail .d-image-area {
+  border-radius: 4px;
+  border-color: rgba(216, 178, 102, 0.34);
+  background:
+    radial-gradient(ellipse 76% 78% at 50% 48%, rgba(245, 220, 160, 0.06), transparent 70%),
+    linear-gradient(180deg, rgba(24, 16, 8, 0.74), rgba(5, 3, 1, 0.9));
+}
+
+.app-shell.view-detail .d-image-stage {
+  inset: 34px 54px 128px;
+}
+
+.app-shell.view-detail .d-image-stage img.d-artwork-img {
+  max-width: 92% !important;
+  max-height: 92% !important;
+  padding: 8px;
+  border-color: rgba(245, 215, 150, 0.38);
+}
+
+.app-shell.view-detail .d-thumb-strip {
+  left: 54px;
+  right: 54px;
+  bottom: 70px;
+  gap: 11px;
+  justify-content: center;
+}
+
+.app-shell.view-detail .d-thumb-strip button {
+  width: 82px;
+  height: 58px;
+}
+
+.app-shell.view-detail .d-zoom {
+  left: 50%;
+  right: auto;
+  bottom: 24px;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+}
+
+.app-shell.view-detail .d-info {
+  padding: 14px 0 0;
+  border-left: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.app-shell.view-detail .d-info-head {
+  padding-bottom: 18px;
+}
+
+.app-shell.view-detail .d-info-head h1 {
+  font-size: clamp(42px, 3.4vw, 58px);
+}
+
+.app-shell.view-detail .d-author {
+  font-size: 18px;
+}
+
+.app-shell.view-detail .d-meta {
+  margin-top: 14px;
+  font-size: 15px;
+  letter-spacing: 3px;
+}
+
+.app-shell.view-detail .d-tags span {
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+.app-shell.view-detail .d-curator {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.app-shell.view-detail .d-curator-label {
+  display: none;
+}
+
+.app-shell.view-detail .d-blurb {
+  font-size: 18px;
+  line-height: 2;
+  font-style: normal;
+}
+
+.app-shell.view-detail .d-info-grid {
+  grid-template-columns: 1fr;
+  gap: 0;
+  border: 1px solid rgba(216, 178, 102, 0.24);
+  border-radius: 3px;
+  padding: 14px 18px;
+  background: rgba(18, 12, 6, 0.36);
+}
+
+.app-shell.view-detail .d-info-grid div {
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(216, 178, 102, 0.13);
+}
+
+.app-shell.view-detail .d-info-grid div:last-child {
+  border-bottom: 0;
+}
+
+.app-shell.view-detail .d-actions {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  opacity: 1;
+}
+
+.app-shell.view-detail .d-actions button {
+  min-height: 72px;
+  display: grid;
+  gap: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.app-shell.view-detail .d-source {
+  width: 100%;
+  justify-content: center;
+}
+
+.app-shell.view-detail .d-related {
+  padding: 10px 0 0 28px;
+  border: 0;
+  border-left: 1px solid rgba(216, 178, 102, 0.16);
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell.view-detail .d-related > small {
+  padding: 0 0 20px;
+  border-bottom: 0;
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: rgba(245, 220, 160, 0.78);
+}
+
+.app-shell.view-detail .d-related-list {
+  gap: 12px;
+}
+
+.app-shell.view-detail .d-related-list button {
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 14px;
+  padding: 10px;
+  border: 1px solid rgba(216, 178, 102, 0.18);
+  border-radius: 4px;
+  background: rgba(18, 12, 6, 0.42);
+}
+
+.app-shell.view-detail .r-thumb {
+  width: 130px;
+  height: 92px;
+}
+
+.app-shell.view-detail .r-info strong {
+  font-size: 15px;
+}
+
+.app-shell.view-detail .d-related-more {
+  margin-top: 18px;
+  border: 0;
+  background: transparent;
+  justify-content: flex-start;
+}
+
+@media (max-width: 1280px) {
+  .app-shell.view-galaxy .g-curator-panel {
+    left: 24px;
+    width: 260px;
+    max-width: 260px;
+    padding: 28px 24px 22px;
+  }
+
+  .app-shell.view-galaxy .galaxy-orbit {
+    inset: 16px 10px 56px 300px;
+  }
+
+  .app-shell.view-list .scroll-hall {
+    left: 126px;
+    right: 36px;
+  }
+
+  .app-shell.view-detail .d-shell {
+    grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+  }
+
+  .app-shell.view-detail .d-related {
+    display: none;
+  }
+}
+
+@media (max-height: 820px) {
+  .app-shell.view-galaxy .g-curator-panel {
+    top: 52px;
+    height: min(438px, calc(100% - 82px));
+    padding: 24px 28px 18px;
+  }
+
+  .app-shell.view-galaxy .g-blurb {
+    margin-top: 20px;
+    line-height: 1.78;
+  }
+
+  .app-shell.view-galaxy .g-filter-rule {
+    margin: 18px 0 14px;
+  }
+
+  .app-shell.view-galaxy .g-filter-title {
+    margin-bottom: 12px;
+  }
+
+  .app-shell.view-galaxy .g-filter-grid button {
+    min-height: 30px;
+  }
+
+  .app-shell.view-galaxy .g-filter-foot {
+    margin-top: 16px;
+    padding-top: 12px;
+  }
+}
+
+/* ================================================================
+ * Calligraphy Galaxy Exhibition Upgrade
+ * ================================================================ */
+
+.app-shell.view-galaxy .galaxy-stage {
+  inset: 132px 30px 32px 104px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 48% 48% at 51% 48%, rgba(225, 175, 91, 0.16), transparent 72%),
+    radial-gradient(ellipse 66% 58% at 62% 59%, rgba(102, 72, 28, 0.09), transparent 76%),
+    linear-gradient(180deg, rgba(10, 8, 5, 0.02), rgba(10, 7, 3, 0.08));
+}
+
+.app-shell.view-galaxy .galaxy-stage::before {
+  inset: 4% 0 8% 17%;
+  border-color: rgba(226, 187, 111, 0.07);
+  opacity: 0.36;
+}
+
+.app-shell.view-galaxy .galaxy-stage::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 34%;
+  pointer-events: none;
+  opacity: 0.42;
+  background:
+    radial-gradient(ellipse 18% 52% at 6% 96%, rgba(188, 143, 68, 0.12), transparent 72%),
+    radial-gradient(ellipse 22% 60% at 86% 102%, rgba(188, 143, 68, 0.12), transparent 74%),
+    linear-gradient(180deg, transparent 0%, rgba(28, 20, 10, 0.2) 66%, rgba(4, 3, 2, 0.78) 100%);
+  mix-blend-mode: screen;
+  z-index: 0;
+}
+
+.app-shell.view-galaxy .galaxy-rings {
+  opacity: 0.32;
+}
+
+.app-shell.view-galaxy .g-curator-panel {
+  left: clamp(38px, 3.5vw, 62px);
+  top: clamp(58px, 7.6vh, 84px);
+  width: clamp(270px, 18vw, 326px);
+  max-width: 326px;
+  height: auto;
+  min-height: 0;
+  max-height: calc(100% - 120px);
+  padding: clamp(22px, 2vw, 30px);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(226, 187, 111, 0.22);
+  background:
+    radial-gradient(ellipse 72% 58% at 86% 6%, rgba(245, 215, 150, 0.07), transparent 70%),
+    linear-gradient(180deg, rgba(25, 18, 10, 0.52), rgba(7, 5, 3, 0.66));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.035),
+    inset 0 0 34px rgba(0, 0, 0, 0.24),
+    0 20px 50px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(10px);
+  animation: curatorFadeIn 640ms ease both;
+}
+
+.app-shell.view-galaxy .g-curator-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.app-shell.view-galaxy .g-curator-symbol {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-top: 3px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 215, 150, 0.36);
+  color: rgba(245, 220, 160, 0.9);
+  background: rgba(50, 34, 14, 0.22);
+  box-shadow: 0 0 18px rgba(226, 187, 111, 0.12);
+}
+
+.app-shell.view-galaxy .g-curator-panel h2 {
+  margin: 0;
+  font-size: clamp(25px, 2vw, 34px);
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: rgba(245, 220, 160, 0.94);
+}
+
+.app-shell.view-galaxy .g-curator-head small {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(232, 196, 119, 0.62);
+}
+
+.app-shell.view-galaxy .g-blurb {
+  margin-top: clamp(20px, 2.6vh, 30px);
+  max-width: none;
+  font-size: 13px;
+  line-height: 2.05;
+  letter-spacing: 1.9px;
+  color: rgba(245, 220, 160, 0.75);
+}
+
+.app-shell.view-galaxy .g-filter-rule {
+  height: 1px;
+  margin: clamp(18px, 2.6vh, 28px) 0 16px;
+  background: linear-gradient(90deg, rgba(226, 187, 111, 0.25), rgba(226, 187, 111, 0.03), transparent);
+}
+
+.app-shell.view-galaxy .g-filter-title {
+  margin-bottom: 14px;
+  color: rgba(245, 220, 160, 0.8);
+}
+
+.app-shell.view-galaxy .g-filter-title svg {
+  opacity: 0.7;
+}
+
+.app-shell.view-galaxy .g-filter-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.app-shell.view-galaxy .g-filter-grid button {
+  min-height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(226, 187, 111, 0.22);
+  background: rgba(15, 10, 5, 0.34);
+  color: rgba(232, 196, 119, 0.68);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+
+.app-shell.view-galaxy .g-filter-grid button:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.app-shell.view-galaxy .g-filter-grid button.on,
+.app-shell.view-galaxy .g-filter-grid button:hover {
+  border-color: rgba(245, 215, 150, 0.58);
+  color: rgba(245, 220, 160, 0.96);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(245, 215, 150, 0.12), transparent 68%),
+    rgba(96, 62, 22, 0.26);
+  box-shadow: 0 0 18px rgba(226, 187, 111, 0.1);
+}
+
+.app-shell.view-galaxy .g-filter-foot {
+  margin-top: 20px;
+  padding-top: 15px;
+}
+
+.app-shell.view-galaxy .galaxy-orbit {
+  inset: 0 clamp(150px, 10vw, 220px) 122px clamp(120px, 8vw, 170px);
+  z-index: 24;
+  transform-style: preserve-3d;
+}
+
+.app-shell.view-galaxy .g-space-field {
+  position: absolute;
+  inset: -8% -6% -12%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.app-shell.view-galaxy .g-nebula-core {
+  position: absolute;
+  left: 50%;
+  top: 49%;
+  width: clamp(460px, 42vw, 780px);
+  height: clamp(360px, 32vw, 600px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse, rgba(245, 215, 150, 0.21) 0%, rgba(190, 132, 52, 0.1) 30%, rgba(78, 52, 20, 0.05) 52%, transparent 74%);
+  filter: blur(18px);
+  opacity: 0.88;
+  animation: galaxyNebulaBreath 7s ease-in-out infinite;
+}
+
+.app-shell.view-galaxy .g-dust-field {
+  position: absolute;
+  inset: 10% 8%;
+  opacity: 0.34;
+  background-image:
+    radial-gradient(circle, rgba(245, 215, 150, 0.6) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(226, 187, 111, 0.32) 0 1px, transparent 1.8px);
+  background-size: 148px 112px, 212px 176px;
+  background-position: 12px 6px, 74px 54px;
+  animation: dustFloat 18s linear infinite;
+}
+
+.app-shell.view-galaxy .g-dust-field.dust-b {
+  inset: 16% 16% 7% 5%;
+  opacity: 0.22;
+  background-size: 190px 150px, 260px 210px;
+  animation-duration: 26s;
+  animation-direction: reverse;
+}
+
+.app-shell.view-galaxy .g-orbit-flow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(68deg);
+  border: 1px solid rgba(245, 215, 150, 0.13);
+  box-shadow: 0 0 20px rgba(226, 187, 111, 0.035);
+  opacity: 0.72;
+  animation: orbitDrift 36s linear infinite;
+}
+
+.app-shell.view-galaxy .g-orbit-flow.flow-a {
+  width: min(68vw, 1030px);
+  height: min(36vw, 560px);
+}
+
+.app-shell.view-galaxy .g-orbit-flow.flow-b {
+  width: min(52vw, 820px);
+  height: min(26vw, 430px);
+  border-style: dashed;
+  opacity: 0.5;
+  animation-duration: 52s;
+  animation-direction: reverse;
+}
+
+.app-shell.view-galaxy .g-star-point {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(245, 215, 150, 0.88);
+  box-shadow: 0 0 14px rgba(245, 215, 150, 0.8);
+}
+
+.app-shell.view-galaxy .g-star-point.sp-1 { left: 24%; top: 40%; }
+.app-shell.view-galaxy .g-star-point.sp-2 { left: 59%; top: 21%; opacity: 0.72; }
+.app-shell.view-galaxy .g-star-point.sp-3 { left: 80%; top: 48%; opacity: 0.65; }
+.app-shell.view-galaxy .g-star-point.sp-4 { left: 44%; top: 76%; opacity: 0.56; }
+
+.app-shell.view-galaxy .g-pedestal {
+  top: 50%;
+  z-index: 2;
+}
+
+.app-shell.view-galaxy .g-pedestal-halo {
+  left: clamp(-390px, -22vw, -260px);
+  top: clamp(-250px, -15vw, -170px);
+  width: clamp(520px, 45vw, 820px);
+  height: clamp(360px, 31vw, 590px);
+  opacity: 0.48;
+  filter: blur(34px);
+}
+
+.app-shell.view-galaxy .g-pedestal-disc {
+  left: clamp(-210px, -15vw, -150px);
+  top: clamp(100px, 10vw, 150px);
+  width: clamp(300px, 27vw, 520px);
+  height: clamp(52px, 4.5vw, 82px);
+  opacity: 0.72;
+}
+
+.app-shell.view-galaxy .g-orbit-ring {
+  border-color: rgba(226, 187, 111, 0.13);
+}
+
+.app-shell.view-galaxy .g-orbit-ring.r1 {
+  width: min(34vw, 550px);
+  height: min(18vw, 300px);
+  opacity: 0.5;
+}
+
+.app-shell.view-galaxy .g-orbit-ring.r2 {
+  width: min(55vw, 880px);
+  height: min(29vw, 470px);
+  opacity: 0.3;
+}
+
+.app-shell.view-galaxy .g-orbit-ring.r3 {
+  width: min(73vw, 1160px);
+  height: min(39vw, 620px);
+  opacity: 0.18;
+}
+
+.app-shell.view-galaxy .g-relation-lines {
+  inset: 2% 1% 3%;
+  z-index: 3;
+  opacity: 0.64;
+}
+
+.app-shell.view-galaxy .g-relation-lines line {
+  stroke-width: 0.055;
+  stroke: rgba(245, 215, 150, 0.32);
+  opacity: calc(0.035 + (var(--line-depth, 0) + 1) * 0.035);
+  filter: drop-shadow(0 0 4px rgba(226, 187, 111, 0.1));
+  transition: opacity 260ms ease, stroke-width 260ms ease;
+}
+
+.app-shell.view-galaxy .g-relation-lines line.active {
+  stroke-width: 0.13;
+  opacity: 0.48;
+}
+
+.app-shell.view-galaxy .g-relation-lines line.tier-far {
+  opacity: 0.055;
+}
+
+.app-shell.view-galaxy .g-hero {
+  top: 50%;
+  z-index: 120;
+  animation: galaxyNodeArrive 720ms cubic-bezier(0.2, 0.72, 0.22, 1) 80ms both;
+}
+
+.app-shell.view-galaxy .hero-orbit-pulse {
+  position: absolute;
+  left: 50%;
+  bottom: -34px;
+  width: clamp(210px, 18vw, 340px);
+  height: clamp(46px, 4vw, 76px);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 1px solid rgba(245, 215, 150, 0.22);
+  background: radial-gradient(ellipse, rgba(245, 215, 150, 0.2), rgba(188, 130, 52, 0.08) 40%, transparent 72%);
+  filter: blur(0.2px);
+  opacity: 0.88;
+  animation: galaxyHaloBreath 6s ease-in-out infinite;
+}
+
+.app-shell.view-galaxy .g-hero-frame {
+  width: clamp(168px, 12vw, 244px);
+  aspect-ratio: 0.78 / 1;
+  padding: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(245, 215, 150, 0.82);
+  background:
+    linear-gradient(180deg, rgba(42, 29, 12, 0.72), rgba(7, 5, 3, 0.94));
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.16),
+    inset 0 0 0 6px rgba(5, 3, 1, 0.84),
+    0 0 0 1px rgba(5, 3, 1, 0.9),
+    0 0 44px rgba(245, 215, 150, 0.42),
+    0 26px 70px rgba(0, 0, 0, 0.82);
+  animation: galaxyHeroBreath 6.8s ease-in-out infinite;
+}
+
+.app-shell.view-galaxy .g-hero-frame img {
+  object-fit: contain;
+  background: rgba(6, 4, 2, 0.88);
+  filter: brightness(0.96) contrast(1.08) saturate(0.88) sepia(0.12);
+}
+
+.app-shell.view-galaxy .g-hero.format-scroll .g-hero-frame img {
+  transform: scale(7.6);
+}
+
+.app-shell.view-galaxy .galaxy-inscription .g-hero:not(.format-scroll) .g-hero-frame img {
+  transform: scale(1.45);
+}
+
+.app-shell.view-galaxy .galaxy-inscription .g-orbit-card.format-scroll .g-thumb img {
+  transform: scale(2.65);
+}
+
+.app-shell.view-galaxy .g-hero-cap {
+  display: inline-flex;
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 18px);
+  transform: translateX(-50%);
+  min-width: max-content;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell.view-galaxy .g-hero-cap::before,
+.app-shell.view-galaxy .g-hero-cap::after {
+  display: none;
+}
+
+.app-shell.view-galaxy .g-hero-stamp {
+  width: 27px;
+  height: 27px;
+}
+
+.app-shell.view-galaxy .g-hero-cap strong {
+  font-size: clamp(20px, 1.8vw, 30px);
+  letter-spacing: 4px;
+  color: rgba(245, 220, 160, 0.96);
+  text-shadow: 0 0 14px rgba(245, 215, 150, 0.26);
+}
+
+.app-shell.view-galaxy .g-hero-cap small {
+  font-size: 12px;
+  letter-spacing: 2.4px;
+  color: rgba(232, 196, 119, 0.68);
+  text-align: center;
+}
+
+.app-shell.view-galaxy .g-orbit-card {
+  gap: 8px;
+  z-index: 30;
+  animation: galaxyNodeArrive 760ms cubic-bezier(0.2, 0.72, 0.22, 1) both;
+  animation-delay: calc(160ms + var(--gi, 0) * 75ms);
+}
+
+.app-shell.view-galaxy .g-orbit-card::after {
+  display: none;
+}
+
+.app-shell.view-galaxy .node-orbit-halo {
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 14px);
+  width: 86%;
+  height: 24px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 1px solid rgba(226, 187, 111, 0.13);
+  background: radial-gradient(ellipse, rgba(226, 187, 111, 0.14), transparent 72%);
+  opacity: 0.58;
+  filter: blur(0.4px);
+  transition: opacity 260ms ease, box-shadow 260ms ease;
+}
+
+.app-shell.view-galaxy .g-thumb {
+  width: clamp(72px, 5vw, 104px);
+  padding: 4px;
+  border-radius: 3px;
+  border: 1px solid rgba(226, 187, 111, 0.34);
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(245, 215, 150, 0.08), transparent 72%),
+    rgba(6, 4, 2, 0.88);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.04),
+    0 15px 34px rgba(0, 0, 0, 0.68);
+}
+
+.app-shell.view-galaxy .g-thumb img {
+  object-fit: contain;
+  background: rgba(8, 6, 4, 0.82);
+  filter: brightness(0.82) contrast(1.12) saturate(0.72) sepia(0.28) hue-rotate(-5deg);
+}
+
+.app-shell.view-galaxy .g-orbit-card.format-wide .g-thumb {
+  width: clamp(92px, 6.4vw, 128px);
+  aspect-ratio: 1.36 / 1;
+}
+
+.app-shell.view-galaxy .g-orbit-card.format-scroll .g-thumb {
+  width: clamp(108px, 7.2vw, 150px);
+  aspect-ratio: 1.74 / 1;
+}
+
+.app-shell.view-galaxy .g-orbit-card.format-tall .g-thumb,
+.app-shell.view-galaxy .g-orbit-card.format-vertical-scroll .g-thumb {
+  width: clamp(58px, 4.2vw, 84px);
+  aspect-ratio: 0.68 / 1;
+}
+
+.app-shell.view-galaxy .g-orbit-card.tier-far {
+  filter: blur(0.15px);
+}
+
+.app-shell.view-galaxy .g-orbit-card.tier-far .g-thumb {
+  filter: saturate(0.82);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.58);
+}
+
+.app-shell.view-galaxy .g-orbit-card.tier-near .g-thumb {
+  border-color: rgba(245, 215, 150, 0.42);
+}
+
+.app-shell.view-galaxy .g-orbit-card:hover,
+.app-shell.view-galaxy .g-orbit-card.active {
+  transform:
+    translate(-50%, -50%)
+    scale(calc(var(--gscale, 1) * 1.12))
+    rotateY(0deg);
+  opacity: 1;
+  z-index: 190 !important;
+}
+
+.app-shell.view-galaxy .g-orbit-card:hover .g-thumb,
+.app-shell.view-galaxy .g-orbit-card.active .g-thumb {
+  border-color: rgba(245, 215, 150, 0.78);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.08),
+    0 0 24px rgba(245, 215, 150, 0.28),
+    0 18px 38px rgba(0, 0, 0, 0.72);
+}
+
+.app-shell.view-galaxy .g-orbit-card:hover .node-orbit-halo,
+.app-shell.view-galaxy .g-orbit-card.active .node-orbit-halo {
+  opacity: 0.92;
+  box-shadow: 0 0 18px rgba(226, 187, 111, 0.18);
+}
+
+.app-shell.view-galaxy .g-tag {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  max-width: 168px;
+  padding: 4px 8px 4px 9px;
+  border-left: 1px solid rgba(245, 215, 150, 0.28);
+  color: rgba(232, 196, 119, 0.78);
+  text-align: left;
+  opacity: 0.58;
+  transform: translateY(-1px);
+  transition: opacity 240ms ease, transform 240ms ease, color 240ms ease;
+}
+
+.app-shell.view-galaxy .tier-far .g-tag {
+  opacity: 0.34;
+}
+
+.app-shell.view-galaxy .tier-near .g-tag {
+  opacity: 0.68;
+}
+
+.app-shell.view-galaxy .g-orbit-card:hover .g-tag,
+.app-shell.view-galaxy .g-orbit-card.active .g-tag {
+  opacity: 0.95;
+  transform: translateY(0);
+}
+
+.app-shell.view-galaxy .g-tag strong {
+  max-width: 150px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  color: rgba(245, 220, 160, 0.9);
+}
+
+.app-shell.view-galaxy .g-tag small {
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 1px;
+  color: rgba(232, 196, 119, 0.56);
+}
+
+.app-shell.view-galaxy .focus-card {
+  right: clamp(34px, 4vw, 72px);
+  bottom: clamp(66px, 8vh, 92px);
+  width: clamp(340px, 25vw, 452px);
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background:
+    radial-gradient(ellipse 90% 110% at 10% 20%, rgba(245, 215, 150, 0.07), transparent 64%),
+    linear-gradient(180deg, rgba(28, 18, 8, 0.46), rgba(6, 4, 2, 0.62));
+  border: 1px solid rgba(226, 187, 111, 0.2);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 215, 150, 0.035),
+    0 18px 46px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(8px);
+}
+
+.app-shell.view-galaxy .focus-thumb {
+  width: 78px;
+  height: 92px;
+  border-radius: 3px;
+}
+
+.app-shell.view-galaxy .focus-head {
+  gap: 8px;
+}
+
+.app-shell.view-galaxy .focus-head strong {
+  font-size: 19px;
+  letter-spacing: 2px;
+}
+
+.app-shell.view-galaxy .focus-pill {
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 999px;
+}
+
+.app-shell.view-galaxy .focus-meta {
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 1.2px;
+}
+
+.app-shell.view-galaxy .focus-line {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.55;
+  -webkit-line-clamp: 2;
+}
+
+.app-shell.view-galaxy .focus-cta {
+  width: auto;
+  height: 34px;
+  align-self: center;
+  justify-self: end;
+  padding: 0 12px 0 14px;
+  border-radius: 999px;
+  gap: 5px;
+  font-size: 11px;
+  letter-spacing: 1.1px;
+  white-space: nowrap;
+}
+
+.app-shell.view-galaxy .galaxy-toggle {
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  gap: 10px;
+  padding: 6px;
+  border: 1px solid rgba(226, 187, 111, 0.14);
+  border-radius: 999px;
+  background: rgba(7, 5, 3, 0.42);
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.app-shell.view-galaxy .galaxy-toggle button {
+  min-width: 126px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(226, 187, 111, 0.2);
+  background: rgba(18, 12, 6, 0.34);
+}
+
+.app-shell.view-galaxy .galaxy-toggle button.on {
+  border-color: rgba(245, 215, 150, 0.56);
+  color: rgba(245, 220, 160, 0.98);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(245, 215, 150, 0.14), transparent 70%),
+    rgba(72, 48, 18, 0.34);
+  box-shadow: 0 0 22px rgba(226, 187, 111, 0.16);
+}
+
+@media (max-width: 1280px) {
+  .app-shell.view-galaxy .galaxy-stage {
+    inset: 118px 20px 26px 104px;
+  }
+
+  .app-shell.view-galaxy .g-curator-panel {
+    left: 28px;
+    top: 52px;
+    width: 244px;
+    max-width: 244px;
+    padding: 22px 22px 18px;
+  }
+
+  .app-shell.view-galaxy .g-curator-panel h2 {
+    font-size: 27px;
+  }
+
+  .app-shell.view-galaxy .g-blurb {
+    font-size: 12.5px;
+    line-height: 1.88;
+  }
+
+  .app-shell.view-galaxy .galaxy-orbit {
+    inset: 0 132px 112px 72px;
+  }
+
+  .app-shell.view-galaxy .g-hero-frame {
+    width: clamp(154px, 13vw, 190px);
+  }
+
+  .app-shell.view-galaxy .focus-card {
+    right: 28px;
+    bottom: 70px;
+    width: 334px;
+    grid-template-columns: 66px minmax(0, 1fr) auto;
+  }
+
+  .app-shell.view-galaxy .focus-thumb {
+    width: 66px;
+    height: 80px;
+  }
+}
+
+@media (max-height: 820px) {
+  .app-shell.view-galaxy .g-curator-panel {
+    max-height: calc(100% - 96px);
+    padding: 20px 22px 16px;
+  }
+
+  .app-shell.view-galaxy .g-blurb {
+    margin-top: 16px;
+    line-height: 1.76;
+  }
+
+  .app-shell.view-galaxy .g-filter-grid button {
+    min-height: 32px;
+  }
+
+  .app-shell.view-galaxy .galaxy-orbit {
+    bottom: 104px;
+  }
+
+  .app-shell.view-galaxy .focus-card {
+    bottom: 64px;
+  }
+}
+
+@keyframes curatorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes galaxyNodeArrive {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 14px)) scale(calc(var(--gscale, 1) * 0.9)) rotateY(var(--gtilt, 0deg));
+  }
+  to {
+    opacity: var(--gopacity, 1);
+    transform: translate(-50%, -50%) scale(var(--gscale, 1)) rotateY(var(--gtilt, 0deg));
+  }
+}
+
+@keyframes galaxyHeroBreath {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes galaxyNebulaBreath {
+  0%, 100% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+  50% {
+    opacity: 0.92;
+    transform: translate(-50%, -50%) scale(1.03);
+  }
+}
+
+@keyframes galaxyHaloBreath {
+  0%, 100% {
+    opacity: 0.62;
+    transform: translateX(-50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translateX(-50%) scale(1.04);
+  }
+}
+
+@keyframes orbitDrift {
+  from {
+    transform: translate(-50%, -50%) rotateX(68deg) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotateX(68deg) rotate(360deg);
+  }
+}
+
+@keyframes dustFloat {
+  from {
+    background-position: 12px 6px, 74px 54px;
+  }
+  to {
+    background-position: 160px 118px, 286px 230px;
+  }
+}
+
+/* 器物岛：保留暗金展柜感，但让瓷器本体可见 */
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece {
+  background:
+    radial-gradient(ellipse 92% 70% at 50% 48%, rgba(245, 222, 174, 0.42), rgba(185, 137, 70, 0.2) 42%, rgba(42, 27, 12, 0.72) 78%),
+    linear-gradient(180deg, rgba(78, 50, 20, 0.82), rgba(16, 10, 4, 0.9));
+  border-color: rgba(245, 215, 150, 0.48);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 236, 188, 0.1),
+    inset 0 10px 24px rgba(245, 215, 150, 0.1),
+    inset 0 -18px 28px rgba(0, 0, 0, 0.34),
+    0 18px 30px rgba(0, 0, 0, 0.58),
+    0 0 18px rgba(216, 178, 102, 0.14);
+}
+
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece::before {
+  z-index: 0;
+  inset: 5px;
+  border-color: rgba(245, 215, 150, 0.16);
+  background:
+    radial-gradient(ellipse 78% 68% at 48% 42%, rgba(255, 239, 198, 0.42), rgba(216, 178, 102, 0.12) 48%, transparent 74%);
+}
+
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece::after {
+  display: none;
+}
+
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece img {
+  position: relative;
+  z-index: 2;
+  opacity: 1;
+  background: transparent;
+  mix-blend-mode: normal;
+  filter: brightness(1.24) contrast(1.06) saturate(0.92) sepia(0.1) hue-rotate(-4deg);
+}
+
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece.shape-vase img,
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece.shape-ewer img,
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece.shape-accent img {
+  mix-blend-mode: screen;
+  opacity: 0.94;
+  filter: brightness(1.38) contrast(1.12) saturate(0.82) sepia(0.08) hue-rotate(-4deg);
+}
+
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece.shape-bowl img,
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece.shape-washer img,
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"] .vessel-piece.shape-dish img {
+  filter: brightness(1.18) contrast(1.02) saturate(0.88) sepia(0.12) hue-rotate(-6deg);
+}
+
+.app-shell.view-overview .galaxy-island[data-galaxy="vessel"]:hover .vessel-piece img {
+  filter: brightness(1.34) contrast(1.08) saturate(0.96) sepia(0.08) hue-rotate(-4deg);
+}
+
+/* 首页主标题：减掉厚重暗影，让金字边缘更清晰 */
+.app-shell.view-overview .hero-title h1 {
+  background: linear-gradient(180deg, #fff0bf 0%, #f3d283 38%, #d6a95a 68%, #a8772c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.35px rgba(255, 236, 178, 0.48);
+  text-shadow:
+    0 1px 0 rgba(72, 46, 14, 0.7),
+    0 2px 0 rgba(8, 5, 2, 0.58),
+    0 0 10px rgba(245, 215, 150, 0.26),
+    0 0 22px rgba(216, 161, 70, 0.12);
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.34));
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell.view-overview .hero-title h1::before {
+  bottom: -12px;
+  background: linear-gradient(90deg, rgba(245, 215, 150, 0.82), rgba(216, 178, 102, 0.22), transparent);
 }
