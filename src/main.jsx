@@ -33,6 +33,23 @@ import "./styles.css";
  * 数字展陈式首页 + 拖拽 3D 侧视 + 花鸟星系 + 列表 + 详情 + Demo Mode
  * ================================================================ */
 
+/* base URL helper：GitHub Pages 之类的子路径部署下，把 "/xxx" 前缀成 "/repo/xxx" */
+const BASE_URL = (import.meta.env && import.meta.env.BASE_URL) || "/";
+const BASE_PREFIX = BASE_URL.replace(/\/$/, "");
+function asset(path) {
+  if (!path) return path;
+  if (/^(https?:|data:|blob:)/i.test(path)) return path;
+  if (path.startsWith("/")) return BASE_PREFIX + path;
+  return path;
+}
+
+if (typeof document !== "undefined") {
+  document.documentElement.style.setProperty(
+    "--galaxy-bg",
+    `url("${asset("/scene-assets/song-imperial-galaxy-bg.png")}")`
+  );
+}
+
 /* ---------- 1. 常量 & 元数据 ---------- */
 
 const SITE_TITLE = "宋代审美银河";
@@ -204,9 +221,15 @@ const calibratedArtworkDates = {
 function useArtifacts() {
   const [data, setData] = useState([]);
   useEffect(() => {
-    fetch("/song-huizong-artifacts-core-plus.json")
+    fetch(asset("/song-huizong-artifacts-core-plus.json"))
       .then((r) => r.json())
-      .then((p) => setData(p.records ?? []))
+      .then((p) => {
+        const records = (p.records ?? []).map((r) => ({
+          ...r,
+          local_thumb: asset(r.local_thumb),
+        }));
+        setData(records);
+      })
       .catch(() => setData([]));
   }, []);
   return data;
@@ -811,7 +834,7 @@ function FlyingCranes() {
           }}
         >
           <span className="crane-trail" />
-          <img src="/scene-assets/crane.svg" alt="" />
+          <img src={asset("/scene-assets/crane.svg")} alt="" />
         </span>
       ))}
     </div>
@@ -1030,13 +1053,13 @@ function SongGalaxyAtmosphere({ rotation = 0 }) {
 
 function RoyalDecorLayer() {
   const decor = [
-    { src: "/scene-assets/decor/gold-armillary.png", className: "decor-armillary decor-armillary-top" },
-    { src: "/scene-assets/decor/gold-cloud.png", className: "decor-cloud decor-cloud-top" },
-    { src: "/scene-assets/decor/gold-cloud.png", className: "decor-cloud decor-cloud-low" },
-    { src: "/scene-assets/decor/gold-crane-line.png", className: "decor-crane decor-crane-line" },
-    { src: "/scene-assets/decor/gold-crane-real.png", className: "decor-crane decor-crane-real" },
-    { src: "/scene-assets/decor/gold-crane-line.png", className: "decor-crane decor-crane-feature-left" },
-    { src: "/scene-assets/decor/gold-crane-real.png", className: "decor-crane decor-crane-feature-right" },
+    { src: asset("/scene-assets/decor/gold-armillary.png"), className: "decor-armillary decor-armillary-top" },
+    { src: asset("/scene-assets/decor/gold-cloud.png"), className: "decor-cloud decor-cloud-top" },
+    { src: asset("/scene-assets/decor/gold-cloud.png"), className: "decor-cloud decor-cloud-low" },
+    { src: asset("/scene-assets/decor/gold-crane-line.png"), className: "decor-crane decor-crane-line" },
+    { src: asset("/scene-assets/decor/gold-crane-real.png"), className: "decor-crane decor-crane-real" },
+    { src: asset("/scene-assets/decor/gold-crane-line.png"), className: "decor-crane decor-crane-feature-left" },
+    { src: asset("/scene-assets/decor/gold-crane-real.png"), className: "decor-crane decor-crane-feature-right" },
   ];
 
   return (

@@ -5233,7 +5233,7 @@ img { pointer-events: none; }  /* 父按钮处理点击；图片自身不接事�
     radial-gradient(ellipse 42% 38% at 50% 48%, rgba(232, 196, 119, 0.13), transparent 68%),
     linear-gradient(90deg, rgba(0, 0, 0, 0.42) 0%, transparent 18%, transparent 80%, rgba(0, 0, 0, 0.36) 100%),
     linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.38)),
-    url("/scene-assets/song-imperial-galaxy-bg.png");
+    var(--galaxy-bg);
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 100% 100%, 100% 100%, 100% 100%, cover;
@@ -6214,7 +6214,7 @@ img { pointer-events: none; }  /* 父按钮处理点击；图片自身不接事�
     radial-gradient(ellipse 34% 34% at 82% 32%, rgba(216, 161, 70, 0.1), transparent 72%),
     linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0%, transparent 20%, transparent 80%, rgba(0, 0, 0, 0.2) 100%),
     linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.16)),
-    url("/scene-assets/song-imperial-galaxy-bg.png");
+    var(--galaxy-bg);
   background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, cover;
   background-position: center center;
 }
